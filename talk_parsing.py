@@ -11,7 +11,7 @@ class Talk(object):
         self.title = title
         self.sentences = []
 
-    def addSentence(self, sentence):
+    def add_sentence(self, sentence):
         self.sentences.append(sentence)
 
     def __str__(self):
@@ -28,80 +28,88 @@ class Sentence(object):
         self.non_punctuated = ""
         self.annotated = ""
 
-    def setTimeStart(self, time_start):
+    def set_time_start(self, time_start):
         self.time_start = time_start
 
-    def setTimeEnd(self, time_end):
+    def set_time_end(self, time_end):
         self.time_end = time_end
 
-    def setPunctuated(self, punctuated):
+    def set_punctuated(self, punctuated):
         self.punctuated = punctuated
 
-    def setNonPunctuated(self, non_punctuated):
+    def set_non_punctuated(self, non_punctuated):
         self.non_punctuated = non_punctuated
 
-    def setAnnotated(self, annotated):
+    def set_annotated(self, annotated):
         self.annotated = annotated
 
     def __str__(self):
         return " ID: %s \n TIME_START: %s \n TIME_END: %s \n PUNCTUATED: %s \n NUN_PUNCTUATED: %s \n ANNOTATED: %s \n" % (self.id, self.time_start, self.time_end, self.punctuated, self.non_punctuated, self.annotated)
 
 
+class TalkParser(object):
 
-def parseXMLFile(xml_file):
-    talks = []
+    def __init__(self, xml_file, template_file):
+        self.xml_file = xml_file
+        self.template_file = template_file
 
-    mteval = xml.etree.ElementTree.parse(xml_file).getroot()
-    srcset = mteval.find("srcset")
-    for doc in srcset.findall('doc'):
-        talk_id = doc.find("talkid").text
-        talk_title = doc.find("title").text
+    def list_talks(self):
+        talks = self.__parse_xml_file()
 
-        talk = Talk(talk_id, talk_title)
+        for talk in talks:
+            file_name = template_file.replace("<id>", talk.id)
+            self.__parse_txt_file(talk, file_name)
 
-        for sentence in doc.findall("seg"):
-            sentence_id = sentence.attrib["id"]
-            sentence_text = sentence.text
-
-            talk.addSentence(Sentence(sentence_id, sentence_text))
-
-        talks.append(talk)
-
-    return talks
+        return talks
 
 
-def parseTxtFile(txt_file, talk):
-    f = open(txt_file)
-    for i, line in enumerate(f):
-        parts = line.split(" ")
-        time_start = parts[1]
-        time_end = parts[2]
-        (non_punctuated, annotated) = cleanSentence(" ".join(parts[3:]))
+    def __parse_xml_file(self):
+        talks = []
 
-        talk.sentences[i].setTimeStart(time_start)
-        talk.sentences[i].setTimeEnd(time_end)
-        talk.sentences[i].setNonPunctuated(non_punctuated)
-        talk.sentences[i].setAnnotated(annotated)
+        mteval = xml.etree.ElementTree.parse(self.xml_file).getroot()
+        srcset = mteval.find("srcset")
+        for doc in srcset.findall('doc'):
+            talk_id = doc.find("talkid").text
+            talk_title = doc.find("title").text
 
-    return talk
+            talk = Talk(talk_id, talk_title)
 
+            for sentence in doc.findall("seg"):
+                sentence_id = sentence.attrib["id"]
+                sentence_text = sentence.text
 
-def cleanSentence(uncleanSentence):
-    uncleanSentence = uncleanSentence.replace("\n", "")
-    annotated = re.sub(r'\(\d\)', "", uncleanSentence)
-    non_punctuated = re.sub(r'{\$\(.*?\)} ', "", annotated)
+                talk.add_sentence(Sentence(sentence_id, sentence_text))
 
-    return (non_punctuated, annotated)
+            talks.append(talk)
+
+        return talks
+
+    def __parse_txt_file(self, talk, txt_file):
+        f = open(txt_file)
+        for i, line in enumerate(f):
+            parts = line.split(" ")
+            time_start = parts[1]
+            time_end = parts[2]
+            (non_punctuated, annotated) = self.__clean_sentence(" ".join(parts[3:]))
+
+            talk.sentences[i].set_time_start(time_start)
+            talk.sentences[i].set_time_end(time_end)
+            talk.sentences[i].set_non_punctuated(non_punctuated)
+            talk.sentences[i].set_annotated(annotated)
+
+        return talk
+
+    def __clean_sentence(self, unclean_sentence):
+        unclean_sentence = unclean_sentence.replace("\n", "")
+        annotated = re.sub(r'\(\d\)', "", unclean_sentence)
+        non_punctuated = re.sub(r'{\$\(.*?\)} ', "", annotated)
+
+        return (non_punctuated, annotated)
 
 
 def main(xml_file, template_file):
-    talks = parseXMLFile(xml_file)
-
-    for talk in talks:
-        file_name = template_file.replace("<id>", talk.id)
-        parseTxtFile(file_name, talk)
-
-
+    parser = TalkParser(xml_file, template_file)
+    talks = parser.list_talks()
     for talk in talks:
         print(talk)
 
@@ -121,5 +129,3 @@ if __name__=='__main__':
         sys.exit(0)
 
     main(xml_file, template_file)
-
-
