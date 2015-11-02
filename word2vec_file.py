@@ -15,7 +15,7 @@ class Word2VecFile():
     first_line = self.__file.readline().decode(ENCODING).split(' ')
     self.words = int(first_line[0])
     self.vector_size = int(first_line[1])
-    print ('File has %d words with %d vectors.' % (self.words, self.vector_size))
+    print ('File has %d words with %d vectors. Parsing ...' % (self.words, self.vector_size))
     self.vector_array = numpy.zeros((self.words, self.vector_size), numpy.float32)
     self.word2index = {}
 
@@ -34,9 +34,10 @@ class Word2VecFile():
       for f_index in range(0, self.vector_size):
         f_bytes = self.__file.read(4)
         self.vector_array[w_index][f_index] = struct.unpack('f', f_bytes)[0]
+    self.__file.close()
+    print ('Parsing finished!')
 
   def __del__(self):
-    self.__file.close()
     self.vector_array = None
     self.word2index = None
 
