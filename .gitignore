@@ -1,1 +1,6 @@
-.idea
+# IDE files
+.idea/
+
+# Python virtual environment
+.env
+p3/
