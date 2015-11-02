@@ -1,4 +1,5 @@
 from talk_parsing import Sentence
+from sbd_token import Token
 import nltk
 
 WINDOW_SIZE = 5
@@ -13,7 +14,7 @@ class TrainingInstance(object):
         self.question = is_question   # ?
 
     def __str__(self):
-        return "TOKENS: %s \nHAS_COMMA: %s \nHAS_PERIOD: %s \nHAS_QUESTION: %s \n" % (" ".join(self.tokens), str(self.comma), str(self.period), str(self.question))
+        return "TOKENS: %s \nHAS_COMMA: %s \nHAS_PERIOD: %s \nHAS_QUESTION: %s \n" % (" ".join(map(str, self.tokens)), str(self.comma), str(self.period), str(self.question))
 
 class SlidingWindow(object):
 
@@ -23,7 +24,7 @@ class SlidingWindow(object):
         index = 0
         training_instance = []
 
-        while(index < len(tokens) - WINDOW_SIZE):
+        while index < len(tokens) - WINDOW_SIZE:
             word_count = 0
             has_comma = False
             has_period = False
@@ -31,12 +32,12 @@ class SlidingWindow(object):
             window_tokens = []
 
             i = index
-            while(word_count < WINDOW_SIZE and i < len(tokens)):
-                is_punctuation = self.__is_punctutation(tokens[i])
+            while word_count < WINDOW_SIZE and i < len(tokens):
+                is_punctuation = self.__is_punctuation(tokens[i])
 
                 if not is_punctuation:
                     word_count += 1
-                    window_tokens.append(tokens[i])
+                    window_tokens.append(Token(tokens[i]))
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
                     if self.__is_comma(tokens[i]):
@@ -53,7 +54,7 @@ class SlidingWindow(object):
 
         return training_instance
 
-    def __is_punctutation(self, word):
+    def __is_punctuation(self, word):
         return self.__is_comma(word) or self.__is_period(word) or self.__is_question(word)
 
     def __is_comma(self, word):
@@ -83,7 +84,6 @@ def main():
 
     for window in windows:
         print(window)
-
 
 if __name__=='__main__':
     main()
