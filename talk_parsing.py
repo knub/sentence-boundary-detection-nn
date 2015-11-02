@@ -94,11 +94,11 @@ def cleanSentence(uncleanSentence):
     return (non_punctuated, annotated)
 
 
-def main():
+def main(xml_file, template_file):
     talks = parseXMLFile(xml_file)
 
     for talk in talks:
-        file_name = transcript_file.replace("<id>", talk.id)
+        file_name = template_file.replace("<id>", talk.id)
         parseTxtFile(file_name, talk)
 
 
@@ -106,21 +106,20 @@ def main():
         print(talk)
 
 
+if __name__=='__main__':
+    if len(sys.argv) != 3:
+        print("Usage: python talk_parsing.py <xml_file> <template_file>")
+        print("   xml_file:      XML file containing talks.")
+        print("   template_file: Template file path to sorted_txt transcript file. Contains <id> for talk id, which will be replaced.")
+        sys.exit(0)
 
+    xml_file = sys.argv[1]
+    template_file = sys.argv[2]
 
+    if not (os.path.isfile(xml_file)):
+        print("No valid input xml file!")
+        sys.exit(0)
 
-if len(sys.argv) != 3:
-    print("Usage: python talk_parsing.py <xml_file> <sorted_uncleaned_transcript_file>")
-    sys.exit(0)
-
-
-xml_file = sys.argv[1]
-transcript_file = sys.argv[2]
-
-if not (os.path.isfile(xml_file)):
-    print("No valid input file!")
-    sys.exit(0)
-
-main()
+    main(xml_file, template_file)
 
 
