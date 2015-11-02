@@ -2,6 +2,8 @@
 
 * sliding window
 * NLP pipelined: POS (1-v encoding?)
+    * `text = word_tokenize("And now for something completely different")`
+    * Use `pos_tag_sents()` for efficient tagging of more than one sentence.
 * LevelDB
 * data management
 * ensure valid train / test split
