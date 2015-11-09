@@ -2,6 +2,7 @@
 *.tlog
 leveldbs/
 net/experiments/
+net/snapshots/
 
 # IDE files
 .idea/
