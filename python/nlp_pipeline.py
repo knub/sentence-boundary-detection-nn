@@ -2,12 +2,12 @@ import nltk
 from enum import Enum
 from tokens import PunctuationToken, WordToken
 
-class NlpPipeline(object):
+class Punctuation(Enum):
+    COMMA = 1
+    PERIOD = 2
+    QUESTION = 3
 
-    class Punctuation(Enum):
-        COMMA = 1
-        PERIOD = 2
-        QUESTION = 3
+class NlpPipeline(object):
 
     punctuation_mapping = {
         ";": Punctuation.PERIOD,

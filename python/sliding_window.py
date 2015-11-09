@@ -1,7 +1,7 @@
 import numpy
-
-import talk_parsing
-import sbd_token
+from nlp_pipeline import Punctuation, NlpPipeline
+from tokens import PunctuationToken
+from talk_parser import Sentence
 
 
 WINDOW_SIZE = 5
@@ -9,6 +9,7 @@ PUNCTUATION_POS = 3
 
 
 class TrainingInstance(object):
+
     def __init__(self, tokens, is_comma, is_period, is_question):
         self.tokens = tokens
         self.comma = is_comma  # , : -
@@ -36,9 +37,11 @@ class TrainingInstance(object):
         return 0
 
 
+
 class SlidingWindow(object):
+
     def list_windows(self, sentence):
-        tokens = sentence.gold_text
+        tokens = sentence.gold_tokens
 
         index = 0
         training_instance = []
@@ -53,20 +56,20 @@ class SlidingWindow(object):
             i = index
             while word_count < WINDOW_SIZE and i < len(tokens):
 
-                is_punctuation = isinstance(tokens[i], sbd_token.PunctuationToken)
+                is_punctuation = isinstance(tokens[i], PunctuationToken)
 
                 if not is_punctuation:
                     word_count += 1
-                    if isinstance(tokens[i], sbd_token.PunctuationToken): raise NameError(
-                        "to Punctuations in a row")
+                    if isinstance(tokens[i], PunctuationToken): raise NameError(
+                        "two Punctuations in a row")
                     window_tokens.append(tokens[i])
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
-                    if tokens[i].type == talk_parsing.Punctuation.COMMA:
+                    if tokens[i].type == Punctuation.COMMA:
                         has_comma = True
-                    if tokens[i].type == talk_parsing.Punctuation.PERIOD:
+                    if tokens[i].type == Punctuation.PERIOD:
                         has_period = True
-                    if tokens[i].type == talk_parsing.Punctuation.QUESTION:
+                    if tokens[i].type == Punctuation.QUESTION:
                         has_question = True
 
                 i += 1
@@ -78,19 +81,26 @@ class SlidingWindow(object):
         return training_instance
 
 
+
+################
+# Example call #
+################
+
 def main():
-    print("TODO")
-    # sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
-    # sentence.set_time_start(12.95)
-    # sentence.set_time_end(29.50)
-    # sentence.set_speech_text("You know one of the {$(<BREATH>)} intense pleasures of travel in one of the delights of ethnographic research {$(<BREATH>)} is the opportunity to live amongst those who have not forgotten the old ways {$(<BREATH>)} to {$(<BREATH>)} still feel their past and the wind {$(<SBREATH>)} touch and stones pause by rain {$(<SBREATH>)} I tasted in the bitter leaves of plants")
-    # sentence.set_enriched_speech_text("You know one of the intense pleasures of travel in one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways to still feel their past and the wind touch and stones pause by rain I tasted in the bitter leaves of plants")
-    #
-    # slidingWindow = SlidingWindow()
-    # windows = slidingWindow.list_windows(sentence)
-    #
-    # for window in windows:
-    # print(window)
+    nlp_pipeline = NlpPipeline()
+
+    sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
+    sentence.set_time_start(12.95)
+    sentence.set_time_end(29.50)
+    sentence.set_speech_text("You know one of the {$(<BREATH>)} intense pleasures of travel in one of the delights of ethnographic research {$(<BREATH>)} is the opportunity to live amongst those who have not forgotten the old ways {$(<BREATH>)} to {$(<BREATH>)} still feel their past and the wind {$(<SBREATH>)} touch and stones pause by rain {$(<SBREATH>)} I tasted in the bitter leaves of plants")
+    sentence.set_enriched_speech_text("You know one of the intense pleasures of travel in one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways to still feel their past and the wind touch and stones pause by rain I tasted in the bitter leaves of plants")
+    sentence.set_gold_tokens(nlp_pipeline.parse_text(sentence.original_gold))
+
+    slidingWindow = SlidingWindow()
+    windows = slidingWindow.list_windows(sentence)
+
+    for window in windows:
+        print(window)
 
 
 if __name__ == '__main__':

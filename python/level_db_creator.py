@@ -4,26 +4,6 @@ import leveldb
 from caffe.proto import caffe_pb2
 
 
-class DummyTrainingInstance():
-    """assumed interface of training instance"""
-
-    def __init__(self):
-        pass
-
-    def get_array(self):
-        channels = 1
-        window_size = 5
-        vector_size = 300
-        dimensions = (channels, window_size, vector_size)
-
-        array = numpy.zeros((dimensions))
-
-        return array
-
-    def get_label(self):
-        return 0
-
-
 class LevelDBCreator():
     """create a new level db, fill it with word vectors"""
 
@@ -74,6 +54,28 @@ class LevelDBCreator():
 
 
 
+################
+# Example call #
+################
+
+class DummyTrainingInstance():
+    """assumed interface of training instance"""
+
+    def __init__(self):
+        pass
+
+    def get_array(self):
+        channels = 1
+        window_size = 5
+        vector_size = 300
+        dimensions = (channels, window_size, vector_size)
+
+        array = numpy.zeros((dimensions))
+
+        return array
+
+    def get_label(self):
+        return 0
 
 def main(args):
     ### writing

@@ -57,6 +57,12 @@ class Word2VecFile():
         return self.vector_array[self.word2index[word]]
 
 
+
+
+################
+# Example call #
+################
+
 def main(args):
     word2VecFile = Word2VecFile(args.datafile)
     for word in args.word:
@@ -65,7 +71,6 @@ def main(args):
         except KeyError:
             print(word, "not found!")
 
-
 def is_valid_file(parser, arg, mode):
     try:
         f = open(arg, mode)
@@ -73,7 +78,6 @@ def is_valid_file(parser, arg, mode):
         return arg
     except IOError:
         parser.error('The file %s can not be opened!' % arg)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get word vector from binary data.')
