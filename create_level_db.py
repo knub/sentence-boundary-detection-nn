@@ -7,7 +7,7 @@ class DummyTrainingInstance():
     def __init__(self):
         pass
 
-    def getArray(self):
+    def get_array(self):
         channels = 1
         window_size = 5
         vector_size = 300
@@ -17,7 +17,7 @@ class DummyTrainingInstance():
 
         return array
 
-    def getLabel(self):
+    def get_label(self):
         return 0
 
 class CreateLevelDB():
@@ -30,16 +30,16 @@ class CreateLevelDB():
         self.__index = 0
         self.batchsize = batchsize
 
-    def writeTrainingInstanceList(self, training_instance_list):
+    def write_training_instance_list(self, training_instance_list):
         for training_instance in training_instance_list:
-            self.writeTrainingInstance(training_instance)
+            self.write_training_instance(training_instance)
 
-    def writeTrainingInstance(self, training_instance):
+    def write_training_instance(self, training_instance):
         if (self.__batch == None):
             self.__batch = leveldb.WriteBatch()
 
-        vectors = training_instance.getArray()
-        label = training_instance.getLabel()
+        vectors = training_instance.get_array()
+        label = training_instance.get_label()
 
         datum = caffe_pb2.Datum()
         datum.channels, datum.height, datum.width = vectors.shape
@@ -72,13 +72,13 @@ def main(args):
 
     # write single instance
     instance = DummyTrainingInstance()
-    ldbCreation.writeTrainingInstance(instance)
+    ldbCreation.write_training_instance(instance)
 
     # write list
     training_instance_list = []
     for i in range(0, 1000):
         training_instance_list += DummyTrainingInstance(),
-    ldbCreation.writeTrainingInstanceList(training_instance_list)
+    ldbCreation.write_training_instance_list(training_instance_list)
 
     # close after you are done!
     ldbCreation.close()
