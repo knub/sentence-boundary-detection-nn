@@ -57,8 +57,9 @@ class TalkParser(object):
         talks = self.__parse_xml_file()
 
         for talk in talks:
-            file_name = template_file.replace("<id>", talk.id)
-            self.__parse_txt_file(talk, file_name)
+            if self.template_file != None:
+                file_name = self.template_file.replace("<id>", talk.id)
+                self.__parse_txt_file(talk, file_name)
 
         return talks
 
