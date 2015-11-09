@@ -1,24 +1,7 @@
 import leveldb, argparse, numpy
 from caffe.proto import caffe_pb2
+from sliding_window import TrainingInstance
 
-
-class DummyTrainingInstance():
-    """assumed interface of training instance"""
-    def __init__(self):
-        pass
-
-    def get_array(self):
-        channels = 1
-        window_size = 5
-        vector_size = 300
-        dimensions = (channels, window_size, vector_size)
-
-        array = numpy.zeros((dimensions))
-
-        return array
-
-    def get_label(self):
-        return 0
 
 class CreateLevelDB():
     """create a new level db, fill it with word vectors"""
@@ -66,29 +49,32 @@ class CreateLevelDB():
     def read(self, key):
         return self.__db.Get(key)
 
+
+
 def main(args):
-    ### writing
-    ldbCreation = CreateLevelDB(args.dbfile)
-
-    # write single instance
-    instance = DummyTrainingInstance()
-    ldbCreation.write_training_instance(instance)
-
-    # write list
-    training_instance_list = []
-    for i in range(0, 1000):
-        training_instance_list += DummyTrainingInstance(),
-    ldbCreation.write_training_instance_list(training_instance_list)
-
-    # close after you are done!
-    ldbCreation.close()
-
-    ### reading (for debug)
-    ldbCreation = CreateLevelDB(args.dbfile)
-    datum = caffe_pb2.Datum()
-    datum.ParseFromString(ldbCreation.read("1"))
-    print datum
-    print datum.label
+    print("TODO")
+    # ### writing
+    # ldbCreation = CreateLevelDB(args.dbfile)
+    #
+    # # write single instance
+    # instance = TrainingInstance()
+    # ldbCreation.write_training_instance(instance)
+    #
+    # # write list
+    # training_instance_list = []
+    # for i in range(0, 1000):
+    #     training_instance_list += TrainingInstance(),
+    # ldbCreation.write_training_instance_list(training_instance_list)
+    #
+    # # close after you are done!
+    # ldbCreation.close()
+    #
+    # ### reading (for debug)
+    # ldbCreation = CreateLevelDB(args.dbfile)
+    # datum = caffe_pb2.Datum()
+    # datum.ParseFromString(ldbCreation.read("1"))
+    # print datum
+    # print datum.label
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Write a test file.')
