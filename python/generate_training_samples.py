@@ -17,7 +17,7 @@ class TrainingSampleGenerator():
         window_slider = sliding_window.SlidingWindow()
 
         count = len(training_data)
-        progress_steps = int(count / 100)
+        percent_step = int(count / 100)
 
         for i, training_paths in enumerate(training_data):
             if i % percent_step == 0:
