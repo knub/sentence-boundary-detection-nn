@@ -44,4 +44,5 @@ if __name__=='__main__':
         ("/home/rice/Windows/uni/master4/paomr/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml", None)
     ]
 
-    TrainingSampleGenerator.generate(training_data)
+    generator = TrainingSampleGenerator()
+    generator.generate(training_data)

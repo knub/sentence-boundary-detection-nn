@@ -55,6 +55,7 @@ class SlidingWindow(object):
 
                 if not is_punctuation:
                     word_count += 1
+                    if isinstance(tokens[i], sbd_token.PunctuationToken): raise NameError("to Punctuations in a row")
                     window_tokens.append(tokens[i])
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
