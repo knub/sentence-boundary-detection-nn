@@ -45,5 +45,9 @@ if __name__=='__main__':
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml", None),
     ]
 
+    test_data = [
+        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT12.TED.MT.tst2011.en-fr.en.xml", None)
+    ]
+
     generator = TrainingSampleGenerator()
     generator.generate(training_data)
