@@ -20,9 +20,9 @@ class Talk(object):
 
 class Sentence(object):
 
-    def __init__(self, id, punctuated):
+    def __init__(self, id, gold_text):
         self.id = id
-        self.punctuated = punctuated
+        self.gold_text = gold_text
         self.time_start = 0
         self.time_end = 0
         self.speech_text = ""
@@ -34,8 +34,8 @@ class Sentence(object):
     def set_time_end(self, time_end):
         self.time_end = time_end
 
-    def set_punctuated(self, punctuated):
-        self.punctuated = punctuated
+    def set_gold_text(self, gold_text):
+        self.gold_text = gold_text
 
     def set_speech_text(self, speech_text):
         self.speech_text = speech_text
@@ -44,7 +44,7 @@ class Sentence(object):
         self.enriched_speech_text = enriched_speech_text
 
     def __str__(self):
-        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n PUNCTUATED: %s \n NUN_PUNCTUATED: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.punctuated, self.speech_text, self.enriched_speech_text)
+        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.gold_text, self.speech_text, self.enriched_speech_text)
 
 
 class TalkParser(object):
