@@ -16,7 +16,15 @@ class TrainingSampleGenerator():
         level_db = create_level_db.CreateLevelDB(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
 
-        for training_paths in training_data:
+        count = len(training_data)
+        progress_steps = int(count / 100)
+
+        for i, training_paths in enumerate(training_data):
+            if i % percent_step == 0:
+                progress = i * 100 / self.words
+                sys.stdout.write(str(progress) + "% ")
+                sys.stdout.flush()
+
             talk_parser = talk_parsing.TalkParser(training_paths[0], training_paths[1])
             talks = talk_parser.list_talks()
 
