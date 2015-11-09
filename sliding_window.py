@@ -1,5 +1,5 @@
 from talk_parsing import Sentence
-from sbd_token import Token
+import inspect
 
 WINDOW_SIZE = 5
 PUNCTUATION_POS = 3
@@ -52,24 +52,6 @@ class SlidingWindow(object):
             index += 1
 
         return training_instance
-
-    def __is_punctuation(self, word):
-        return self.__is_comma(word) or self.__is_period(word) or self.__is_question(word)
-
-    def __is_comma(self, word):
-        if word == "," or word == ":" or word == "-":
-            return True
-        return False
-
-    def __is_period(self, word):
-        if word == "." or word == "!" or word == ";":
-            return True
-        return False
-
-    def __is_question(self, word):
-        if word == "?":
-            return True
-        return False
 
 def main():
     sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")

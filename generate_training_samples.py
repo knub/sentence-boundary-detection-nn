@@ -17,6 +17,7 @@ class TrainingSampleGenerator():
 
             for talk in talks:
                 for sentence in talk.sentences:
+                    
                     training_sample = window_slider.list_windows(sentence)
                     # print (training_sample)
 

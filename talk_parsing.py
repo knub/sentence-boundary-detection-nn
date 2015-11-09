@@ -3,7 +3,12 @@ import sys
 import os.path
 import re
 import nltk
+import sbd_token
+from enum import Enum
 
+class Punctuation(Enum):
+    COMMA = 1
+    PERIOD = 2
 
 class Talk(object):
 
@@ -23,7 +28,6 @@ class Sentence(object):
 
     def __init__(self, id, original_gold_text):
 
-
         self.id = id
         self.gold_text = self.parse_text(original_gold_text)
         self.original_gold = original_gold_text
@@ -31,6 +35,16 @@ class Sentence(object):
         self.time_end = 0
         self.speech_text = ""
         self.enriched_speech_text = ""
+
+        self.punctuation_mapping = {
+            ";": Punctuation.PERIOD,
+            ".": Punctuation.PERIOD,
+            "!": Punctuation.PERIOD,
+            ",": Punctuation.COMMA,
+            ":": Punctuation.COMMA,
+            "-": Punctuation.COMMA,
+            "?": Punctuation.QUESTION
+        }
 
     def set_time_start(self, time_start):
         self.time_start = time_start
@@ -51,7 +65,15 @@ class Sentence(object):
         return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.gold_text, self.speech_text, self.enriched_speech_text)
 
     def parse_text(self, text):
-        return nltk.word_tokenize(text)
+        raw_tokens = nltk.word_tokenize(text)
+        tokens = []
+
+        for raw_token in raw_tokens:
+            if raw_token in self.punctuation_mapping:
+                tokens.add(sbd_token.PunctuationToken(raw_token, self.punctuation_mapping[raw_token]))
+            else :
+                tokens.add(sbd_token.WordToken(raw_word))
+        return tokens
 
 
 class TalkParser(object):
