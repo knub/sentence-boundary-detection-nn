@@ -20,4 +20,4 @@ class PunctuationToken(object):
         self.orginal = original
 
     def __str__(self):
-        return self.type
+        return str(self.type)

@@ -2,17 +2,7 @@ import xml.etree.ElementTree
 import sys
 import os.path
 import re
-from enum import Enum
-
-import nltk
-
-import sbd_token
-
-
-class Punctuation(Enum):
-    COMMA = 1
-    PERIOD = 2
-    QUESTION = 3
+from nlp_pipeline import NlpPipeline
 
 
 class Talk(object):
@@ -30,20 +20,10 @@ class Talk(object):
 
 
 class Sentence(object):
-    punctuation_mapping = {
-        ";": Punctuation.PERIOD,
-        ".": Punctuation.PERIOD,
-        "!": Punctuation.PERIOD,
-        ",": Punctuation.COMMA,
-        ":": Punctuation.COMMA,
-        "-": Punctuation.COMMA,
-        "?": Punctuation.QUESTION
-    }
 
     def __init__(self, id, original_gold_text):
-
         self.id = id
-        self.gold_text = self.parse_text(original_gold_text)
+        self.gold_tokens = None
         self.original_gold = original_gold_text
         self.time_start = 0
         self.time_end = 0
@@ -65,31 +45,22 @@ class Sentence(object):
     def set_enriched_speech_text(self, enriched_speech_text):
         self.enriched_speech_text = enriched_speech_text
 
+    def set_gold_tokens(self, gold_tokens):
+        self.gold_tokens = gold_tokens
+
     def __str__(self):
-        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (
-        self.id, self.time_start, self.time_end, self.gold_text, self.speech_text,
+        gold_tokens_str = ', '.join(map(str, self.gold_tokens))
+        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n gold_tokens: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (
+        self.id, self.time_start, self.time_end, self.original_gold, gold_tokens_str, self.speech_text,
         self.enriched_speech_text)
 
-    def parse_text(self, text):
-        raw_tokens = nltk.word_tokenize(text)
-        # pos_tags = nltk.pos_tag(raw_tokens)
-        tokens = []
-
-        for i in range(0, len(raw_tokens)):
-            if raw_tokens[i] in self.punctuation_mapping:
-                tokens.append(sbd_token.PunctuationToken(raw_tokens[i],
-                                                         self.punctuation_mapping[raw_tokens[i]]))
-            else:
-                word_token = sbd_token.WordToken(raw_tokens[i])
-                #                word_token.set_pos_tag(pos_tags[i][1])
-                tokens.append(word_token)
-        return tokens
 
 
 class TalkParser(object):
     def __init__(self, xml_file, template_file):
         self.xml_file = xml_file
         self.template_file = template_file
+        self.nlp_pipeline = NlpPipeline()
 
     def list_talks(self):
         talks = self.__parse_xml_file()
@@ -117,7 +88,9 @@ class TalkParser(object):
                 sentence_id = sentence.attrib["id"]
                 sentence_text = sentence.text
 
-                talk.add_sentence(Sentence(sentence_id, sentence_text))
+                sentence = Sentence(sentence_id, sentence_text)
+                sentence.set_gold_tokens(self.nlp_pipeline.parse_text(sentence_text))
+                talk.add_sentence(sentence)
 
             talks.append(talk)
 
@@ -146,16 +119,21 @@ class TalkParser(object):
         return (speech_text, enriched_speech_text)
 
 
+
+
+################
+# Example call #
+################
+
 def main(xml_file, template_file):
     parser = TalkParser(xml_file, template_file)
     talks = parser.list_talks()
     for talk in talks:
         print(talk)
 
-
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print("Usage: python talk_parsing.py <xml_file> <template_file>")
+        print("Usage: python talk_parser.py <xml_file> <template_file>")
         print("   xml_file:      XML file containing talks.")
         print("   template_file: Template file path to sorted_txt transcript file. Contains <id> for talk id, which will be replaced.")
         sys.exit(0)

@@ -24,7 +24,7 @@ class DummyTrainingInstance():
         return 0
 
 
-class CreateLevelDB():
+class LevelDBCreator():
     """create a new level db, fill it with word vectors"""
 
     def __init__(self, filename, batchsize=1000):
@@ -72,9 +72,12 @@ class CreateLevelDB():
         return self.__db.Get(key)
 
 
+
+
+
 def main(args):
     ### writing
-    ldbCreation = CreateLevelDB(args.dbfile)
+    ldbCreation = LevelDBCreator(args.dbfile)
 
     # write single instance
     instance = DummyTrainingInstance()
@@ -90,7 +93,7 @@ def main(args):
     ldbCreation.close()
 
     ### reading (for debug)
-    ldbCreation = CreateLevelDB(args.dbfile)
+    ldbCreation = LevelDBCreator(args.dbfile)
     datum = caffe_pb2.Datum()
     datum.ParseFromString(ldbCreation.read("1"))
     print(datum)

@@ -3,18 +3,20 @@ import os
 
 import talk_parsing
 import sliding_window
-import word2vec_file
-import create_level_db
+from word2vec_file import Word2VecFile
+from level_db_creator import LevelDBCreator
 
 
 WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 LEVEL_DB_DIR = "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/"
 
 
-class TrainingSampleGenerator():
+class TrainingInstanceGenerator():
+    """reads the original data, process them and writes them to a level-db"""
+
     def generate(self, training_data, database):
-        word2Vec = word2vec_file.Word2VecFile(WORD_VECTOR_FILE)
-        level_db = create_level_db.CreateLevelDB(LEVEL_DB_DIR + database)
+        word2Vec = Word2VecFile(WORD_VECTOR_FILE)
+        level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
 
         count = len(training_data)
@@ -63,7 +65,6 @@ if __name__ == '__main__':
     database = sentence_home + "/leveldbs/" + data_folder
     if os.path.isdir(database):
         import shutil
-
         shutil.rmtree(database)
     os.mkdir(database)
 
@@ -82,6 +83,6 @@ if __name__ == '__main__':
          None)
     ]
 
-    generator = TrainingSampleGenerator()
+    generator = TrainingInstanceGenerator()
     generator.generate(training_data, data_folder + "/train")
     generator.generate(test_data, data_folder + "/test")
