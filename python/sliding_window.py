@@ -1,21 +1,23 @@
-import talk_parsing
-import inspect
-import sbd_token
 import numpy
+
+import talk_parsing
+import sbd_token
+
 
 WINDOW_SIZE = 5
 PUNCTUATION_POS = 3
 
-class TrainingInstance(object):
 
+class TrainingInstance(object):
     def __init__(self, tokens, is_comma, is_period, is_question):
         self.tokens = tokens
-        self.comma = is_comma         # , : -
-        self.period = is_period       # ! ; .
-        self.question = is_question   # ?
+        self.comma = is_comma  # , : -
+        self.period = is_period  # ! ; .
+        self.question = is_question  # ?
 
     def __str__(self):
-        return "TOKENS: %s \nHAS_COMMA: %s \nHAS_PERIOD: %s \nHAS_QUESTION: %s \n" % (" ".join(map(str, self.tokens)), str(self.comma), str(self.period), str(self.question))
+        return "TOKENS: %s \nHAS_COMMA: %s \nHAS_PERIOD: %s \nHAS_QUESTION: %s \n" % (
+        " ".join(map(str, self.tokens)), str(self.comma), str(self.period), str(self.question))
 
     def get_array(self):
         dimensions = (1, WINDOW_SIZE, len(self.tokens[0].word_vec))
@@ -33,8 +35,8 @@ class TrainingInstance(object):
             return 3
         return 0
 
-class SlidingWindow(object):
 
+class SlidingWindow(object):
     def list_windows(self, sentence):
         tokens = sentence.gold_text
 
@@ -55,7 +57,8 @@ class SlidingWindow(object):
 
                 if not is_punctuation:
                     word_count += 1
-                    if isinstance(tokens[i], sbd_token.PunctuationToken): raise NameError("to Punctuations in a row")
+                    if isinstance(tokens[i], sbd_token.PunctuationToken): raise NameError(
+                        "to Punctuations in a row")
                     window_tokens.append(tokens[i])
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
@@ -68,11 +71,11 @@ class SlidingWindow(object):
 
                 i += 1
 
-            training_instance.append(TrainingInstance(window_tokens, has_comma, has_period, has_question))
+            training_instance.append(
+                TrainingInstance(window_tokens, has_comma, has_period, has_question))
             index += 1
 
         return training_instance
-
 
 
 def main():
@@ -87,7 +90,8 @@ def main():
     # windows = slidingWindow.list_windows(sentence)
     #
     # for window in windows:
-    #     print(window)
+    # print(window)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()

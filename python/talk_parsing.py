@@ -2,17 +2,20 @@ import xml.etree.ElementTree
 import sys
 import os.path
 import re
-import nltk
-import sbd_token
 from enum import Enum
+
+import nltk
+
+import sbd_token
+
 
 class Punctuation(Enum):
     COMMA = 1
     PERIOD = 2
     QUESTION = 3
 
-class Talk(object):
 
+class Talk(object):
     def __init__(self, id, title):
         self.id = id
         self.title = title
@@ -25,8 +28,8 @@ class Talk(object):
         sentences_str = ''.join(map(str, self.sentences))
         return " ID: %s \n TITLE: %s \n \n %s" % (self.id, self.title, sentences_str)
 
-class Sentence(object):
 
+class Sentence(object):
     punctuation_mapping = {
         ";": Punctuation.PERIOD,
         ".": Punctuation.PERIOD,
@@ -63,25 +66,27 @@ class Sentence(object):
         self.enriched_speech_text = enriched_speech_text
 
     def __str__(self):
-        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.gold_text, self.speech_text, self.enriched_speech_text)
+        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (
+        self.id, self.time_start, self.time_end, self.gold_text, self.speech_text,
+        self.enriched_speech_text)
 
     def parse_text(self, text):
         raw_tokens = nltk.word_tokenize(text)
-#        pos_tags = nltk.pos_tag(raw_tokens)
+        # pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []
 
         for i in range(0, len(raw_tokens)):
             if raw_tokens[i] in self.punctuation_mapping:
-                tokens.append(sbd_token.PunctuationToken(raw_tokens[i], self.punctuation_mapping[raw_tokens[i]]))
-            else :
+                tokens.append(sbd_token.PunctuationToken(raw_tokens[i],
+                                                         self.punctuation_mapping[raw_tokens[i]]))
+            else:
                 word_token = sbd_token.WordToken(raw_tokens[i])
-#                word_token.set_pos_tag(pos_tags[i][1])
+                #                word_token.set_pos_tag(pos_tags[i][1])
                 tokens.append(word_token)
         return tokens
 
 
 class TalkParser(object):
-
     def __init__(self, xml_file, template_file):
         self.xml_file = xml_file
         self.template_file = template_file
@@ -148,7 +153,7 @@ def main(xml_file, template_file):
         print(talk)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Usage: python talk_parsing.py <xml_file> <template_file>")
         print("   xml_file:      XML file containing talks.")

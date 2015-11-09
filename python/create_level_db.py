@@ -1,10 +1,12 @@
-import leveldb, argparse, numpy
+import argparse
+import numpy
+import leveldb
 from caffe.proto import caffe_pb2
-from sliding_window import TrainingInstance
 
 
 class DummyTrainingInstance():
     """assumed interface of training instance"""
+
     def __init__(self):
         pass
 
@@ -21,9 +23,11 @@ class DummyTrainingInstance():
     def get_label(self):
         return 0
 
+
 class CreateLevelDB():
     """create a new level db, fill it with word vectors"""
-    def __init__(self, filename, batchsize = 1000):
+
+    def __init__(self, filename, batchsize=1000):
         self.__filename = filename
         self.__db = leveldb.LevelDB(filename)
         self.__current_batch_size = 0
@@ -53,20 +57,19 @@ class CreateLevelDB():
         self.__current_batch_size += 1
 
         if (self.__current_batch_size == self.batchsize):
-            self.__db.Write(self.__batch, sync = True)
+            self.__db.Write(self.__batch, sync=True)
             self.__batch = None
             self.__current_batch_size = 0
 
     def close(self):
         if (self.__batch):
-            self.__db.Write(self.__batch, sync = True)
+            self.__db.Write(self.__batch, sync=True)
             self.__batch = None
         self.__current_batch_size = 0
         self.__db = None
 
     def read(self, key):
         return self.__db.Get(key)
-
 
 
 def main(args):
@@ -90,10 +93,11 @@ def main(args):
     ldbCreation = CreateLevelDB(args.dbfile)
     datum = caffe_pb2.Datum()
     datum.ParseFromString(ldbCreation.read("1"))
-    print datum
-    print datum.label
+    print(datum)
+    print(datum.label)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Write a test file.')
     parser.add_argument('dbfile', help='path to a level db test directory')
     args = parser.parse_args()
