@@ -67,7 +67,7 @@ class Sentence(object):
 
     def parse_text(self, text):
         raw_tokens = nltk.word_tokenize(text)
-        pos_tags = nltk.pos_tag(raw_tokens)
+#        pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []
 
         for i in range(0, len(raw_tokens)):
@@ -75,7 +75,7 @@ class Sentence(object):
                 tokens.append(sbd_token.PunctuationToken(raw_tokens[i], self.punctuation_mapping[raw_tokens[i]]))
             else :
                 word_token = sbd_token.WordToken(raw_tokens[i])
-                word_token.set_pos_tag(pos_tags[i][1])
+#                word_token.set_pos_tag(pos_tags[i][1])
                 tokens.append(word_token)
         return tokens
 
