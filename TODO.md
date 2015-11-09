@@ -8,6 +8,7 @@
 
 ### Questions
 
+* Do you know any open source ASR software we can use?
 * The xml-files in the data folders `dev2012-w` and `tst2014-w` are missing.
 * How were the transcript files generated? The different data folders have different transcripts:
    * `dev2010-w, dev2012-w`: cleaned and uncleand, txt and ctm version; one file for each talk
