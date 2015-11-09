@@ -1,25 +1,16 @@
 ### TODO
 
-* sliding window
 * NLP pipelined: POS (1-v encoding?)
     * `text = word_tokenize("And now for something completely different")`
     * Use `pos_tag_sents()` for efficient tagging of more than one sentence.
-* LevelDB
-* data management
 * ensure valid train / test split
+* have a look into the alignment tool: http://www1.icsi.berkeley.edu/Speech/docs/sctk-1.2/sclite.htm
 
 ### Questions
 
-* How to handle cases when ASR went wrong?
-
-  **Example 1**:
-  
-  *PUNCTUATED*: And today, I had time to show you one point in this new design space, and a few of the possibilities that we're working to bring out of the laboratory.
-  
-  *NUN_PUNCTUATED*: And today had time to show you one point in this new design space and a few of the possibilities or working to bring out a laboratory
-
-  **Example 2**:
-  
-  *PUNCTUATED*: And now, finally, I can fade the whole sequence out using the volume Siftable, tilted to the left.
-  
-  *NUN_PUNCTUATED*: And now finally I can fiddle sequence out using the volumes of double tilted to the left
+* The xml-files in the data folders `dev2012-w` and `tst2014-w` are missing.
+* How were the transcript files generated? The different data folders have different transcripts:
+   * `dev2010-w, dev2012-w`: cleaned and uncleand, txt and ctm version; one file for each talk
+   * `tst2010-w`: ctm and txt file; one file for all talks; no mapping to the talk id
+   * `tst2011, tst2013-w, tst2014`: no transcript at all
+   * `tst2012-w`: xml, ctm, txt file; one file for all talks; only xml file has some kind of mapping
