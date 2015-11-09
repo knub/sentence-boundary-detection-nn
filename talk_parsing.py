@@ -9,6 +9,7 @@ from enum import Enum
 class Punctuation(Enum):
     COMMA = 1
     PERIOD = 2
+    QUESTION = 3
 
 class Talk(object):
 
@@ -26,6 +27,17 @@ class Talk(object):
 
 class Sentence(object):
 
+    punctuation_mapping = {
+        ";": Punctuation.PERIOD,
+        ".": Punctuation.PERIOD,
+        "!": Punctuation.PERIOD,
+        ",": Punctuation.COMMA,
+        ":": Punctuation.COMMA,
+        "-": Punctuation.COMMA,
+        "?": Punctuation.QUESTION
+    }
+
+
     def __init__(self, id, original_gold_text):
 
         self.id = id
@@ -36,15 +48,7 @@ class Sentence(object):
         self.speech_text = ""
         self.enriched_speech_text = ""
 
-        self.punctuation_mapping = {
-            ";": Punctuation.PERIOD,
-            ".": Punctuation.PERIOD,
-            "!": Punctuation.PERIOD,
-            ",": Punctuation.COMMA,
-            ":": Punctuation.COMMA,
-            "-": Punctuation.COMMA,
-            "?": Punctuation.QUESTION
-        }
+
 
     def set_time_start(self, time_start):
         self.time_start = time_start
@@ -70,9 +74,9 @@ class Sentence(object):
 
         for raw_token in raw_tokens:
             if raw_token in self.punctuation_mapping:
-                tokens.add(sbd_token.PunctuationToken(raw_token, self.punctuation_mapping[raw_token]))
+                tokens.append(sbd_token.PunctuationToken(raw_token, self.punctuation_mapping[raw_token]))
             else :
-                tokens.add(sbd_token.WordToken(raw_word))
+                tokens.append(sbd_token.WordToken(raw_token))
         return tokens
 
 

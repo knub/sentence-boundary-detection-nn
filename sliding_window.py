@@ -1,5 +1,6 @@
-from talk_parsing import Sentence
+import talk_parsing
 import inspect
+import sbd_token
 
 WINDOW_SIZE = 5
 PUNCTUATION_POS = 3
@@ -32,18 +33,19 @@ class SlidingWindow(object):
 
             i = index
             while word_count < WINDOW_SIZE and i < len(tokens):
-                is_punctuation = self.__is_punctuation(tokens[i])
+
+                is_punctuation = isinstance(tokens[i], sbd_token.PunctuationToken)
 
                 if not is_punctuation:
                     word_count += 1
-                    window_tokens.append(Token(tokens[i]))
+                    window_tokens.append(tokens[i])
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
-                    if self.__is_comma(tokens[i]):
+                    if tokens[i].type == talk_parsing.Punctuation.COMMA:
                         has_comma = True
-                    if self.__is_period(tokens[i]):
+                    if tokens[i].type == talk_parsing.Punctuation.PERIOD:
                         has_period = True
-                    if self.__is_question(tokens[i]):
+                    if tokens[i].type == talk_parsing.Punctuation.QUESTION:
                         has_question = True
 
                 i += 1
