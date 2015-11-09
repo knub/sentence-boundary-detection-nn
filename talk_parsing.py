@@ -2,6 +2,7 @@ import xml.etree.ElementTree
 import sys
 import os.path
 import re
+import nltk
 
 
 class Talk(object):
@@ -24,7 +25,7 @@ class Sentence(object):
 
 
         self.id = id
-        self.gold_text = parse_text(original_gold_text)
+        self.gold_text = self.parse_text(original_gold_text)
         self.original_gold = original_gold_text
         self.time_start = 0
         self.time_end = 0
@@ -49,8 +50,8 @@ class Sentence(object):
     def __str__(self):
         return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.gold_text, self.speech_text, self.enriched_speech_text)
 
-    def parse_text(text):
-        return nltk.word_tokenize(sentence.gold_text)
+    def parse_text(self, text):
+        return nltk.word_tokenize(text)
 
 
 class TalkParser(object):

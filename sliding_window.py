@@ -1,6 +1,5 @@
 from talk_parsing import Sentence
 from sbd_token import Token
-import nltk
 
 WINDOW_SIZE = 5
 PUNCTUATION_POS = 3
