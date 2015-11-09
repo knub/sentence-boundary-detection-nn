@@ -55,6 +55,7 @@ if __name__=='__main__':
     if os.path.isdir(database):
         import shutil
         shutil.rmtree(database)
+    os.mkdir(database)
 
     training_data = [
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml",
