@@ -1,4 +1,4 @@
-import sys,argparse,numpy,struct
+import sys, argparse, numpy, struct, os
 
 
 ENCODING = 'UTF-8'
@@ -15,12 +15,18 @@ class Word2VecFile():
     first_line = self.__file.readline().decode(ENCODING).split(' ')
     self.words = int(first_line[0])
     self.vector_size = int(first_line[1])
-    print ('File has %d words with %d vectors. Parsing ...' % (self.words, self.vector_size))
+    print ('File has %d words with %d vectors. Parsing ..' % (self.words, self.vector_size))
     self.vector_array = numpy.zeros((self.words, self.vector_size), numpy.float32)
     self.word2index = {}
 
+    progress_steps = self.words / 100
+
     chars = []
     for w_index in range(0, self.words):
+      if w_index % progress_steps == 0:
+        progress = w_index * 100 / self.words
+        sys.stdout.write(str(progress) + "% ")
+        sys.stdout.flush()
       byte = self.__file.read(1)
       while byte:
         if byte == b" ":
