@@ -73,6 +73,8 @@ class SlidingWindow(object):
 
         return training_instance
 
+
+
 def main():
     print("TODO")
     # sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")

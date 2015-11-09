@@ -37,7 +37,6 @@ class Sentence(object):
         "?": Punctuation.QUESTION
     }
 
-
     def __init__(self, id, original_gold_text):
 
         self.id = id
@@ -47,8 +46,6 @@ class Sentence(object):
         self.time_end = 0
         self.speech_text = ""
         self.enriched_speech_text = ""
-
-
 
     def set_time_start(self, time_start):
         self.time_start = time_start
@@ -70,13 +67,16 @@ class Sentence(object):
 
     def parse_text(self, text):
         raw_tokens = nltk.word_tokenize(text)
+        pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []
 
-        for raw_token in raw_tokens:
-            if raw_token in self.punctuation_mapping:
-                tokens.append(sbd_token.PunctuationToken(raw_token, self.punctuation_mapping[raw_token]))
+        for i in range(0, len(raw_tokens)):
+            if raw_tokens[i] in self.punctuation_mapping:
+                tokens.append(sbd_token.PunctuationToken(raw_tokens[i], self.punctuation_mapping[raw_tokens[i]]))
             else :
-                tokens.append(sbd_token.WordToken(raw_token))
+                word_token = sbd_token.WordToken(raw_tokens[i])
+                word_token.set_pos_tag(pos_tags[i][1])
+                tokens.append(word_token)
         return tokens
 
 
