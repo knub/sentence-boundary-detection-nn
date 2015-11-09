@@ -2,6 +2,24 @@ import leveldb, argparse, numpy
 from caffe.proto import caffe_pb2
 
 
+class DummyTrainingInstance():
+    """assumed interface of training instance"""
+    def __init__(self):
+        pass
+
+    def getArray(self):
+        channels = 1
+        window_size = 5
+        vector_size = 300
+        dimensions = (channels, window_size, vector_size)
+
+        array = numpy.zeros((dimensions))
+
+        return array
+
+    def getLabel(self):
+        return 0
+
 class CreateLevelDB():
     """create a new level db, fill it with word vectors"""
     def __init__(self, filename, batchsize = 1000):
@@ -12,15 +30,19 @@ class CreateLevelDB():
         self.__index = 0
         self.batchsize = batchsize
 
-    def writeTrainingInstance(self, vectors, label):
+    def writeTrainingInstanceList(self, training_instance_list):
+        for training_instance in training_instance_list:
+            self.writeTrainingInstance(training_instance)
+
+    def writeTrainingInstance(self, training_instance):
         if (self.__batch == None):
             self.__batch = leveldb.WriteBatch()
 
+        vectors = training_instance.getArray()
+        label = training_instance.getLabel()
+
         datum = caffe_pb2.Datum()
-        datum.channels, datum.height, datum.width = vectors.shape        
-        # datum.channels = 1
-        # datum.height = len(vectors)
-        # datum.width = len(vectors[0])
+        datum.channels, datum.height, datum.width = vectors.shape
         datum.label = label
         datum.float_data.extend(vectors.flat)
 
@@ -45,33 +67,28 @@ class CreateLevelDB():
         return self.__db.Get(key)
 
 def main(args):
-    # write
+    ### writing
     ldbCreation = CreateLevelDB(args.dbfile)
 
-    channels = 1
-    window_size = 5
-    vector_size = 300
-    dimensions = (channels, window_size, vector_size)
+    # write single instance
+    instance = DummyTrainingInstance()
+    ldbCreation.writeTrainingInstance(instance)
 
+    # write list
+    training_instance_list = []
     for i in range(0, 1000):
-        sample = numpy.zeros(dimensions)
-        label = i
+        training_instance_list += DummyTrainingInstance(),
+    ldbCreation.writeTrainingInstanceList(training_instance_list)
 
-        # fill with vector data
-        for x in range (dimensions[0]):
-            for y in range (dimensions[1]):
-                for z in range (dimensions[2]):
-                    sample[x,y,z] = x * 1000 + y * 100 + z
-        ldbCreation.writeTrainingInstance(sample, label)
     # close after you are done!
     ldbCreation.close()
 
-    # # read
-    # ldbCreation = CreateLevelDB(args.dbfile)
-    # datum = caffe_pb2.Datum()
-    # datum.ParseFromString(ldbCreation.read("50"))
-    # print datum
-    # print datum.label
+    ### reading (for debug)
+    ldbCreation = CreateLevelDB(args.dbfile)
+    datum = caffe_pb2.Datum()
+    datum.ParseFromString(ldbCreation.read("1"))
+    print datum
+    print datum.label
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Write a test file.')
