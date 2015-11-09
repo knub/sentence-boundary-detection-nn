@@ -19,7 +19,7 @@ class TrainingInstance(object):
 class SlidingWindow(object):
 
     def list_windows(self, sentence):
-        tokens = nltk.word_tokenize(sentence.gold_text)
+        tokens = sentence.gold_text
 
         index = 0
         training_instance = []
