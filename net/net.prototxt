@@ -162,5 +162,5 @@ layer {
   type: "Accuracy"
   bottom: "fc_final"
   bottom: "label"
-  top: "loss"
+  top: "accuracy"
 }
