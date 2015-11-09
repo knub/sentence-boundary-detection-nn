@@ -9,7 +9,7 @@ class Word2VecFile():
     # einlesen
     self.__filename = filename
     try:
-      self.__file = open(filename, 'br')
+      self.__file = open(filename, 'rb')
     except IOError:
       parser.error('The file %s can not be read!' % self.__filename)
     first_line = self.__file.readline().decode(ENCODING).split(' ')
@@ -62,7 +62,7 @@ def is_valid_file(parser, arg, mode):
 
 if __name__=='__main__':
   parser = argparse.ArgumentParser(description='Get word vector from binary data.')
-  parser.add_argument('datafile', help='path to binary data file', type=lambda x: is_valid_file(parser, x, 'br'))
+  parser.add_argument('datafile', help='path to binary data file', type=lambda x: is_valid_file(parser, x, 'rb'))
   parser.add_argument('word', help='word to find in data file', nargs='+')
   args = parser.parse_args()
   main(args)

@@ -1,4 +1,5 @@
 import sys
+import os
 import talk_parsing
 import sliding_window
 import word2vec_file
@@ -50,12 +51,14 @@ if __name__=='__main__':
         print "Not deleting. Exiting .."
         sys.exit(2)
 
-    import shutil
-    shutil.rmtree(sentence_home + "/leveldbs/" + data_folder)
+    database = sentence_home + "/leveldbs/" + data_folder
+    if os.path.isdir(database):
+        import shutil
+        shutil.rmtree(database)
 
     training_data = [
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml",
-            "/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010/word-level transcript/dev2010.en.talkid<id>_sorted.txt"),
+            "/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/word-level transcript/dev2010.en.talkid<id>_sorted.txt"),
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml", None),
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml", None),
         ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml", None)
