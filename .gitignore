@@ -11,3 +11,4 @@ __pycache__/
 # Python virtual environment
 .env
 p3/
+*.pyc
