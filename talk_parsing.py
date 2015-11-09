@@ -25,8 +25,8 @@ class Sentence(object):
         self.punctuated = punctuated
         self.time_start = 0
         self.time_end = 0
-        self.non_punctuated = ""
-        self.annotated = ""
+        self.speech_text = ""
+        self.enriched_speech_text = ""
 
     def set_time_start(self, time_start):
         self.time_start = time_start
@@ -37,14 +37,14 @@ class Sentence(object):
     def set_punctuated(self, punctuated):
         self.punctuated = punctuated
 
-    def set_non_punctuated(self, non_punctuated):
-        self.non_punctuated = non_punctuated
+    def set_speech_text(self, speech_text):
+        self.speech_text = speech_text
 
-    def set_annotated(self, annotated):
-        self.annotated = annotated
+    def set_enriched_speech_text(self, enriched_speech_text):
+        self.enriched_speech_text = enriched_speech_text
 
     def __str__(self):
-        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n PUNCTUATED: %s \n NUN_PUNCTUATED: %s \n ANNOTATED: %s \n" % (self.id, self.time_start, self.time_end, self.punctuated, self.non_punctuated, self.annotated)
+        return " ID: %s \n TIME_START: %s \n TIME_END: %s \n PUNCTUATED: %s \n NUN_PUNCTUATED: %s \n enriched_speech_text: %s \n" % (self.id, self.time_start, self.time_end, self.punctuated, self.speech_text, self.enriched_speech_text)
 
 
 class TalkParser(object):
@@ -91,21 +91,21 @@ class TalkParser(object):
             parts = line.split(" ")
             time_start = parts[1]
             time_end = parts[2]
-            (non_punctuated, annotated) = self.__clean_sentence(" ".join(parts[3:]))
+            (speech_text, enriched_speech_text) = self.__clean_sentence(" ".join(parts[3:]))
 
             talk.sentences[i].set_time_start(time_start)
             talk.sentences[i].set_time_end(time_end)
-            talk.sentences[i].set_non_punctuated(non_punctuated)
-            talk.sentences[i].set_annotated(annotated)
+            talk.sentences[i].set_speech_text(speech_text)
+            talk.sentences[i].set_enriched_speech_text(enriched_speech_text)
 
         return talk
 
     def __clean_sentence(self, unclean_sentence):
         unclean_sentence = unclean_sentence.replace("\n", "")
-        annotated = re.sub(r'\(\d\)', "", unclean_sentence)
-        non_punctuated = re.sub(r'{\$\(.*?\)} ', "", annotated)
+        enriched_speech_text = re.sub(r'\(\d\)', "", unclean_sentence)
+        speech_text = re.sub(r'{\$\(.*?\)} ', "", enriched_speech_text)
 
-        return (non_punctuated, annotated)
+        return (speech_text, enriched_speech_text)
 
 
 def main(xml_file, template_file):
