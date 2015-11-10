@@ -1,23 +1,18 @@
 import nltk
-from enum import Enum
-from tokens import PunctuationToken, WordToken
-
-class Punctuation(Enum):
-    COMMA = 1
-    PERIOD = 2
-    QUESTION = 3
+from tokens import Punctuation, PunctuationToken, WordToken
 
 class NlpPipeline(object):
 
-    punctuation_mapping = {
-        ";": Punctuation.PERIOD,
-        ".": Punctuation.PERIOD,
-        "!": Punctuation.PERIOD,
-        ",": Punctuation.COMMA,
-        ":": Punctuation.COMMA,
-        "-": Punctuation.COMMA,
-        "?": Punctuation.QUESTION
-    }
+    def __init__(self):
+         self.punctuation_mapping = {
+            ";": Punctuation.PERIOD,
+            ".": Punctuation.PERIOD,
+            "!": Punctuation.PERIOD,
+            ",": Punctuation.COMMA,
+            ":": Punctuation.COMMA,
+            "-": Punctuation.COMMA,
+            "?": Punctuation.QUESTION
+        }
 
 
     def parse_text(self, text):
