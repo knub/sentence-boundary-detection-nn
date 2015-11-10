@@ -5,6 +5,7 @@ from talk_parser import TalkParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
+from sets import set
 
 
 WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
@@ -17,8 +18,9 @@ class TrainingInstanceGenerator():
 
     def __init__(self):
         self.word2vec = Word2VecFile(WORD_VECTOR_FILE)
+        self.test_talks = Set()
 
-    def generate(self, training_data, database):
+    def generate(self, training_data, database, test):
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
 
@@ -35,6 +37,12 @@ class TrainingInstanceGenerator():
             talks = talk_parser.list_talks()
 
             for talk in talks:
+                if test:
+                    self.test_talks.add(talk.id)
+                if not test and talk.id in self.test_talks:
+                    print("Skip talk %s for training! Talk is already in test set." % talk.id)
+                    continue
+
                 for sentence in talk.sentences:
                     # get the word vectors for all token in the sentence
                     for token in sentence.gold_tokens:
@@ -95,11 +103,11 @@ if __name__ == '__main__':
     ]
 
     generator = TrainingInstanceGenerator()
-    print("Generating training data .. ")
-    generator.generate(training_data, data_folder + "/train")
-    print("Done.")
     print("Generating test data .. ")
-    generator.generate(test_data, data_folder + "/test")
+    generator.generate(test_data, data_folder + "/test", True)
+    print("Done.")
+    print("Generating training data .. ")
+    generator.generate(training_data, data_folder + "/train", False)
     print("Done.")
     print("")
     print(generator.get_not_covered_words())
