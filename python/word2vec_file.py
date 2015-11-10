@@ -10,9 +10,11 @@ ENCODING = 'UTF-8'
 
 class Word2VecFile():
     """reads a binary word vector file, returns vectors for single words"""
-
     def __init__(self, filename):
-        # einlesen
+        # the following variable counts word, that are not covered in the given vector
+        # see get_vector for details
+        self.not_covered_words = dict()
+        # read vector file
         self.__filename = filename
         try:
             self.__file = open(filename, 'rb')

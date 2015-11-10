@@ -84,5 +84,11 @@ if __name__ == '__main__':
     ]
 
     generator = TrainingInstanceGenerator()
+    print("Generating training data .. ")
     generator.generate(training_data, data_folder + "/train")
+    print("Done.")
+    print("Generating test data .. ")
     generator.generate(test_data, data_folder + "/test")
+    print("Done.")
+    print("")
+    print(generator.get_not_covered_words())
