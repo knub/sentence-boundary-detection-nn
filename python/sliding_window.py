@@ -22,7 +22,7 @@ class TrainingInstance(object):
 
     def get_array(self):
         dimensions = (1, WINDOW_SIZE, len(self.tokens[0].word_vec))
-        arr = numpy.zeros(dimensions, numpy.float32)
+        arr = numpy.zeros(dimensions, float)
         for i in range(0, WINDOW_SIZE):
             arr[0][i] = self.tokens[i].word_vec
         return arr

@@ -23,11 +23,11 @@ class Word2VecFile():
         first_line = self.__file.readline().decode(ENCODING).split(' ')
         self.words = int(first_line[0])
         self.vector_size = int(first_line[1])
-        print('File has %d words with %d vectors. Parsing ..' % (self.words, self.vector_size))
-        self.vector_array = numpy.zeros((self.words, self.vector_size), numpy.float32)
+        print('File has %d words with vectors of size %d. Parsing ..' % (self.words, self.vector_size))
+        self.vector_array = numpy.zeros((self.words, self.vector_size), float)
         self.word2index = {}
 
-        self.average_vector = numpy.zeros((self.vector_size,), numpy.float32)
+        self.average_vector = numpy.zeros((self.vector_size,), float)
         progress_steps = self.words / 100
 
         chars = []
