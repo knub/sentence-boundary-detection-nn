@@ -24,7 +24,7 @@ class TrainingInstance(object):
         dimensions = (1, WINDOW_SIZE, len(self.tokens[0].word_vec))
         arr = numpy.zeros(dimensions, numpy.float32)
         for i in range(0, WINDOW_SIZE):
-            arr[i] = self.tokens[i].word_vec
+            arr[0][i] = self.tokens[i].word_vec
         return arr
 
     def get_label(self):
