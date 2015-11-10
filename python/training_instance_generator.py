@@ -25,7 +25,7 @@ class TrainingInstanceGenerator():
         count = len(training_data)
 
         for i, training_paths in enumerate(training_data):
-            progress = i * 100.0 / count
+            progress = int(i * 100.0 / count)
             sys.stdout.write(str(progress) + "% ")
             sys.stdout.flush()
 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
          None)
     ]
     test_data = [
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT12.TED.MT.tst2011.en-fr.en.xml",
+        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml",
          None)
     ]
 
