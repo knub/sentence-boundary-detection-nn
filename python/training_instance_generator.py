@@ -1,49 +1,54 @@
 import sys
 import os
 
-import talk_parsing
+from talk_parser import TalkParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
 
 
-WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
+#WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
+WORD_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/"
 
 
 class TrainingInstanceGenerator():
     """reads the original data, process them and writes them to a level-db"""
 
+    def __init__(self):
+        self.word2vec = Word2VecFile(WORD_VECTOR_FILE)
+
     def generate(self, training_data, database):
-        word2Vec = Word2VecFile(WORD_VECTOR_FILE)
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
 
         count = len(training_data)
-        percent_step = int(count / 100)
 
         for i, training_paths in enumerate(training_data):
-            if i % percent_step == 0:
-                progress = i * 100 / self.words
-                sys.stdout.write(str(progress) + "% ")
-                sys.stdout.flush()
+            progress = i * 100.0 / count
+            sys.stdout.write(str(progress) + "% ")
+            sys.stdout.flush()
 
-            talk_parser = talk_parsing.TalkParser(training_paths[0], training_paths[1])
+            talk_parser = TalkParser(training_paths[0], training_paths[1])
             talks = talk_parser.list_talks()
 
             for talk in talks:
                 for sentence in talk.sentences:
                     # get the word vectors for all token in the sentence
-                    for token in sentence.gold_text:
-                        token.word_vec = word2Vec.get_vector(token)
+                    for token in sentence.gold_tokens:
+                        token.word_vec = self.word2vec.get_vector(token)
 
                     # get the training instances
-                    training_instance = window_slider.list_windows(sentence)
+                    training_instances = window_slider.list_windows(sentence)
 
                     # write training instances to level db
-                    level_db.write_training_instance(training_instance)
+                    for training_instance in training_instances:
+                        level_db.write_training_instance(training_instance)
 
-                    # print (training_instance)
+                    # print (training_instances)
+
+    def get_not_covered_words(self):
+        return self.word2vec.not_covered_words
 
 
 if __name__ == '__main__':

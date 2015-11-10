@@ -27,6 +27,7 @@ class Word2VecFile():
         self.vector_array = numpy.zeros((self.words, self.vector_size), numpy.float32)
         self.word2index = {}
 
+        self.average_vector = numpy.zeros((self.vector_size,), numpy.float32)
         progress_steps = self.words / 100
 
         chars = []
@@ -48,7 +49,9 @@ class Word2VecFile():
             for f_index in range(0, self.vector_size):
                 f_bytes = self.__file.read(4)
                 self.vector_array[w_index][f_index] = struct.unpack('f', f_bytes)[0]
+            self.average_vector += self.vector_array[w_index]
         self.__file.close()
+        self.average_vector /= self.words
         print('Parsing finished!')
 
     def __del__(self):
@@ -56,9 +59,13 @@ class Word2VecFile():
         self.word2index = None
 
     def get_vector(self, word):
-        return self.vector_array[self.word2index[word]]
-
-
+        try:
+            return self.vector_array[self.word2index[word]]
+        except KeyError:
+            self.not_covered_words = dict()
+            self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
+            # TODO: If word does not exist, use average vector. Better idea?
+            return self.average_vector
 
 
 ################
