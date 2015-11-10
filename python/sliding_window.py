@@ -55,27 +55,30 @@ class SlidingWindow(object):
 
             i = index
             while word_count < WINDOW_SIZE and i < len(tokens):
+                current_token = tokens[i]
 
-                is_punctuation = isinstance(tokens[i], PunctuationToken)
+                is_punctuation = current_token.is_punctuation()
+
+                if is_punctuation and i + 1 < len(tokens) and tokens[i + 1].is_punctuation():
+                    raise NameError("Two Punctuations in a row: " + current_token + ", " + tokens[i + 1])
 
                 if not is_punctuation:
                     word_count += 1
-                    if isinstance(tokens[i], PunctuationToken): raise NameError(
-                        "two Punctuations in a row")
-                    window_tokens.append(tokens[i])
+                    window_tokens.append(current_token)
 
+                # TODO: Not three variables, rather one which contains the type
                 if word_count == PUNCTUATION_POS and is_punctuation:
-                    if tokens[i].type == Punctuation.COMMA:
+                    if current_token.punctuation_type == Punctuation.COMMA:
                         has_comma = True
-                    if tokens[i].type == Punctuation.PERIOD:
+                    if current_token.punctuation_type == Punctuation.PERIOD:
                         has_period = True
-                    if tokens[i].type == Punctuation.QUESTION:
+                    if current_token.punctuation_type == Punctuation.QUESTION:
                         has_question = True
 
                 i += 1
 
-            training_instances.append(
-                TrainingInstance(window_tokens, has_comma, has_period, has_question))
+            if len(window_tokens) == WINDOW_SIZE:
+                training_instances.append(TrainingInstance(window_tokens, has_comma, has_period, has_question))
             index += 1
 
         return training_instances

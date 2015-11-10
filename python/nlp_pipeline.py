@@ -21,10 +21,12 @@ class NlpPipeline(object):
         tokens = []
 
         for i in range(0, len(raw_tokens)):
-            if raw_tokens[i] in self.punctuation_mapping:
-                tokens.append(PunctuationToken(raw_tokens[i], self.punctuation_mapping[raw_tokens[i]]))
+            raw_token = raw_tokens[i]
+            if raw_token in self.punctuation_mapping:
+                token = self.punctuation_mapping[raw_token]
+                tokens.append(PunctuationToken(raw_token, token))
             else:
-                word_token = WordToken(raw_tokens[i])
+                word_token = WordToken(raw_token)
                 # word_token.set_pos_tag(pos_tags[i][1])
                 tokens.append(word_token)
 
