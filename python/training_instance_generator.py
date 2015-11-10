@@ -7,8 +7,8 @@ from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
 
 
-#WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
-WORD_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
+WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
+#WORD_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/"
 
 
@@ -36,7 +36,8 @@ class TrainingInstanceGenerator():
                 for sentence in talk.sentences:
                     # get the word vectors for all token in the sentence
                     for token in sentence.gold_tokens:
-                        token.word_vec = self.word2vec.get_vector(token)
+                        if not token.is_punctuation():
+                            token.word_vec = self.word2vec.get_vector(token.word.lower())
 
                     # get the training instances
                     training_instances = window_slider.list_windows(sentence)

@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Punctuation(Enum):
+    NONE = 0
     COMMA = 1
     PERIOD = 2
     QUESTION = 3

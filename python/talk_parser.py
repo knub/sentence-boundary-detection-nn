@@ -21,10 +21,10 @@ class Talk(object):
 
 class Sentence(object):
 
-    def __init__(self, id, original_gold_text):
+    def __init__(self, id, gold_text):
         self.id = id
         self.gold_tokens = None
-        self.original_gold = original_gold_text
+        self.gold_text = gold_text
         self.time_start = 0
         self.time_end = 0
         self.speech_text = ""
@@ -51,7 +51,7 @@ class Sentence(object):
     def __str__(self):
         gold_tokens_str = ', '.join(map(str, self.gold_tokens))
         return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n gold_tokens: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (
-        self.id, self.time_start, self.time_end, self.original_gold, gold_tokens_str, self.speech_text,
+        self.id, self.time_start, self.time_end, self.gold_text, gold_tokens_str, self.speech_text,
         self.enriched_speech_text)
 
 
