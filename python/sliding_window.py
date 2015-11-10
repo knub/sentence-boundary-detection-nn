@@ -10,15 +10,13 @@ PUNCTUATION_POS = 3
 
 class TrainingInstance(object):
 
-    def __init__(self, tokens, is_comma, is_period, is_question):
+    def __init__(self, tokens, label):
         self.tokens = tokens
-        self.comma = is_comma  # , : -
-        self.period = is_period  # ! ; .
-        self.question = is_question  # ?
+        self.label = label
 
     def __str__(self):
-        return "TOKENS: %s \nHAS_COMMA: %s \nHAS_PERIOD: %s \nHAS_QUESTION: %s \n" % (
-        " ".join(map(str, self.tokens)), str(self.comma), str(self.period), str(self.question))
+        return "TOKENS: %s \nLABEL: %s \n" % (
+        " ".join(map(str, self.tokens)), str(self.label))
 
     def get_array(self):
         dimensions = (1, WINDOW_SIZE, len(self.tokens[0].word_vec))
@@ -28,15 +26,7 @@ class TrainingInstance(object):
         return arr
 
     def get_label(self):
-        if self.comma:
-            return 1
-        if self.period:
-            return 2
-        if self.question:
-            return 3
-        return 0
-
-
+        return self.label.value
 
 class SlidingWindow(object):
 
@@ -47,10 +37,6 @@ class SlidingWindow(object):
         training_instances = []
 
         while index < len(tokens) - WINDOW_SIZE:
-            word_count = 0
-            has_comma = False
-            has_period = False
-            has_question = False
             window_tokens = []
 
             i = index
@@ -66,19 +52,13 @@ class SlidingWindow(object):
                     word_count += 1
                     window_tokens.append(current_token)
 
-                # TODO: Not three variables, rather one which contains the type
                 if word_count == PUNCTUATION_POS and is_punctuation:
-                    if current_token.punctuation_type == Punctuation.COMMA:
-                        has_comma = True
-                    if current_token.punctuation_type == Punctuation.PERIOD:
-                        has_period = True
-                    if current_token.punctuation_type == Punctuation.QUESTION:
-                        has_question = True
+                    instance_label = current_token.punctuation_type
 
                 i += 1
 
             if len(window_tokens) == WINDOW_SIZE:
-                training_instances.append(TrainingInstance(window_tokens, has_comma, has_period, has_question))
+                training_instances.append(TrainingInstance(window_tokens, instance_label))
             index += 1
 
         return training_instances
