@@ -44,7 +44,7 @@ class SlidingWindow(object):
         tokens = sentence.gold_tokens
 
         index = 0
-        training_instance = []
+        training_instances = []
 
         while index < len(tokens) - WINDOW_SIZE:
             word_count = 0
@@ -74,11 +74,11 @@ class SlidingWindow(object):
 
                 i += 1
 
-            training_instance.append(
+            training_instances.append(
                 TrainingInstance(window_tokens, has_comma, has_period, has_question))
             index += 1
 
-        return training_instance
+        return training_instances
 
 
 
