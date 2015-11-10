@@ -16,6 +16,16 @@ class NlpPipeline(object):
 
 
     def parse_text(self, text):
+        """
+        Parses a text and create tokens.
+
+        Args:
+            text (str): A string representing a sentence.
+
+        Returns:
+            [token]: List of word and punctuation tokens.
+        """
+
         raw_tokens = nltk.word_tokenize(text)
         # pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []

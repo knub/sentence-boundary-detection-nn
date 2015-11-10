@@ -24,6 +24,8 @@ class TrainingInstanceGenerator():
 
         count = len(training_data)
 
+        nr_instances = 0
+
         for i, training_paths in enumerate(training_data):
             progress = int(i * 100.0 / count)
             sys.stdout.write(str(progress) + "% ")
@@ -44,9 +46,12 @@ class TrainingInstanceGenerator():
 
                     # write training instances to level db
                     for training_instance in training_instances:
+                        nr_instances += 1
                         level_db.write_training_instance(training_instance)
 
                     # print (training_instances)
+
+        print("Created " + str(nr_instances) + " instances.")
 
     def get_not_covered_words(self):
         return self.word2vec.not_covered_words
