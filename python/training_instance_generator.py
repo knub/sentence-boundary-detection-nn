@@ -8,16 +8,16 @@ from level_db_creator import LevelDBCreator
 from sets import set
 
 
-WORD_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
-#WORD_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
+GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
+SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/"
 
 
 class TrainingInstanceGenerator():
     """reads the original data, process them and writes them to a level-db"""
 
-    def __init__(self):
-        self.word2vec = Word2VecFile(WORD_VECTOR_FILE)
+    def __init__(self, vector_file):
+        self.word2vec = Word2VecFile(vector_file)
         self.test_talks = Set()
 
     def generate(self, training_data, database, test):
@@ -68,18 +68,27 @@ class TrainingInstanceGenerator():
 if __name__ == '__main__':
 
     argc = len(sys.argv)
-    if argc != 2:
-        print("Usage: " + sys.argv[0] + " [data_folder]")
+    if argc != 3:
+        print("Usage: " + sys.argv[0] + " [vector file - either 'small' or 'google'] [data_folder]")
         sys.exit(1)
 
-    data_folder = sys.argv[1]
+    vector_file = sys.argv[1]
+    if vector_file == "google":
+        vector_file = GOOGLE_VECTOR_FILE
+    elif vector_file == "small":
+        vector_file = SMALL_VECTOR_FILE
+    else
+        print("Invalid vector file")
+        sys.exit(2)
+
+    data_folder = sys.argv[2]
     sentence_home = os.environ['SENTENCE_HOME']
 
     print("Deleting " + sentence_home + "/leveldbs/" + data_folder + ". Y/n?")
     s = raw_input()
     if s != "Y":
         print("Not deleting. Exiting ..")
-        sys.exit(2)
+        sys.exit(3)
 
     database = sentence_home + "/leveldbs/" + data_folder
     if os.path.isdir(database):
@@ -102,12 +111,12 @@ if __name__ == '__main__':
          None)
     ]
 
-    generator = TrainingInstanceGenerator()
+    generator = TrainingInstanceGenerator(vector_file)
     print("Generating test data .. ")
-    generator.generate(test_data, data_folder + "/test", True)
+    generator.generate(test_data, data_folder + "/test", test = True)
     print("Done.")
     print("Generating training data .. ")
-    generator.generate(training_data, data_folder + "/train", False)
+    generator.generate(training_data, data_folder + "/train", test = False)
     print("Done.")
     print("")
     print(generator.get_not_covered_words())
