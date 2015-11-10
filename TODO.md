@@ -7,6 +7,9 @@
 * have a look into the alignment tool: http://www1.icsi.berkeley.edu/Speech/docs/sctk-1.2/sclite.htm
 * Tokenizer: Use tokenizer which maximizes hit rate in word vector
 * Performance optimization for pos tagging
+* Idea: Replace some tokens, e.g. 10, 11, 12 --> <NUMBER>
+* Overlapping talk ids?
+* Determine precision/recall for specific numbers
 
 ### Questions
 
