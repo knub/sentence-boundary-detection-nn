@@ -5,7 +5,6 @@ from talk_parser import TalkParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
-from sets import set
 
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
@@ -18,7 +17,7 @@ class TrainingInstanceGenerator():
 
     def __init__(self, vector_file):
         self.word2vec = Word2VecFile(vector_file)
-        self.test_talks = Set()
+        self.test_talks = set()
 
     def generate(self, training_data, database, test):
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
@@ -77,7 +76,7 @@ if __name__ == '__main__':
         vector_file = GOOGLE_VECTOR_FILE
     elif vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
-    else
+    else:
         print("Invalid vector file")
         sys.exit(2)
 
@@ -107,7 +106,7 @@ if __name__ == '__main__':
          None)
     ]
     test_data = [
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml",
+        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml",
          None)
     ]
 
