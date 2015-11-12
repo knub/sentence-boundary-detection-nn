@@ -13,6 +13,7 @@
 
 * Consider features like: There was a question word in the last k statements
 * Try LSTM (ask Christian Bartz for better Caffe LSTM implementation)
+* During data creation, gather statistics about class distribution
 
 
 ### TODO

@@ -22,6 +22,8 @@ class TrainingInstanceGenerator():
     def generate(self, training_data, database, test):
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
+        # count how often each type (COMMA, PERIOD etc.) is in the instances
+        class_distribution = dict()
 
         count = len(training_data)
 
@@ -54,11 +56,14 @@ class TrainingInstanceGenerator():
                     # write training instances to level db
                     for training_instance in training_instances:
                         nr_instances += 1
+                        class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
                         level_db.write_training_instance(training_instance)
 
                     # print (training_instances)
 
         print("Created " + str(nr_instances) + " instances.")
+        print("Class distribution:")
+        print(class_distribution)
 
     def get_not_covered_words(self):
         return self.word2vec.not_covered_words
