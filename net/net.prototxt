@@ -11,8 +11,8 @@ layer {
     phase: TRAIN
   }
   data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/dummy/train"
-    batch_size: 64
+    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/train"
+    batch_size: 128
     backend: LEVELDB
   }
 }
@@ -25,8 +25,8 @@ layer {
     phase: TEST
   }
   data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/dummy/test"
-    batch_size: 64
+    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/test"
+    batch_size: 512
     backend: LEVELDB
   }
 }
@@ -163,4 +163,9 @@ layer {
   bottom: "fc_final"
   bottom: "label"
   top: "accuracy"
+  top: "recall_per_class"
+  top: "precision_per_class"
+  include {
+    phase: TEST
+  }
 }
