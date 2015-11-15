@@ -14,6 +14,12 @@ class Talk(object):
     def add_sentence(self, sentence):
         self.sentences.append(sentence)
 
+    def get_gold_tokens(self):
+        gold_tokens = []
+        for sentence in self.sentences:
+            gold_tokens.extend(sentence.gold_tokens)
+        return gold_tokens
+
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
         return " ID: %s \n TITLE: %s \n \n %s" % (self.id, self.title, sentences_str)

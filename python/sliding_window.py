@@ -29,8 +29,8 @@ class TrainingInstance(object):
 
 class SlidingWindow(object):
 
-    def list_windows(self, sentence):
-        tokens = sentence.gold_tokens
+    def list_windows(self, talk):
+        tokens = talk.get_gold_tokens()
 
         index = 0
         training_instances = []
@@ -48,7 +48,7 @@ class SlidingWindow(object):
                 # check if the next token is also a punctuation token, error if yes
 #                if is_punctuation and i + 1 < len(tokens) and tokens[i + 1].is_punctuation():
 #                    # TODO: Double-check again, whether this is an issue or not
-#                    raise Exception("Two Punctuations in a row:\nSentence: " + sentence.gold_text + "\n" + str(current_token) + " and " + str(tokens[i + 1]))
+#                    raise Exception("Two Punctuations in a row:\nSentence: " + talk.gold_text + "\n" + str(current_token) + " and " + str(tokens[i + 1]))
 
                 if not is_punctuation:
                     word_count += 1

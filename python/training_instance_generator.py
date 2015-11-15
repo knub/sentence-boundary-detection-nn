@@ -52,21 +52,20 @@ class TrainingInstanceGenerator():
                         if not token.is_punctuation():
                             token.word_vec = self.word2vec.get_vector(token.word.lower())
 
-                    # get the training instances
-                    training_instances = window_slider.list_windows(sentence)
+                # get the training instances
+                training_instances = window_slider.list_windows(talk)
 
-                    # write training instances to level db
-                    for training_instance in training_instances:
-                        s = unicode(training_instance) + "\n"
-                        f.write(s.encode('utf8'))
-                        nr_instances += 1
-                        class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
-                        level_db.write_training_instance(training_instance)
-
-                    # print (training_instances)
+                # write training instances to level db
+                for training_instance in training_instances:
+                    s = unicode(training_instance) + "\n"
+                    f.write(s.encode('utf8'))
+                    nr_instances += 1
+                    class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
+                    level_db.write_training_instance(training_instance)
 
         f.close()
-        print()
+        print
+
         print("Created " + str(nr_instances) + " instances.")
         print("Class distribution:")
         print(class_distribution)
@@ -94,16 +93,16 @@ if __name__ == '__main__':
     data_folder = sys.argv[2]
     sentence_home = os.environ['SENTENCE_HOME']
 
-    print("Deleting " + sentence_home + "/leveldbs/" + data_folder + ". Y/n?")
-    s = raw_input()
-    if s != "Y":
-        print("Not deleting. Exiting ..")
-        sys.exit(3)
-
     database = sentence_home + "/leveldbs/" + data_folder
     if os.path.isdir(database):
+        print("Deleting " + sentence_home + "/leveldbs/" + data_folder + ". y/N?")
+        s = raw_input()
+        if s != "Y" and s != "y":
+            print("Not deleting. Exiting ..")
+            sys.exit(3)
         import shutil
         shutil.rmtree(database)
+
     os.mkdir(database)
 
     training_data = [
