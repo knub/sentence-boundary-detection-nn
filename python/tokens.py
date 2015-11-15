@@ -25,7 +25,7 @@ class WordToken(object):
         return self.word
 
     def __repr__(self):
-        return str(self)
+        return self.word
 
     def __eq__(self, other):
         if other.is_punctuation():

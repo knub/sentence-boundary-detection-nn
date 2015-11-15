@@ -29,6 +29,8 @@ class TrainingInstanceGenerator():
 
         nr_instances = 0
 
+        f = open("training_instances.txt", "w")
+
         for i, training_paths in enumerate(training_data):
             progress = int(i * 100.0 / count)
             sys.stdout.write(str(progress) + "% ")
@@ -55,12 +57,16 @@ class TrainingInstanceGenerator():
 
                     # write training instances to level db
                     for training_instance in training_instances:
+                        s = unicode(training_instance) + "\n"
+                        f.write(s.encode('utf8'))
                         nr_instances += 1
                         class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
                         level_db.write_training_instance(training_instance)
 
                     # print (training_instances)
 
+        f.close()
+        print()
         print("Created " + str(nr_instances) + " instances.")
         print("Class distribution:")
         print(class_distribution)

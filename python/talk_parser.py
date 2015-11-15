@@ -86,7 +86,7 @@ class TalkParser(object):
 
             for sentence in doc.findall("seg"):
                 sentence_id = sentence.attrib["id"]
-                sentence_text = sentence.text
+                sentence_text = unicode(sentence.text)
 
                 sentence = Sentence(sentence_id, sentence_text)
                 sentence.set_gold_tokens(self.nlp_pipeline.parse_text(sentence_text))

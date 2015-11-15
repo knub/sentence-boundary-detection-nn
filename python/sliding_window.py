@@ -14,9 +14,8 @@ class TrainingInstance(object):
         self.tokens = tokens
         self.label = label
 
-    def __str__(self):
-        return "TOKENS: %s \nLABEL: %s \n" % (
-        " ".join(map(str, self.tokens)), str(self.label))
+    def __repr__(self):
+        return "TOKENS: %s \nLABEL: %s \n" % (" ".join(map(unicode, self.tokens)), str(self.label))
 
     def get_array(self):
         dimensions = (1, WINDOW_SIZE, len(self.tokens[0].word_vec))
