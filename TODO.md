@@ -1,6 +1,6 @@
 ### Concrete TODO for next meeting, Nov 19th
 
-* Pipeline Breakthrough --> Given an unpunctuated and lowercase text, let our model run and output the predictions
+* Pipeline Breakthrough --> Given an unpunctuated and lowercase text, let our model run and output the predictions - already implemented by Rice and Joseph
 * Implement proper POS tagging the NLP pipeline? Which tagger to use?
 * Use POS tagging as features, there are three approaches (implement in order):
   * Just add the pos tags 1-of-V-encoded after the word vector. Use rather broad pos tags (maybe put a few similar pos tags in the same group)
