@@ -54,6 +54,9 @@ class Sentence(object):
     def set_gold_tokens(self, gold_tokens):
         self.gold_tokens = gold_tokens
 
+    def get_gold_tokens(self):
+        return self.gold_tokens
+
     def __str__(self):
         gold_tokens_str = ', '.join(map(str, self.gold_tokens))
         return " ID: %s \n TIME_START: %s \n TIME_END: %s \n gold_text: %s \n gold_tokens: %s \n speech_text: %s \n enriched_speech_text: %s \n" % (
