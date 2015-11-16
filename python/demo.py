@@ -1,28 +1,25 @@
-import argparse
+import argparse, numpy, caffe
 from word2vec_file import Word2VecFile
-import sliding_window
-import caffe
+from sliding_window import SlidingWindow, PUNCTUATION_POS
+from nlp_pipeline import NlpPipeline
+from talk_parser import Sentence
+
+classes = ["NONE", "COMMA", "PERIOD", "QUESTION"]
+classes_as_string = ["", ",", ".", "?"]
 
 class Demo():
     """parses demo data, feeds to a trained model and returns predictions"""
 
-    def __init__(self, vector_file, caffe_proto, caffe_model):
-        self.word2vec = Word2VecFile(vector_file)
+    def __init__(self, net, word2vec):
+        self.word2vec = word2vec
         self.nlp_pipeline = NlpPipeline()
-        self.__caffe_proto = caffe_proto
-        self.__caffe_model = caffe_model        
-        net = caffe.Net(self.__caffe_proto, self.__caffe_model, caffe.TEST)
-        caffe.set_mode_cpu()
+        self.net = net
 
     def get_not_covered_words(self):
         return self.word2vec.not_covered_words
 
     def predict_text(self, text):
         sentence = Sentence(1, text)
-        # sentence.set_time_start(12.95)
-        # sentence.set_time_end(29.50)
-        # sentence.set_speech_text("You know one of the {$(<BREATH>)} intense pleasures of travel in one of the delights of ethnographic research {$(<BREATH>)} is the opportunity to live amongst those who have not forgotten the old ways {$(<BREATH>)} to {$(<BREATH>)} still feel their past and the wind {$(<SBREATH>)} touch and stones pause by rain {$(<SBREATH>)} I tasted in the bitter leaves of plants")
-        # sentence.set_enriched_speech_text("You know one of the intense pleasures of travel in one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways to still feel their past and the wind touch and stones pause by rain I tasted in the bitter leaves of plants")
         sentence.set_gold_tokens(self.nlp_pipeline.parse_text(text))
 
         for token in sentence.gold_tokens:
@@ -32,32 +29,66 @@ class Demo():
         slidingWindow = SlidingWindow()
         instances = slidingWindow.list_windows(sentence)
 
+        punctuations = []
         for instance in instances:
-            print(instance)
-
-        for instance in instances:
-            print(predict_caffe(instance))
+            probs = self.predict_caffe(instance)
+            #print instance
+            #self.show_probs(probs)
+            punctuations.append(numpy.argmax(probs))
+        #print punctuations
+        
+        print ">>> Sentence with boundaries:"
+        for i in range(len(punctuations) - 1, -1, -1):
+            sentence.gold_tokens.insert(i + PUNCTUATION_POS, classes_as_string[punctuations[i]])
+        print "{",
+        for t in sentence.gold_tokens:
+            print t,
+        print "}"
 
     def predict_caffe(self, instance):
-        transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
+        transformer = caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         batchsize = 1
-        net.blobs['data'].reshape(batchsize,1,5,300)
+        self.net.blobs['data'].reshape(batchsize,1,5,300)
+        reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
-        net.blobs['data'].data[...] = transformer.preprocess('data', instance.get_array())
+        self.net.blobs['data'].data[...] = reshaped_array
 
-        out = net.forward()
-        return out['accuracy'], out['recall_per_class'], out['precision_per_class']
+        out = self.net.forward()
+        return out['softmax']
 
-def main():
-    demo = Demo()
-    demo.predict_text("You know one of the intense pleasures of travel in one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways to still feel their past and the wind touch and stones pause by rain I tasted in the bitter leaves of plants")
+    def show_probs(self, probs):
+        for i in range (0, len(classes)):
+            print classes[i], ":", probs[0][i]
+
+def main_no_loading(net, vector, datafile, show):
+    if show:
+        classes_as_string[0] = "_"
+    caffe.set_mode_cpu()
+    d = Demo(net, vector)
+    if datafile:
+        f = open(datafile)
+        text = f.read()
+        f.close()
+        d.predict_text(text)
+    else:
+        while (1):
+            text = raw_input("Please enter some text without punctuation for prediction (enter q to quit):")
+            if text == "q":
+                return
+            d.predict_text(text)    
+
+def main(vectorfile, caffeproto, caffemodel, datafile=None, show=False):
+    vector = Word2VecFile(vectorfile)
+    net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
+    main_no_loading(net, vector, datafile, show)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get word vector from binary data.')
-    parser.add_argument('--datafile', help='path to file with text, if not present text can be entered interactively')
+    parser.add_argument('-d','--datafile', help='path to file with text, if not present text can be entered interactively', dest=datafile)
     parser.add_argument('vectorfile', help='path to word vector binary')
-    parser.add_argument('caffemodel', help='path to caffe model file')
     parser.add_argument('caffeproto', help='path to caffe proto file')
+    parser.add_argument('caffemodel', help='path to caffe model file')
+    parser.add_argument('-s','--show', help='show the non-existing punctuation with and underscore', action=store_true, dest=show)
     args = parser.parse_args()
-    main(args)
+    main(show=args.show, vectorfile=args.vectorfile, caffeproto=args.caffeproto, caffemodel=args.caffemodel, datafile=args.datafile)
