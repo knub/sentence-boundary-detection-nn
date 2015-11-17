@@ -61,6 +61,7 @@ class TrainingInstanceGenerator():
                 # write training instances to level db
                 for training_instance in training_instances:
                     s = unicode(training_instance) + "\n"
+                    s = s + unicode(training_instance.get_array()) + "\n\n"
                     plain_text_instances_file.write(s.encode('utf8'))
                     nr_instances += 1
                     class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
@@ -85,10 +86,32 @@ if __name__ == '__main__':
         sys.exit(1)
 
     vector_file = sys.argv[1]
+
+    training_data = []
+    test_data = []
+
     if vector_file == "google":
         vector_file = GOOGLE_VECTOR_FILE
+
+        training_data = [
+            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml",
+             "/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/word-level transcript/dev2010.en.talkid<id>_sorted.txt"),
+            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml",
+             None),
+            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml",
+             None),
+            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml",
+             None)
+        ]
+        test_data = [
+            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml",
+             None)
+        ]
     elif vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
+
+        training_data = [("/home/ms2015t3/data/test-talk.xml", None)]
+        test_data = [("/home/ms2015t3/data/test-talk.xml", None)]
     else:
         print("Invalid vector file")
         sys.exit(2)
@@ -107,21 +130,6 @@ if __name__ == '__main__':
         shutil.rmtree(database)
 
     os.mkdir(database)
-
-    training_data = [
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml",
-         "/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/word-level transcript/dev2010.en.talkid<id>_sorted.txt"),
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml",
-         None),
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml",
-         None),
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml",
-         None)
-    ]
-    test_data = [
-        ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml",
-         None)
-    ]
 
     generator = TrainingInstanceGenerator(vector_file)
     print("Generating test data .. ")

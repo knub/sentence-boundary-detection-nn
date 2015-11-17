@@ -1,6 +1,8 @@
 import numpy
-import WINDOW_SIZE from sliding_window
-import PosTag from nlp_pipeline
+#from sliding_window import WINDOW_SIZE
+from nlp_pipeline import PosTag
+
+WINDOW_SIZE = 5
 
 class TrainingInstance(object):
 
@@ -14,10 +16,12 @@ class TrainingInstance(object):
     def get_array(self):
         word_vec_size = len(self.tokens[0].word_vec)
         feature_size = word_vec_size + len(PosTag)
+
         dimensions = (1, WINDOW_SIZE, feature_size)
         arr = numpy.zeros(dimensions, float)
+
         for i in range(0, WINDOW_SIZE):
-            arr[0][i] = self.tokens[i].word_vec
+            arr[0][i][0:word_vec_size] = self.tokens[i].word_vec
             for pos_tag in self.tokens[i].pos_tags:
                 arr[0][i][word_vec_size + pos_tag.value] = 1
 
