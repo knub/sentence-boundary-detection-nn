@@ -9,7 +9,7 @@ To avoid long loading times, you can preload the word vector and the model. Open
 >>> vector = Word2VecFile('../../ms-2015-t3/GoogleNews-vectors-negative300.bin')
 >>> net = caffe.Net('/home/ms2015t3/sentence-boundary-detection-nn-joseph/net/net.prototxt', '/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/20151115-171451_basic_features/_iter_100000.caffemodel', caffe.TEST)
 ```
-If you get an error on importing caffe, try using your virtual environment (on the server: `./home/ms2015t3/sentence-boundary-detection-nn/p2/bin/p2/bin/activate`), or add the neccessary paths to your `PYTHONPATH`.
+If you get an error on importing caffe, try using your virtual environment (on the server: `. ./home/ms2015t3/sentence-boundary-detection-nn/p2/bin/p2/bin/activate`), or add the neccessary paths to your `PYTHONPATH`.
 
 This code is also bundled in the `demo_preparation.py` file, so on the server you can alternative simply call:
 ```
