@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 from talk_parser import TalkParser
 import sliding_window
@@ -133,10 +134,14 @@ if __name__ == '__main__':
 
     generator = TrainingInstanceGenerator(vector_file)
     print("Generating test data .. ")
+    start = time.time()
     generator.generate(test_data, data_folder + "/test", test = True)
-    print("Done.")
+    duration = int(time.time() - start) / 60
+    print("Done in " + str(duration) + " min.")
     print("Generating training data .. ")
+    start = time.time()
     generator.generate(training_data, data_folder + "/train", test = False)
-    print("Done.")
+    duration = int(time.time() - start) / 60
+    print("Done in " + str(duration) + " min.")
     print("")
     print(generator.get_not_covered_words())
