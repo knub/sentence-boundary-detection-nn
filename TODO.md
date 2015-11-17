@@ -1,19 +1,25 @@
-### Concrete TODO for next meeting, Nov 19th
+### Meeting Nov 19th
 
-* Pipeline Breakthrough --> Given an unpunctuated and lowercase text, let our model run and output the predictions - already implemented by Rice and Joseph
-* Implement proper POS tagging the NLP pipeline? Which tagger to use?
+* Demo of Pipeline
+* Precision/Recall per class
+
+### TODO for next meeting, Nov 19th
+
+* Implement proper POS tagging the NLP pipeline? Which tagger to use? Which windowing strategy to get the best possible tags?
 * Use POS tagging as features, there are three approaches (implement in order):
   * Just add the pos tags 1-of-V-encoded after the word vector. Use rather broad pos tags (maybe put a few similar pos tags in the same group)
   * Use second data channel .. might be good for convolution. However, how to encode the POS tags then? Is it possible to use the word2vec approach somehow for pos tags?
   * Use a fusion approach as Joseph proposed .. e.g. first transform the word vectors to the same size as the pos tags
 * Prepare HDF5 output for Xiaoyin
-* Precision/Recall per class - already implemented by Tanja and Stefan
+* Tackle class imbalance
+* How to find commas after first word, e.g. "However COMMA I think that"?
+* Tests with larger window size
+* deploy script - separate testing and developing from running demo
 
 ### Ideas
 
 * Consider features like: There was a question word in the last k statements
 * Try LSTM (ask Christian Bartz for better Caffe LSTM implementation)
-* During data creation, gather statistics about class distribution
 
 
 ### TODO
@@ -21,12 +27,10 @@
 * NLP pipelined: POS (1-v encoding?)
     * `text = word_tokenize("And now for something completely different")`
     * Use `pos_tag_sents()` for efficient tagging of more than one sentence.
-* ensure valid train / test split
 * have a look into the alignment tool: http://www1.icsi.berkeley.edu/Speech/docs/sctk-1.2/sclite.htm
 * Tokenizer: Use tokenizer which maximizes hit rate in word vector
 * Performance optimization for pos tagging
 * Idea: Replace some tokens, e.g. 10, 11, 12 --> <NUMBER>
-* Determine precision/recall for specific numbers
 
 ### Questions
 
