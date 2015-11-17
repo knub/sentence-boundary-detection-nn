@@ -1,3 +1,7 @@
+# Sentence files
+train_instances.txt
+test_instances.txt
+
 # Caffe files
 *.tlog
 leveldbs/
@@ -13,3 +17,6 @@ __pycache__/
 .env
 p3/
 *.pyc
+
+# Database file
+hdf5/
