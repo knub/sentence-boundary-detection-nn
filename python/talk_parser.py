@@ -134,21 +134,24 @@ class TalkParser(object):
 # Example call #
 ################
 
-def main(xml_file, template_file):
+def main(xml_file, template_file = None):
     parser = TalkParser(xml_file, template_file)
     talks = parser.list_talks()
     for talk in talks:
         print(talk)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 2:
         print("Usage: python talk_parser.py <xml_file> <template_file>")
         print("   xml_file:      XML file containing talks.")
         print("   template_file: Template file path to sorted_txt transcript file. Contains <id> for talk id, which will be replaced.")
         sys.exit(0)
 
     xml_file = sys.argv[1]
-    template_file = sys.argv[2]
+    
+    template_file = None
+    if len(sys.argv) == 3:
+        template_file = sys.argv[2]
 
     if not (os.path.isfile(xml_file)):
         print("No valid input xml file!")

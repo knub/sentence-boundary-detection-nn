@@ -30,7 +30,7 @@ class NlpPipeline(object):
             "-": Punctuation.COMMA,
             "?": Punctuation.QUESTION
         }
-        self.pos_tag_mapping = {
+        self.inv_pos_tag_mapping = {
             PosTag.ADJECTIVE: {
                 "JJ", "JJR", "JJS"
             },
@@ -71,6 +71,9 @@ class NlpPipeline(object):
                 "WDT", "WP", "WP$", "WRB"
             }
         }
+        self.pos_tag_mapping = {
+            v2: k for k, v1 in self.inv_pos_tag_mapping.items() for v2 in v1
+        }
 
     def parse_text(self, text):
         """
@@ -85,22 +88,28 @@ class NlpPipeline(object):
 
         raw_tokens = nltk.word_tokenize(text)
 
-        # pos_tags = nltk.pos_tag(raw_tokens)
+        pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []
 
         for i in range(0, len(raw_tokens)):
             raw_token = raw_tokens[i]
-            # pos_tag = pos_tags[i][1]
+            pos_tag_str = pos_tags[i][1]
 
             if raw_token in self.punctuation_mapping:
                 token = self.punctuation_mapping[raw_token]
                 tokens.append(PunctuationToken(raw_token, token))
             else:
                 word_token = WordToken(raw_token)
-                # word_token.set_pos_tag(pos_tag)
+                word_token.set_pos_tag(self._parse_pos_tag(pos_tag_str))
                 tokens.append(word_token)
 
         return tokens
 
+    def _parse_pos_tag(self, pos_tag_str):
+        pos_tags = pos_tag_str.split("/")
+        pos_tag_set = set()
 
+        for pos_tag in pos_tags:
+            pos_tag_set.add(self.pos_tag_mapping.get(pos_tag, PosTag.OTHER))
 
+        return pos_tag_set

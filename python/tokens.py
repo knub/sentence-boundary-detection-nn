@@ -10,7 +10,7 @@ class WordToken(object):
     def __init__(self, word):
         self.word = word
         self.word_vec = None
-        self.pos_tag = ""
+        self.pos_tag = set()
 
     def is_punctuation(self):
         return False
@@ -22,7 +22,7 @@ class WordToken(object):
         self.pos_tag = pos_tag
 
     def __str__(self):
-        return self.word
+        return self.word + " (" + " ".join(map(unicode, self.pos_tag)) + ")"
 
     def __repr__(self):
         return self.word
