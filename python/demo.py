@@ -7,27 +7,37 @@ from talk_parser import Sentence
 classes = ["NONE", "COMMA", "PERIOD", "QUESTION"]
 classes_as_string = ["", ",", ".", "?"]
 
-class Demo():
+class InputText(object):
+
+    def __init__(self, text):
+        self.text = text
+
+        self.nlp_pipeline = NlpPipeline()
+        self.gold_tokens = self.nlp_pipeline.parse_text(self.text)
+
+    def get_gold_tokens(self):
+        return self.gold_tokens
+
+
+class Demo(object):
     """parses demo data, feeds to a trained model and returns predictions"""
 
     def __init__(self, net, word2vec):
         self.word2vec = word2vec
-        self.nlp_pipeline = NlpPipeline()
         self.net = net
 
     def get_not_covered_words(self):
         return self.word2vec.not_covered_words
 
     def predict_text(self, text):
-        sentence = Sentence(1, text)
-        sentence.set_gold_tokens(self.nlp_pipeline.parse_text(text))
+        input_text = InputText(text)
 
-        for token in sentence.gold_tokens:
+        for token in input_text.gold_tokens:
             if not token.is_punctuation():
                 token.word_vec = self.word2vec.get_vector(token.word.lower())
 
         slidingWindow = SlidingWindow()
-        instances = slidingWindow.list_windows(sentence)
+        instances = slidingWindow.list_windows(input_text)
 
         punctuations = []
         for instance in instances:
@@ -36,12 +46,12 @@ class Demo():
             #self.show_probs(probs)
             punctuations.append(numpy.argmax(probs))
         #print punctuations
-        
-        print ">>> Sentence with boundaries:"
+
+        print(">>> Sentence with boundaries:")
         for i in range(len(punctuations) - 1, -1, -1):
-            sentence.gold_tokens.insert(i + PUNCTUATION_POS, classes_as_string[punctuations[i]])
+            input_text.gold_tokens.insert(i + PUNCTUATION_POS, classes_as_string[punctuations[i]])
         print "{",
-        for t in sentence.gold_tokens:
+        for t in input_text.gold_tokens:
             print t,
         print "}"
 
@@ -60,6 +70,7 @@ class Demo():
     def show_probs(self, probs):
         for i in range (0, len(classes)):
             print classes[i], ":", probs[0][i]
+
 
 def main_no_loading(net, vector, datafile, show):
     if show:
