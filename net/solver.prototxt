@@ -3,7 +3,7 @@ net: "net.prototxt"
 # Test before training?
 test_initialization: true 
 # Test every nth iteration
-test_interval: 250
+test_interval: 1000
 # How many iterations per test
 test_iter: 1
 

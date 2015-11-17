@@ -26,7 +26,7 @@ layer {
   }
   data_param {
     source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/test"
-    batch_size: 512
+    batch_size: 1024
     backend: LEVELDB
   }
 }
@@ -169,3 +169,27 @@ layer {
     phase: TEST
   }
 }
+#
+# HDF5 output
+#
+#layer {
+#  name: "softmax"
+#  type: "Softmax"
+#  bottom: "fc_final"
+#  top: "softmax"
+#  include {
+#    phase: TEST
+#  }
+#}
+#layer {
+#  name: "output"
+#  type: "HDF5Output"
+#  bottom: "label"
+#  bottom: "softmax"
+#  hdf5_output_param {
+#    file_name: "/home/ms2015t3/sentence-boundary-detection-nn/hdf5/basic.h5"
+#  }
+#  include {
+#    phase: TEST
+#  }
+#}

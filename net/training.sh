@@ -52,8 +52,7 @@ trap 'cleanup "Training interrupted"; exit 1' INT
 # export CAFFE_ROOT="$HOME/caffe-tmbo"
 
 $CAFFE_ROOT/build/tools/caffe train \
-    -solver ./experiments/$FOLDER_NAME/solver.prototxt 2> $TRAINING_LOG_NAME \
-	-gpu 0 
+    -solver ./experiments/$FOLDER_NAME/solver.prototxt 2> $TRAINING_LOG_NAME
 
 # Resetting interrupt handling
 trap - INT
