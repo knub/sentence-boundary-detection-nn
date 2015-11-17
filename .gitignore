@@ -4,6 +4,7 @@ test_instances.txt
 
 # Caffe files
 *.tlog
+*.tstlog
 leveldbs/
 net/experiments/
 net/snapshots/

@@ -26,7 +26,12 @@ layer {
   }
   data_param {
     source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/test"
+#### BLOCKSTART: TRAIN
     batch_size: 1024
+#### BLOCKEND: TRAIN
+#### BLOCKSTART: FULLTEST
+#    batch_size: 14447
+#### BLOCKEND: FULLTEST
     backend: LEVELDB
   }
 }
@@ -150,6 +155,7 @@ layer {
 #
 # Loss, Accuracy
 #
+#### BLOCKSTART: TRAIN
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
@@ -157,6 +163,7 @@ layer {
   bottom: "label"
   top: "loss"
 }
+#### BLOCKEND: TRAIN
 layer {
   name: "accuracy"
   type: "Accuracy"
@@ -169,9 +176,9 @@ layer {
     phase: TEST
   }
 }
-#
 # HDF5 output
-#
+
+#### BLOCKSTART: FULLTEST
 #layer {
 #  name: "softmax"
 #  type: "Softmax"
@@ -193,3 +200,4 @@ layer {
 #    phase: TEST
 #  }
 #}
+#### BLOCKEND: FULLTEST
