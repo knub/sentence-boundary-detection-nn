@@ -20,6 +20,7 @@
 
 * Consider features like: There was a question word in the last k statements
 * Try LSTM (ask Christian Bartz for better Caffe LSTM implementation)
+* Data aggregation: rotation, some bit fiddling
 
 
 ### TODO
