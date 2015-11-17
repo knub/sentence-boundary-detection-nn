@@ -11,5 +11,7 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
-$CAFFE_ROOT/build/tools/caffe test -model net.prototxt -weights experiments/$1/*.caffemodel -iterations 1 2> $TESTING_LOG_NAME
+# We need the output/error redirection, because caffe outputs to standard error, and we want to pipe to grep's standard in
+# See http://stackoverflow.com/questions/1507816/with-bash-how-can-i-pipe-standard-error-into-another-process
+($CAFFE_ROOT/build/tools/caffe test -model net.prototxt -weights experiments/$1/*.caffemodel -iterations 1 3>&1 1>&2- 2>&3-) | grep --invert-match "Waiting for data" > $TESTING_LOG_NAME
 
