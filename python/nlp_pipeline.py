@@ -100,7 +100,7 @@ class NlpPipeline(object):
                 tokens.append(PunctuationToken(raw_token, token))
             else:
                 word_token = WordToken(raw_token)
-                word_token.set_pos_tag(self._parse_pos_tag(pos_tag_str))
+                word_token.set_pos_tags(self._parse_pos_tag(pos_tag_str))
                 tokens.append(word_token)
 
         return tokens
