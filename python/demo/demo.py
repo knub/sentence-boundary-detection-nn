@@ -1,3 +1,6 @@
+import sys
+sys.path.append("..")
+
 import argparse, numpy, caffe
 from word2vec_file import Word2VecFile
 from sliding_window import SlidingWindow, PUNCTUATION_POS
@@ -72,7 +75,7 @@ class Demo(object):
             print classes[i], ":", probs[0][i]
 
 
-def main_no_loading(net, vector, datafile, show):
+def main_no_loading(net, vector, datafile=None, show=False):
     if show:
         classes_as_string[0] = "_"
     caffe.set_mode_cpu()
@@ -96,10 +99,10 @@ def main(vectorfile, caffeproto, caffemodel, datafile=None, show=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get word vector from binary data.')
-    parser.add_argument('-d','--datafile', help='path to file with text, if not present text can be entered interactively', dest=datafile)
+    parser.add_argument('-d','--datafile', help='path to file with text,  text can be entered interactively if ommited', dest=datafile)
     parser.add_argument('vectorfile', help='path to word vector binary')
     parser.add_argument('caffeproto', help='path to caffe proto file')
     parser.add_argument('caffemodel', help='path to caffe model file')
-    parser.add_argument('-s','--show', help='show the non-existing punctuation with and underscore', action=store_true, dest=show)
+    parser.add_argument('-s','--show', help='show the non-existing punctuation with an underscore', action=store_true, dest=show)
     args = parser.parse_args()
     main(show=args.show, vectorfile=args.vectorfile, caffeproto=args.caffeproto, caffemodel=args.caffemodel, datafile=args.datafile)

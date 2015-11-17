@@ -3,46 +3,46 @@ name: "sentence_boundary_detection"
 # Data
 #
 #### BLOCKSTART: DEPLOY
-#input: "data"
-#input_dim: 1
-#input_dim: 1
-#input_dim: 5
-#input_dim: 300
+input: "data"
+input_dim: 1
+input_dim: 1
+input_dim: 5
+input_dim: 300
 #### BLOCKEND: DEPLOY
 #### BLOCKSTART: TRAINTEST
-layer {
-  name: "data"
-  type: "Data"
-  top: "data"
-  top: "label"
-  include {
-    phase: TRAIN
-  }
-  data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/train"
-    batch_size: 128
-    backend: LEVELDB
-  }
-}
-layer {
-  name: "data"
-  type: "Data"
-  top: "data"
-  top: "label"
-  include {
-    phase: TEST
-  }
-  data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/test"
+#layer {
+#  name: "data"
+#  type: "Data"
+#  top: "data"
+#  top: "label"
+#  include {
+#    phase: TRAIN
+#  }
+#  data_param {
+#    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/train"
+#    batch_size: 128
+#    backend: LEVELDB
+#  }
+#}
+#layer {
+#  name: "data"
+#  type: "Data"
+#  top: "data"
+#  top: "label"
+#  include {
+#    phase: TEST
+#  }
+#  data_param {
+#    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/basic/test"
 #### BLOCKSTART: TRAIN
-    batch_size: 1024
+#    batch_size: 1024
 #### BLOCKEND: TRAIN
 #### BLOCKSTART: FULLTEST
-#    batch_size: 14447
+##    batch_size: 14447
 #### BLOCKEND: FULLTEST
-    backend: LEVELDB
-  }
-}
+#    backend: LEVELDB
+#  }
+#}
 #### BLOCKEND: TRAINTEST
 #
 # Fully Connected Layer 1
@@ -165,58 +165,58 @@ layer {
 # Loss, Accuracy
 #
 #### BLOCKSTART: DEPLOY
-#layer {
-#  name: "softmax"
-#  type: "Softmax"
-#  bottom: "fc_final"
-#  top: "softmax"
-#}
+layer {
+  name: "softmax"
+  type: "Softmax"
+  bottom: "fc_final"
+  top: "softmax"
+}
 #### BLOCKEND: DEPLOY
 #### BLOCKSTART: TRAINTEST
 #### BLOCKSTART: TRAIN
-layer {
-  name: "loss"
-  type: "SoftmaxWithLoss"
-  bottom: "fc_final"
-  bottom: "label"
-  top: "loss"
-}
-#### BLOCKEND: TRAIN
-layer {
-  name: "accuracy"
-  type: "Accuracy"
-  bottom: "fc_final"
-  bottom: "label"
-  top: "accuracy"
-  top: "recall_per_class"
-  top: "precision_per_class"
-  include {
-    phase: TEST
-  }
-}
-# HDF5 output
-
-#### BLOCKSTART: FULLTEST
 #layer {
-#  name: "softmax"
-#  type: "Softmax"
+#  name: "loss"
+#  type: "SoftmaxWithLoss"
 #  bottom: "fc_final"
-#  top: "softmax"
-#  include {
-#    phase: TEST
-#  }
-#}
-#layer {
-#  name: "output"
-#  type: "HDF5Output"
 #  bottom: "label"
-#  bottom: "softmax"
-#  hdf5_output_param {
-#    file_name: "/home/ms2015t3/sentence-boundary-detection-nn/hdf5/basic.h5"
-#  }
+#  top: "loss"
+#}
+#### BLOCKEND: TRAIN
+#layer {
+#  name: "accuracy"
+#  type: "Accuracy"
+#  bottom: "fc_final"
+#  bottom: "label"
+#  top: "accuracy"
+#  top: "recall_per_class"
+#  top: "precision_per_class"
 #  include {
 #    phase: TEST
 #  }
 #}
+## HDF5 output
+#
+#### BLOCKSTART: FULLTEST
+##layer {
+##  name: "softmax"
+##  type: "Softmax"
+##  bottom: "fc_final"
+##  top: "softmax"
+##  include {
+##    phase: TEST
+##  }
+##}
+##layer {
+##  name: "output"
+##  type: "HDF5Output"
+##  bottom: "label"
+##  bottom: "softmax"
+##  hdf5_output_param {
+##    file_name: "/home/ms2015t3/sentence-boundary-detection-nn/hdf5/basic.h5"
+##  }
+##  include {
+##    phase: TEST
+##  }
+##}
 #### BLOCKEND: FULLTEST
 #### BLOCKEND: TRAINTEST

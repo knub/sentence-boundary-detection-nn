@@ -19,7 +19,8 @@ class Word2VecFile():
         try:
             self.__file = open(filename, 'rb')
         except IOError:
-            parser.error('The file %s can not be read!' % self.__filename)
+            print ('The file %s can not be read!' % self.__filename)
+            return
         first_line = self.__file.readline().decode(ENCODING).split(' ')
         self.words = int(first_line[0])
         self.vector_size = int(first_line[1])
