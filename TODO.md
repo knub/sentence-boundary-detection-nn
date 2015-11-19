@@ -15,6 +15,7 @@
 * How to find commas after first word, e.g. "However COMMA I think that"?
 * Tests with larger window size
 * deploy script - separate testing and developing from running demo
+* not found words in word vector use "this" vector instead
 
 ### Ideas
 
