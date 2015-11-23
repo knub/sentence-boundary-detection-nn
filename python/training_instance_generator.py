@@ -2,7 +2,7 @@ import sys
 import os
 import time
 
-from talk_parser import TalkParser
+from parser.xml_parser import XMLParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
@@ -20,13 +20,13 @@ class TrainingInstanceGenerator():
         self.word2vec = Word2VecFile(vector_file)
         self.test_talks = set()
 
-    def generate(self, training_data, database, test):
+    def generate(self, parsers, database, test):
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
         # count how often each type (COMMA, PERIOD etc.) is in the instances
         class_distribution = dict()
 
-        count = len(training_data)
+        count = len(parsers)
 
         nr_instances = 0
 
@@ -35,29 +35,24 @@ class TrainingInstanceGenerator():
         else:
             plain_text_instances_file = open("../train_instances.txt", "w")
 
-        for i, training_paths in enumerate(training_data):
+        for i, parser in enumerate(parsers):
             progress = int(i * 100.0 / count)
             sys.stdout.write(str(progress) + "% ")
             sys.stdout.flush()
 
-            talk_parser = TalkParser(training_paths[0], training_paths[1])
-            talks = talk_parser.list_talks()
+            
+            texts = parser.parse()
 
-            for talk in talks:
-                if test:
-                    self.test_talks.add(talk.id)
-                if not test and talk.id in self.test_talks:
-                    print("Skip talk %s for training! Talk is already in test set." % talk.id)
-                    continue
+            for text in texts:
 
-                for sentence in talk.sentences:
+                for sentence in text.sentences:
                     # get the word vectors for all token in the sentence
-                    for token in sentence.gold_tokens:
+                    for token in sentence.get_tokens():
                         if not token.is_punctuation():
                             token.word_vec = self.word2vec.get_vector(token.word.lower())
 
                 # get the training instances
-                training_instances = window_slider.list_windows(talk)
+                training_instances = window_slider.list_windows(text)
 
                 # write training instances to level db
                 for training_instance in training_instances:
@@ -94,25 +89,22 @@ if __name__ == '__main__':
     if vector_file == "google":
         vector_file = GOOGLE_VECTOR_FILE
 
-        training_data = [
-            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml",
-             "/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/word-level transcript/dev2010.en.talkid<id>_sorted.txt"),
-            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml",
-             None),
-            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml",
-             None),
-            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml",
-             None)
+        training_parsers = [
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml")
         ]
-        test_data = [
-            ("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml",
-             None)
+
+        test_parsers = [
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
+
     elif vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_data = [("/home/ms2015t3/data/test-talk.xml", None)]
-        test_data = [("/home/ms2015t3/data/test-talk.xml", None)]
+        training_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
+        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
     else:
         print("Invalid vector file")
         sys.exit(2)
@@ -135,12 +127,12 @@ if __name__ == '__main__':
     generator = TrainingInstanceGenerator(vector_file)
     print("Generating test data .. ")
     start = time.time()
-    generator.generate(test_data, data_folder + "/test", test = True)
+    generator.generate(test_parsers, data_folder + "/test", test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
     print("Generating training data .. ")
     start = time.time()
-    generator.generate(training_data, data_folder + "/train", test = False)
+    generator.generate(training_parsers, data_folder + "/train", test = False)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
     print("")
