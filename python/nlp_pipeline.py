@@ -99,8 +99,8 @@ class NlpPipeline(object):
             raw_token = raw_tokens[i]
 
             if raw_token in self.punctuation_mapping:
-                token = self.punctuation_mapping[raw_token]
-                tokens.append(PunctuationToken(raw_token, token))
+                punctuation_type = self.punctuation_mapping[raw_token]
+                tokens.append(PunctuationToken(raw_token, punctuation_type))
             else:
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
