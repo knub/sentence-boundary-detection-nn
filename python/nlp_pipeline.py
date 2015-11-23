@@ -116,8 +116,9 @@ class NlpPipeline(object):
         pos_tags = nltk.pos_tag(word_tokens)
 
         for i, token in enumerate(tokens):
-            pos_tag_str = pos_tags[i][1]
-            token.set_pos_tags(self._parse_pos_tag(pos_tag_str))
+            if isinstance(token, WordToken):
+                pos_tag_str = pos_tags[i][1]
+                token.set_pos_tags(self._parse_pos_tag(pos_tag_str))
 
     def _parse_pos_tag(self, pos_tag_str):
         pos_tags = pos_tag_str.split("/")

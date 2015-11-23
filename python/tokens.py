@@ -40,8 +40,8 @@ class WordToken(object):
 
 
 class PunctuationToken(object):
-    def __init__(self, original, punctuation_type):
-        self.orginal = original
+    def __init__(self, word, punctuation_type):
+        self.word = word
         self.punctuation_type = punctuation_type
 
     def is_punctuation(self):
