@@ -1,6 +1,11 @@
 import nltk
 from enum import Enum
 from tokens import Punctuation, PunctuationToken, WordToken
+import config
+
+
+POS_TAGGING = config.get_boolean('features', 'pos_tagging')
+
 
 class PosTag(Enum):
     OTHER = 0
@@ -18,7 +23,6 @@ class PosTag(Enum):
     INTERJECTION = 12
     QUESTION_WORDS = 13
 
-POS_TAGGING = False
 
 class NlpPipeline(object):
 

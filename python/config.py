@@ -1,7 +1,7 @@
 import ConfigParser
 
 allowed_sections = ['word_vector', 'windowing', 'features']
-allowed_configuration = [ 'key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark' ]
+allowed_configuration = [ 'key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging']
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
 
