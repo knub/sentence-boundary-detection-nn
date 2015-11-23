@@ -2,9 +2,11 @@ import numpy
 #import sliding_window
 from nlp_pipeline import PosTag
 from sbd_config import config
+from tokens import Punctuation
 
-WINDOW_SIZE = 5
+WINDOW_SIZE = config.getint('windowing', 'window_size')
 POS_TAGGING = config.getboolean('features', 'pos_tagging')
+USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
 
 class TrainingInstance(object):
 
@@ -35,4 +37,6 @@ class TrainingInstance(object):
         return arr
 
     def get_label(self):
+        if not USE_QUESTION_MARK and self.label == Punctuation.QUESTION:
+            return Punctuation.PERIOD.value
         return self.label.value

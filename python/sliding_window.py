@@ -3,9 +3,10 @@ from nlp_pipeline import Punctuation, NlpPipeline
 from tokens import PunctuationToken
 from talk_parser import Sentence, Talk
 from training_instance import TrainingInstance
+from sbd_config import config
 
-WINDOW_SIZE = 5
-PUNCTUATION_POS = 3
+WINDOW_SIZE = config.getint('windowing', 'window_size')
+PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
 
 class SlidingWindow(object):
 

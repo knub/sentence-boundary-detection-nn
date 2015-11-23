@@ -5,7 +5,7 @@ from sbd_config import config
 
 
 POS_TAGGING = config.getboolean('features', 'pos_tagging')
-
+DEFAULT_NUMBER_TOKEN = "1"
 
 class PosTag(Enum):
     OTHER = 0
@@ -99,9 +99,11 @@ class NlpPipeline(object):
             raw_token = raw_tokens[i]
 
             if raw_token in self.punctuation_mapping:
-                token = self.punctuation_mapping[raw_token]
-                tokens.append(PunctuationToken(raw_token, token))
+                punctuation_type = self.punctuation_mapping[raw_token]
+                tokens.append(PunctuationToken(raw_token, punctuation_type))
             else:
+                if raw_token.isdigit():
+                    raw_token = DEFAULT_NUMBER_TOKEN
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
 
