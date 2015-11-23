@@ -9,8 +9,8 @@
 ##### Improvment of lexical model
 
 1. Use more training data! We can also use other data like Wikipedia.
-2. Combine PERIOD and QUESTION.
-3. Use the word vector of 'this' as default vector.
+2. [DONE] Combine PERIOD and QUESTION. 
+3. [DONE] Use the word vector of 'this' as default vector.
 
 ### Ideas
 
@@ -21,7 +21,7 @@
 * Data aggregation: rotation, some bit fiddling
 * Tackle class imbalance (Xiaoyin said, that this does not matter.)
 * Tokenizer: Use tokenizer which maximizes hit rate in word vector
-* Replace some tokens, e.g. 10, 11, 12 --> <NUMBER>
+* [DONE] Replace some tokens, e.g. 10, 11, 12 --> <NUMBER>
 * How to find commas after first word, e.g. "However COMMA I think that"?
 * Tests with larger window size
 * POS tagging:

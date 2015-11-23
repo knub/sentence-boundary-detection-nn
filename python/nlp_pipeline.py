@@ -6,7 +6,6 @@ from sbd_config import config
 
 POS_TAGGING = config.getboolean('features', 'pos_tagging')
 
-
 class PosTag(Enum):
     OTHER = 0
     VERB = 1
@@ -100,9 +99,10 @@ class NlpPipeline(object):
             raw_token = raw_tokens[i]
 
             if raw_token in self.punctuation_mapping:
-                token = self.punctuation_mapping[raw_token]
-                tokens.append(PunctuationToken(raw_token, token))
+                punctuation_type = self.punctuation_mapping[raw_token]
+                tokens.append(PunctuationToken(raw_token, punctuation_type))
             else:
+                raw_token = self._replace_number(raw_token)
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
 
@@ -132,3 +132,11 @@ class NlpPipeline(object):
         if not self.punkt:
             self.punkt = nltk.data.load('tokenizers/punkt/english.pickle')
         return self.punkt.tokenize(text.strip())
+
+    def _replace_number(self, word):
+        if any(c.isdigit() or c == ',' or c == '.' for c in word):
+            return "1"
+        if word[:-2].isdigit() and (word.endswith("st") or word.endswith("nd") or word.endswith("rd") or word.endswith("th")):
+            return "1st"
+        return word
+

@@ -26,6 +26,8 @@ class LevelDBCreator():
         vectors = training_instance.get_array()
         label = training_instance.get_label()
 
+
+
         datum = caffe_pb2.Datum()
         datum.channels, datum.height, datum.width = vectors.shape
         datum.label = label

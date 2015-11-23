@@ -3,9 +3,11 @@ import argparse
 import struct
 
 import numpy
+from sbd_config import config
 
 
 ENCODING = 'UTF-8'
+KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
 
 
 class Word2VecFile():
@@ -14,16 +16,18 @@ class Word2VecFile():
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
-        # if self.use_this_vector is True, we return 'this' vector for unknown words
-        # otherwise the average vector is returned
-        self.use_this_vector = use_this_vector
+        # and some bare numbers
+        self.nr_covered_words = 0
+        self.nr_uncovered_words = 0
         # read vector file
         self.__filename = filename
+
         try:
             self.__file = open(filename, 'rb')
         except IOError:
             print ('The file %s can not be read!' % self.__filename)
             return
+
         first_line = self.__file.readline().decode(ENCODING).split(' ')
         self.words = int(first_line[0])
         self.vector_size = int(first_line[1])
@@ -65,11 +69,13 @@ class Word2VecFile():
     def get_vector(self, word):
         try:
             idx = self.word2index[word]
+            self.nr_covered_words += 1
             return self.vector_array[idx]
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
-            if self.use_this_vector:            
-                idx = self.word2index['this']
+            self.nr_uncovered_words += 1
+            if KEY_ERROR_VECTOR != 'avg':
+                idx = self.word2index[KEY_ERROR_VECTOR]
                 return self.vector_array[idx]
             else:
                 return self.average_vector
