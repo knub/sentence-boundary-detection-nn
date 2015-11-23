@@ -5,6 +5,7 @@ import sys
 import time
 
 from parser.xml_parser import XMLParser
+from parser.plaintext_parser import PlaintextParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
@@ -94,6 +95,7 @@ if __name__ == '__main__':
         vector_file = GOOGLE_VECTOR_FILE
 
         training_parsers = [
+            PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
