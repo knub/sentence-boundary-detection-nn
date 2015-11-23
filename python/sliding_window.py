@@ -10,7 +10,7 @@ PUNCTUATION_POS = 3
 class SlidingWindow(object):
 
     def list_windows(self, talk):
-        tokens = talk.get_gold_tokens()
+        tokens = talk.get_tokens()
 
         index = 0
         training_instances = []
@@ -56,10 +56,9 @@ class SlidingWindow(object):
 def main():
     nlp_pipeline = NlpPipeline()
 
-   # sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
     sentence = Sentence()
-    sentence.set_sentence_text(unicode("I'm a savant, or more precisly, a high-functioning autisitic savant. It"))
-    sentence.set_tokens(nlp_pipeline.parse_text(sentence.sentence_text)
+    sentence.set_sentence_text(unicode("I'm a savant, or more precisly, a high-functioning autisitic savant"))
+    sentence.set_tokens(nlp_pipeline.parse_text(sentence.sentence_text))
 
     text = Text()
     text.add_sentence(sentence)
