@@ -1,8 +1,10 @@
 import numpy
 #import sliding_window
 from nlp_pipeline import PosTag
+from sbd_config import config
 
 WINDOW_SIZE = 5
+POS_TAGGING = config.getboolean('features', 'pos_tagging')
 
 class TrainingInstance(object):
 
@@ -15,15 +17,20 @@ class TrainingInstance(object):
 
     def get_array(self):
         word_vec_size = len(self.tokens[0].word_vec)
-        feature_size = word_vec_size + len(PosTag)
+        feature_size = word_vec_size
+
+        if POS_TAGGING:
+            feature_size += len(PosTag)
 
         dimensions = (1, WINDOW_SIZE, feature_size)
         arr = numpy.zeros(dimensions, float)
 
         for i in range(0, WINDOW_SIZE):
             arr[0][i][0:word_vec_size] = self.tokens[i].word_vec
-            for pos_tag in self.tokens[i].pos_tags:
-                arr[0][i][word_vec_size + pos_tag.value] = 1
+
+            if POS_TAGGING:
+                for pos_tag in self.tokens[i].pos_tags:
+                    arr[0][i][word_vec_size + pos_tag.value] = 1.0
 
         return arr
 

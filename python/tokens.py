@@ -22,7 +22,10 @@ class WordToken(object):
         self.pos_tags = pos_tag
 
     def __str__(self):
-        return self.word + " (" + " ".join(map(unicode, self.pos_tags)) + ")"
+        pos_str = ""
+        if len(self.pos_tags) > 0:
+            pos_str = " (" + " ".join(map(unicode, self.pos_tags)) + ")"
+        return self.word + pos_str
 
     def __repr__(self):
         return self.word
