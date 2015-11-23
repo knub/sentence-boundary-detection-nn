@@ -79,10 +79,12 @@ if __name__ == '__main__':
     if (args.deploy):
         args.omit.append("TRAINTEST")
         args.add.append("DEPLOY")
-        args.output = "deploy.prototxt"
+        if args.output == "output.prototxt":
+            args.output = "deploy.prototxt"
     if (args.fulltest):
         args.omit.append("TRAIN")
         args.add.append("FULLTEST")
-        args.output = "fulltest.prototxt"
+        if args.output == "output.prototxt":
+            args.output = "fulltest.prototxt"
 
     main(args.prototxt, args.output, args.omit, args.add, args.verbose, args.stdout)

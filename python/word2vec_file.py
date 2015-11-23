@@ -10,10 +10,13 @@ ENCODING = 'UTF-8'
 
 class Word2VecFile():
     """reads a binary word vector file, returns vectors for single words"""
-    def __init__(self, filename):
+    def __init__(self, filename, use_this_vector=True):
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
+        # if self.use_this_vector is True, we return 'this' vector for unknown words
+        # otherwise the average vector is returned
+        self.use_this_vector = use_this_vector
         # read vector file
         self.__filename = filename
         try:
@@ -65,8 +68,11 @@ class Word2VecFile():
             return self.vector_array[idx]
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
-            # TODO: If word does not exist, use average vector. Better idea?
-            return self.average_vector
+            if self.use_this_vector:            
+                idx = self.word2index['this']
+                return self.vector_array[idx]
+            else:
+                return self.average_vector
 
 
 ################
