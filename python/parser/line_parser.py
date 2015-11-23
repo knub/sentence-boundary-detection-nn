@@ -4,6 +4,7 @@ from abstract_parser import AbstractParser
 from nlp_pipeline import NlpPipeline
 from text import Text, Sentence
 from tokens import WordToken, PunctuationToken, Punctuation
+from sbd_config import config
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -14,7 +15,15 @@ sys.setdefaultencoding('utf8')
 class LineParser(AbstractParser):
 
     def __init__(self, file):
-       self.file = file
+        if config.getboolean('features', 'use_question_mark'):
+            raise NameError("Question marks not supported by LineParser")
+
+        if config.getboolean('features', 'pos_tagging'):
+            self.nlp_pipeline = NlpPipeline()
+        else:
+            self.nlp_pipeline = None
+        
+        self.file = file
 
     def parse(self):
         f = open(self.file, 'r')
@@ -27,14 +36,13 @@ class LineParser(AbstractParser):
             i += 1
             line = line.encode('utf8')
             line = line.rstrip() 
-           # if line.startswith("\t"): 
-            #    line = "dsjak" + line
-             #   print line
             splittedLine = line.split('\t')
             word = unicode(splittedLine[0])
             period = unicode(splittedLine[1])
             sentence.tokens.extend(self.__createToken(word,period))
             if period == 'PERIOD':
+                if self.nlp_pipeline != None:
+                    self.nlp_pipeline.pos_tag(sentence.tokens)
                 text.add_sentence(sentence)
                 #print i, sentence
                 sentence = Sentence()
