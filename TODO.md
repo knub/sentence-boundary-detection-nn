@@ -1,12 +1,17 @@
 ### TODO
 
-1. Imporve model for lexical features!
-2. Check training instance generation: It looks like we create some of the instances twice.
+1. Improve model for lexical features!
+2. [DONE] Check training instance generation: It looks like we create some of the instances twice.
 3. When the basic lexical model is around 50% accuracy, improve it by using other/more features.
 4. Build a model for audio.
 5. Implementation of post-processing the output of the model.
 
-##### Improvment of lexical model
+
+### Questions
+
+* Overlap between line parser and XML test data?
+
+##### Improvement of lexical model
 
 1. Use more training data! We can also use other data like Wikipedia.
 2. [DONE] Combine PERIOD and QUESTION. 
