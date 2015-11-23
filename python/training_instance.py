@@ -37,6 +37,7 @@ class TrainingInstance(object):
         return arr
 
     def get_label(self):
+
         if not USE_QUESTION_MARK and self.label == Punctuation.QUESTION:
             return Punctuation.PERIOD.value
         return self.label.value
