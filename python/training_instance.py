@@ -1,10 +1,10 @@
 import numpy
 #import sliding_window
 from nlp_pipeline import PosTag
-import config
+from sbd_config import config
 
 WINDOW_SIZE = 5
-POS_TAGGING = config.get_boolean('features', 'pos_tagging')
+POS_TAGGING = config.getboolean('features', 'pos_tagging')
 
 class TrainingInstance(object):
 

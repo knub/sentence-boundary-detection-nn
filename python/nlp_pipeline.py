@@ -1,10 +1,10 @@
 import nltk
 from enum import Enum
 from tokens import Punctuation, PunctuationToken, WordToken
-import config
+from sbd_config import config
 
 
-POS_TAGGING = config.get_boolean('features', 'pos_tagging')
+POS_TAGGING = config.getboolean('features', 'pos_tagging')
 
 
 class PosTag(Enum):
