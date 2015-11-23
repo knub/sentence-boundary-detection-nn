@@ -14,6 +14,9 @@ class Word2VecFile():
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
+        # and some bare numbers
+        self.nr_covered_words = 0
+        self.nr_uncovered_words = 0
         # if self.use_this_vector is True, we return 'this' vector for unknown words
         # otherwise the average vector is returned
         self.use_this_vector = use_this_vector
@@ -65,9 +68,11 @@ class Word2VecFile():
     def get_vector(self, word):
         try:
             idx = self.word2index[word]
+            self.nr_covered_words += 1
             return self.vector_array[idx]
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
+            self.nr_uncovered_words += 1
             if self.use_this_vector:            
                 idx = self.word2index['this']
                 return self.vector_array[idx]
