@@ -60,7 +60,8 @@ class TrainingInstanceGenerator():
                 # write training instances to level db
                 for training_instance in training_instances:
                     s = unicode(training_instance) + "\n"
-                    s = s + unicode(training_instance.get_array()) + "\n\n"
+#                    s = s + unicode(training_instance.get_array()) + "\n\n"
+                    s += "\n"
                     plain_text_instances_file.write(s.encode('utf8'))
                     nr_instances += 1
                     class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
