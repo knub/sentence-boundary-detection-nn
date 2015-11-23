@@ -1,5 +1,6 @@
-import sys
+import operator
 import os
+import sys
 import time
 
 from parser.xml_parser import XMLParser
