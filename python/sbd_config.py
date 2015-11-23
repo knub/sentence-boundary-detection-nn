@@ -1,10 +1,13 @@
 import ConfigParser
 from sets import Set
+import os
 
 allowed_sections = Set(['word_vector', 'windowing', 'features'])
 allowed_options = Set(['key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging'])
+
+sentence_home = os.environ['SENTENCE_HOME']
 config = ConfigParser.ConfigParser()
-config.read('config.ini')
+config.read(sentence_home + '/python/config.ini')
 
 # check validity:
 for section in config.sections():

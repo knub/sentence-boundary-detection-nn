@@ -21,7 +21,7 @@ class TrainingInstanceGenerator():
         self.word2vec = Word2VecFile(vector_file)
         self.test_talks = set()
 
-    def generate(self, parsers, database, test):
+    def generate(self, parsers, database, is_test):
         level_db = LevelDBCreator(LEVEL_DB_DIR + database)
         window_slider = sliding_window.SlidingWindow()
         # count how often each type (COMMA, PERIOD etc.) is in the instances
@@ -31,10 +31,10 @@ class TrainingInstanceGenerator():
 
         nr_instances = 0
 
-        if test:
-            plain_text_instances_file = open("../test_instances.txt", "w")
+        if is_test:
+            plain_text_instances_file = open(LEVEL_DB_DIR + database + "/../test_instances.txt", "w")
         else:
-            plain_text_instances_file = open("../train_instances.txt", "w")
+            plain_text_instances_file = open(LEVEL_DB_DIR + database + "/../train_instances.txt", "w")
 
         for i, parser in enumerate(parsers):
             progress = int(i * 100.0 / count)
@@ -113,7 +113,12 @@ if __name__ == '__main__':
     data_folder = sys.argv[2]
     sentence_home = os.environ['SENTENCE_HOME']
 
-    database = sentence_home + "/leveldbs/" + data_folder
+    database = sentence_home + "/leveldbs/" + data_folder +
+        "-"     + config.get('windowing', 'window_size')
+        "-"     + config.get('windowing', 'punctuation_position')
+        "-pos-" + config.get('features', 'pos_tagging')
+        "-qm-"  + config.get('features', 'use_question_mark')
+        "-"     + config.get('word_vector', 'key_error_vector')
     if os.path.isdir(database):
         print("Deleting " + sentence_home + "/leveldbs/" + data_folder + ". y/N?")
         s = raw_input()
@@ -124,16 +129,17 @@ if __name__ == '__main__':
         shutil.rmtree(database)
 
     os.mkdir(database)
+    shutil.copy(sentence_home + "/python/config.ini", database)
 
     generator = TrainingInstanceGenerator(vector_file)
     print("Generating test data .. ")
     start = time.time()
-    generator.generate(test_parsers, data_folder + "/test", test = True)
+    generator.generate(test_parsers, data_folder + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
     print("Generating training data .. ")
     start = time.time()
-    generator.generate(training_parsers, data_folder + "/train", test = False)
+    generator.generate(training_parsers, data_folder + "/train", is_test = False)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
     print("")
