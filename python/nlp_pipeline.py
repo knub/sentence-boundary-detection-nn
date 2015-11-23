@@ -111,7 +111,7 @@ class NlpPipeline(object):
 
         return tokens
 
-    def _pos_tag(self, tokens):
+    def pos_tag(self, tokens):
         word_tokens = map(lambda x: x.word, tokens)
         pos_tags = nltk.pos_tag(word_tokens)
 
