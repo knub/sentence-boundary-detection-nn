@@ -2,6 +2,7 @@ import xml.etree.ElementTree
 import sys
 import os.path
 import re
+from text import *
 from abstract_parser import AbstractParser
 from nlp_pipeline import NlpPipeline
 
