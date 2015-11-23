@@ -1,7 +1,7 @@
 [word_vector]
 # if set to 'avg' the average word vector is taken,
 # otherwise the given word is taken as key error vector.
-key_error_vector = "this"
+key_error_vector = this
 
 [windowing]
 window_size = 5
