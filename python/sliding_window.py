@@ -1,7 +1,7 @@
 import numpy
 from nlp_pipeline import Punctuation, NlpPipeline
 from tokens import PunctuationToken
-from talk_parser import Sentence
+from talk_parser import Sentence, Talk
 from training_instance import TrainingInstance
 
 WINDOW_SIZE = 5
@@ -33,6 +33,8 @@ class SlidingWindow(object):
                 if not is_punctuation:
                     word_count += 1
                     window_tokens.append(current_token)
+                elif i == index:
+                    index += 1  ##dont parse windows with punctuations at the beginning twice
 
                 if word_count == PUNCTUATION_POS and is_punctuation:
                     instance_label = current_token.punctuation_type
@@ -54,15 +56,17 @@ class SlidingWindow(object):
 def main():
     nlp_pipeline = NlpPipeline()
 
-    sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
+   # sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
+    sentence = Sentence(1, unicode("I'm a savant, or more precisly, a high-functioning autisitic savant. It"))
     sentence.set_time_start(12.95)
     sentence.set_time_end(29.50)
-    sentence.set_speech_text("You know one of the {$(<BREATH>)} intense pleasures of travel in one of the delights of ethnographic research {$(<BREATH>)} is the opportunity to live amongst those who have not forgotten the old ways {$(<BREATH>)} to {$(<BREATH>)} still feel their past and the wind {$(<SBREATH>)} touch and stones pause by rain {$(<SBREATH>)} I tasted in the bitter leaves of plants")
-    sentence.set_enriched_speech_text("You know one of the intense pleasures of travel in one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways to still feel their past and the wind touch and stones pause by rain I tasted in the bitter leaves of plants")
     sentence.set_gold_tokens(nlp_pipeline.parse_text(sentence.gold_text))
 
+    talk = Talk(123, "title")
+    talk.add_sentence(sentence)
+
     slidingWindow = SlidingWindow()
-    windows = slidingWindow.list_windows(sentence)
+    windows = slidingWindow.list_windows(talk)
 
     for window in windows:
         print(window)
