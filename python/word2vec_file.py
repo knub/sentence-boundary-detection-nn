@@ -65,8 +65,9 @@ class Word2VecFile():
             return self.vector_array[idx]
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
-            # TODO: If word does not exist, use average vector. Better idea?
-            return self.average_vector
+            # we return 'this' vector instead
+            idx = self.word2index['this']
+            return self.vector_array[idx]
 
 
 ################
