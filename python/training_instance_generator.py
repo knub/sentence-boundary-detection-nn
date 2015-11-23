@@ -111,7 +111,7 @@ if __name__ == '__main__':
     elif vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_data = [("/home/ms2015t3/data/test-talk.xml", None)]
+        training_data = [("/home/ms2015t3/data/train-talk.xml", None)]
         test_data = [("/home/ms2015t3/data/test-talk.xml", None)]
     else:
         print("Invalid vector file")
