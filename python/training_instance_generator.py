@@ -103,7 +103,7 @@ if __name__ == '__main__':
     elif vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
+        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
         test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
     else:
         print("Invalid vector file")

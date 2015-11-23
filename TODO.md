@@ -14,6 +14,7 @@
 
 ### Ideas
 
+* Fix "St. Petersburg" in TalkXMLParser
 * Deploy Script: separate testing and developing from running demo
 * Consider features like: There was a question word in the last k statements
 * Try LSTM (ask Christian Bartz for better Caffe LSTM implementation)

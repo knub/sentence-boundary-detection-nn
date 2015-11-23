@@ -1,6 +1,11 @@
 import nltk, nltk.data
 from enum import Enum
 from tokens import Punctuation, PunctuationToken, WordToken
+from sbd_config import config
+
+
+POS_TAGGING = config.getboolean('features', 'pos_tagging')
+
 
 class PosTag(Enum):
     OTHER = 0
@@ -17,6 +22,7 @@ class PosTag(Enum):
     PRONOUN = 11
     INTERJECTION = 12
     QUESTION_WORDS = 13
+
 
 class NlpPipeline(object):
 
@@ -88,23 +94,30 @@ class NlpPipeline(object):
         """
 
         raw_tokens = nltk.word_tokenize(text)
-
-        pos_tags = nltk.pos_tag(raw_tokens)
         tokens = []
 
         for i in range(0, len(raw_tokens)):
             raw_token = raw_tokens[i]
-            pos_tag_str = pos_tags[i][1]
 
             if raw_token in self.punctuation_mapping:
                 token = self.punctuation_mapping[raw_token]
                 tokens.append(PunctuationToken(raw_token, token))
             else:
                 word_token = WordToken(raw_token)
-                word_token.set_pos_tags(self._parse_pos_tag(pos_tag_str))
                 tokens.append(word_token)
 
+        if POS_TAGGING:
+            self._pos_tag(tokens)
+
         return tokens
+
+    def _pos_tag(self, tokens):
+        word_tokens = map(lambda x: x.word, tokens)
+        pos_tags = nltk.pos_tag(word_tokens)
+
+        for i, token in enumerate(tokens):
+            pos_tag_str = pos_tags[i][1]
+            token.set_pos_tags(self._parse_pos_tag(pos_tag_str))
 
     def _parse_pos_tag(self, pos_tag_str):
         pos_tags = pos_tag_str.split("/")

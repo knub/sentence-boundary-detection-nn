@@ -1,0 +1,10 @@
+[word_vector]
+key_error_vector = "this"
+
+[windowing]
+window_size = 5
+punctuation_position = 3
+
+[features]
+use_question_mark = true
+pos_tagging = false

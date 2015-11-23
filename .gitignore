@@ -1,6 +1,7 @@
 # Sentence files
 train_instances.txt
 test_instances.txt
+config.ini
 
 # Caffe files
 *.tlog
