@@ -1,7 +1,7 @@
 import numpy
 from nlp_pipeline import Punctuation, NlpPipeline
 from tokens import PunctuationToken
-from talk_parser import Sentence, Talk
+from text import Sentence, Text
 from training_instance import TrainingInstance
 
 WINDOW_SIZE = 5
@@ -57,20 +57,18 @@ def main():
     nlp_pipeline = NlpPipeline()
 
    # sentence = Sentence(1, "You know, one of the intense pleasures of travel and one of the delights of ethnographic research is the opportunity to live amongst those who have not forgotten the old ways, who still feel their past in the wind, touch it in stones polished by rain, taste it in the bitter leaves of plants.")
-    sentence = Sentence(1, unicode("I'm a savant, or more precisly, a high-functioning autisitic savant. It"))
-    sentence.set_time_start(12.95)
-    sentence.set_time_end(29.50)
-    sentence.set_gold_tokens(nlp_pipeline.parse_text(sentence.gold_text))
+    sentence = Sentence()
+    sentence.set_sentence_text(unicode("I'm a savant, or more precisly, a high-functioning autisitic savant. It"))
+    sentence.set_tokens(nlp_pipeline.parse_text(sentence.sentence_text)
 
-    talk = Talk(123, "title")
-    talk.add_sentence(sentence)
+    text = Text()
+    text.add_sentence(sentence)
 
     slidingWindow = SlidingWindow()
-    windows = slidingWindow.list_windows(talk)
+    windows = slidingWindow.list_windows(text)
 
     for window in windows:
         print(window)
-
 
 if __name__ == '__main__':
     main()
