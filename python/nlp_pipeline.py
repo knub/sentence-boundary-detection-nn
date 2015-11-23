@@ -107,7 +107,7 @@ class NlpPipeline(object):
                 tokens.append(word_token)
 
         if POS_TAGGING:
-            self._pos_tag(tokens)
+            self.pos_tag(tokens)
 
         return tokens
 
