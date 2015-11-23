@@ -145,6 +145,6 @@ if __name__ == '__main__':
     print("Done in " + str(duration) + " min.")
     print("")
     uncovered = generator.get_not_covered_words()
-    print(sorted(uncovered.items(), key = operator.itemgetter(1))
+    print(sorted(uncovered.items(), key = operator.itemgetter(1)))
     print("Nr covered tokens: " + str(generator.word2vec.nr_covered_words))
     print("Nr uncovered tokens: " + str(generator.word2vec.nr_uncovered_words))
