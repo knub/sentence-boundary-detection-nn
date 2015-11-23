@@ -23,7 +23,7 @@ class TrainingInstance(object):
         for i in range(0, WINDOW_SIZE):
             arr[0][i][0:word_vec_size] = self.tokens[i].word_vec
             for pos_tag in self.tokens[i].pos_tags:
-                arr[0][i][word_vec_size + pos_tag.value] = 1
+                arr[0][i][word_vec_size + pos_tag.value] = 1.0
 
         return arr
 
