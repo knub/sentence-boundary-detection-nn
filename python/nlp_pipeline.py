@@ -1,4 +1,4 @@
-import nltk
+import nltk, nltk.data
 from enum import Enum
 from tokens import Punctuation, PunctuationToken, WordToken
 
@@ -21,6 +21,7 @@ class PosTag(Enum):
 class NlpPipeline(object):
 
     def __init__(self):
+        self.punkt = None
         self.punctuation_mapping = {
             ";": Punctuation.PERIOD,
             ".": Punctuation.PERIOD,
@@ -113,3 +114,8 @@ class NlpPipeline(object):
             pos_tag_set.add(self.pos_tag_mapping.get(pos_tag, PosTag.OTHER))
 
         return pos_tag_set
+
+    def sentence_segmentation(self, text):
+        if not self.punkt:
+            self.punkt = nltk.data.load('tokenizers/punkt/english.pickle')
+        return self.punkt.tokenize(text.strip())

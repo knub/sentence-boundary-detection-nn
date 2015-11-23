@@ -1,62 +1,64 @@
-import xml.etree.ElementTree
-import sys
-import os.path
-import re
-from nlp_pipeline import NlpPipeline
+import argparse, sys
 from abstract_parser import AbstractParser
+from nlp_pipeline import NlpPipeline
+from text import Sentence, Text
 
+
+TEXT_SEPARATOR = "################################################################################"
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class PlaintextParser(AbstractParser):
-    def __init__(self, xml_file):
-        self.xml_file = xml_file
+    def __init__(self, filename):
+        self.filename = filename
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
-        talks = []
+        texts = []
 
-        mteval = xml.etree.ElementTree.parse(self.xml_file).getroot()
-        srcset = mteval.find("srcset")
-        for doc in srcset.findall('doc'):
-            talk = Text()
+        file_ = open(self.filename, "r")
+        content = file_.read()
+        encoded = content.encode('utf8')
+        lines = encoded.split('\n')
+        file_.close()
 
-            for sentence in doc.findall("seg"):
-                sentence_text = unicode(sentence.text)
+        text = Text()
 
-                sentence = Sentence()
-                sentence.set_sentence_text(sentence_text)
-                sentence.set_tokens(self.nlp_pipeline.parse_text(sentence_text))
-                talk.add_sentence(sentence)
+        for line in lines:
+            if line.startswith(TEXT_SEPARATOR):
+                if (len(text.sentences) > 0):
+                    texts.append(text)
+                    text = Text()
+                continue
+            print "line", line
+            sentences = self.nlp_pipeline.sentence_segmentation(line)
+            for sentence in sentences:
+                print "sentence", sentence
+                s = Sentence()
+                s.set_sentence_text(sentence)
+                s.set_tokens(self.nlp_pipeline.parse_text(sentence))
+                text.add_sentence(s)
 
-            talks.append(talk)
+        texts.append(text)
 
-        return talks
+        return texts
 
 
 ################
 # Example call #
 ################
 
-def main(xml_file, template_file = None):
-    parser = TalkParser(xml_file, template_file)
-    talks = parser.list_talks()
-    for talk in talks:
-        print(talk)
+def main(filename):
+    parser = PlaintextParser(filename)
+    texts = parser.parse()
+    for text in texts:
+        print "text:"
+        print(text)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python talk_parser.py <xml_file> <template_file>")
-        print("   xml_file:      XML file containing talks.")
-        print("   template_file: Template file path to sorted_txt transcript file. Contains <id> for talk id, which will be replaced.")
-        sys.exit(0)
+    parser = argparse.ArgumentParser(description='Test the plain text file parsing')
+    parser.add_argument('filename', help='the plain text file you want to parse')
+    args = parser.parse_args()
 
-    xml_file = sys.argv[1]
-    
-    template_file = None
-    if len(sys.argv) == 3:
-        template_file = sys.argv[2]
-
-    if not (os.path.isfile(xml_file)):
-        print("No valid input xml file!")
-        sys.exit(0)
-
-    main(xml_file, template_file)
+    main(args.filename)

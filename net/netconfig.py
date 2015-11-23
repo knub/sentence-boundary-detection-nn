@@ -63,7 +63,7 @@ def main(prototxt, output, omissions, additions, verbose, print_to_stdout):
     print "Modified net saved here: %s" % output
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Get word vector from binary data.')
+    parser = argparse.ArgumentParser(description='Configure your net with #### BLOCKSTART and #### BLOCKEND tags')
     parser.add_argument('prototxt', help='the net prototxt you want to modify')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-d','--deploy', help='preset: deploy (omit TRAINTEST blocks, add DEPLOY), default output is deploy.prototxt', action='store_true')

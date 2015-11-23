@@ -33,5 +33,5 @@ class Sentence(object):
 
     def __str__(self):
         tokens_str = ', '.join(map(str, self.tokens))
-        return "text: %s \n tokens: %s \n" % (self.sentence_text, tokens_str)
+        return "sentence: %s \n tokens: %s \n" % (self.sentence_text, tokens_str)
 
