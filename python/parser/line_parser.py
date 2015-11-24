@@ -46,7 +46,6 @@ class LineParser(AbstractParser):
                     if self.nlp_pipeline != None:
                         self.nlp_pipeline.pos_tag(sentence.tokens)
                     text.add_sentence(sentence)
-                    #print i, sentence
                     sentence = Sentence()
                     sentence.tokens = []
         return [text]

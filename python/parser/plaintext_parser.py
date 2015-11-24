@@ -28,10 +28,8 @@ class PlaintextParser(AbstractParser):
                         texts.append(text)
                         text = Text()
                     continue
-                print "line", line
                 sentences = self.nlp_pipeline.sentence_segmentation(line)
                 for sentence in sentences:
-                    print "sentence", sentence
                     s = Sentence()
                     s.set_sentence_text(sentence)
                     s.set_tokens(self.nlp_pipeline.parse_text(sentence))
