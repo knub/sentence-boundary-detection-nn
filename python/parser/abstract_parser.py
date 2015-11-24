@@ -1,6 +1,3 @@
-import sys
-sys.path.append("..")
-
 
 class AbstractParser( object ):
     """AbstractParser which shows the interface and methods a parser should apply"""

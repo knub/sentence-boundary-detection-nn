@@ -1,6 +1,3 @@
-import sys
-sys.path.append("..")
-
 import argparse, numpy, caffe
 from word2vec_file import Word2VecFile
 from sliding_window import SlidingWindow, PUNCTUATION_POS

@@ -17,28 +17,24 @@ class PlaintextParser(AbstractParser):
     def parse(self):
         texts = []
 
-        file_ = open(self.filename, "r")
-        content = file_.read()
-        encoded = content.encode('utf8')
-        lines = encoded.split('\n')
-        file_.close()
-
         text = Text()
 
-        for line in lines:
-            if line.startswith(TEXT_SEPARATOR):
-                if (len(text.sentences) > 0):
-                    texts.append(text)
-                    text = Text()
-                continue
-            print "line", line
-            sentences = self.nlp_pipeline.sentence_segmentation(line)
-            for sentence in sentences:
-                print "sentence", sentence
-                s = Sentence()
-                s.set_sentence_text(sentence)
-                s.set_tokens(self.nlp_pipeline.parse_text(sentence))
-                text.add_sentence(s)
+        with open(self.filename, "r") as file_:
+            for line_unenc in file_:
+                line = unicode(line_unenc.encode('utf8'))
+                if line.startswith(TEXT_SEPARATOR):
+                    if (len(text.sentences) > 0):
+                        texts.append(text)
+                        text = Text()
+                    continue
+                print "line", line
+                sentences = self.nlp_pipeline.sentence_segmentation(line)
+                for sentence in sentences:
+                    print "sentence", sentence
+                    s = Sentence()
+                    s.set_sentence_text(sentence)
+                    s.set_tokens(self.nlp_pipeline.parse_text(sentence))
+                    text.add_sentence(s)
 
         texts.append(text)
 

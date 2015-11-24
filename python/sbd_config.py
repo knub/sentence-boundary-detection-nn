@@ -5,9 +5,13 @@ import os
 allowed_sections = Set(['word_vector', 'windowing', 'features'])
 allowed_options = Set(['key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging'])
 
-sentence_home = os.environ['SENTENCE_HOME']
+config_path = os.path.join(os.getcwd(), 'config.ini')
+if 'SENTENCE_HOME' in os.environ:
+    # if environment variable is set, we take that directory instead
+    config_path = os.path.join(os.environ['SENTENCE_HOME'], 'python/config.ini')
 config = ConfigParser.ConfigParser()
-config.read(sentence_home + '/python/config.ini')
+print "Reading config file from here: %s" % config_path
+config.read(config_path)
 
 # check validity:
 for section in config.sections():
