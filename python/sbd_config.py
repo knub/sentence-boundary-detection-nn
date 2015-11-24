@@ -1,6 +1,5 @@
-import ConfigParser
+import ConfigParser, os
 from sets import Set
-import os
 
 allowed_sections = Set(['word_vector', 'windowing', 'features'])
 allowed_options = Set(['key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging'])
@@ -10,7 +9,7 @@ if 'SENTENCE_HOME' in os.environ:
     # if environment variable is set, we take that directory instead
     config_path = os.path.join(os.environ['SENTENCE_HOME'], 'python/config.ini')
 config = ConfigParser.ConfigParser()
-print "Reading config file from here: %s" % config_path
+print "Reading config: %s" % config_path
 config.read(config_path)
 
 # check validity:

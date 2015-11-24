@@ -1,5 +1,5 @@
-import sys
-import os
+import sys, argparse, os
+from argparse_util import *
 from abstract_parser import AbstractParser
 from nlp_pipeline import NlpPipeline
 from text import Text, Sentence
@@ -71,25 +71,18 @@ class LineParser(AbstractParser):
 # Example call #
 ################
 
-def main(file):
-    parser = LineParser(file)
+def main(filename):
+    parser = LineParser(filename)
     texts = parser.parse()
     for text in texts:
         print(text)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python line_parser.py <file>")
-        print("   file:      file contains lines with word and period value")
-        sys.exit(0)
+    parser = argparse.ArgumentParser(description='Test the line text file parsing')
+    parser.add_argument('file', help='file contains lines with word and period value', type=lambda arg: is_valid_file(parser, arg))
+    args = parser.parse_args()
 
-    file = sys.argv[1]
-
-    if not (os.path.isfile(file)):
-        print("No valid input file!")
-        sys.exit(0)
-
-    main(file)
+    main(args.file)
 
 
 

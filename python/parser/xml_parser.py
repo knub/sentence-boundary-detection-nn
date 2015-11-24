@@ -1,7 +1,5 @@
-import xml.etree.ElementTree
-import sys
-import os.path
-import re
+import xml.etree.ElementTree, sys, os.path, re
+from argparse_util import *
 from text import *
 from abstract_parser import AbstractParser
 from nlp_pipeline import NlpPipeline
@@ -44,15 +42,8 @@ def main(xml_file):
         print(talk)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python talk_parser.py <xml_file> <template_file>")
-        print("   xml_file:      XML file containing talks.")
-        sys.exit(0)
+    parser = argparse.ArgumentParser(description='Test the xml file parsing')
+    parser.add_argument('filename', help='XML file containing talks', type=lambda arg: is_valid_file(parser, arg))
+    args = parser.parse_args()
 
-    xml_file = sys.argv[1]
-
-    if not (os.path.isfile(xml_file)):
-        print("No valid input xml file!")
-        sys.exit(0)
-
-    main(xml_file)
+    main(args.filename)

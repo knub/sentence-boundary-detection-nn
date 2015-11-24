@@ -1,4 +1,5 @@
-import argparse, sys
+import argparse, sys, os
+from argparse_util import *
 from abstract_parser import AbstractParser
 from nlp_pipeline import NlpPipeline
 from text import Sentence, Text
@@ -54,7 +55,7 @@ def main(filename):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the plain text file parsing')
-    parser.add_argument('filename', help='the plain text file you want to parse')
+    parser.add_argument('filename', help='the plain text file you want to parse', type=lambda arg: is_valid_file(parser, arg))
     args = parser.parse_args()
 
     main(args.filename)

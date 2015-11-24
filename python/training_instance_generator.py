@@ -1,8 +1,5 @@
-import operator
-import os
-import shutil
-import sys
-import time
+import operator, os, shutil, sys, time, argparse
+from argparse_util import *
 
 from parser.xml_parser import XMLParser
 from parser.plaintext_parser import PlaintextParser
@@ -80,18 +77,15 @@ class TrainingInstanceGenerator():
 
 
 if __name__ == '__main__':
-
-    argc = len(sys.argv)
-    if argc != 3:
-        print("Usage: " + sys.argv[0] + " [vector file - either 'small' or 'google'] [data_folder]")
-        sys.exit(1)
-
-    vector_file = sys.argv[1]
+    parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
+    parser.add_argument('vector_file', metavar="vector_file {'small' or 'google'}", choices=['small', 'google'])
+    parser.add_argument('data_folder', help='folder for lmdb creation')
+    args = parser.parse_args()
 
     training_data = []
     test_data = []
 
-    if vector_file == "google":
+    if args.vector_file == "google":
         vector_file = GOOGLE_VECTOR_FILE
 
         training_parsers = [
@@ -106,19 +100,15 @@ if __name__ == '__main__':
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
 
-    elif vector_file == "small":
+    elif args.vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
         test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
-    else:
-        print("Invalid vector file")
-        sys.exit(2)
 
-    data_folder = sys.argv[2]
     sentence_home = os.environ['SENTENCE_HOME']
 
-    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + data_folder + \
+    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + args.data_folder + \
         "_"      + config.get('windowing', 'window_size') + \
         "_"      + config.get('windowing', 'punctuation_position') + \
         "_pos-"  + config.get('features', 'pos_tagging') + \

@@ -1,6 +1,4 @@
-import argparse
-import numpy
-import leveldb
+import argparse, numpy, leveldb
 from caffe.proto import caffe_pb2
 
 
@@ -105,7 +103,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Write a test file.')
+    parser = argparse.ArgumentParser(description='Write a test lmdb file.')
     parser.add_argument('dbfile', help='path to a level db test directory')
     args = parser.parse_args()
     main(args)
