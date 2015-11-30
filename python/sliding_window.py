@@ -16,7 +16,7 @@ class SlidingWindow(object):
         index = 0
         training_instances = []
 
-        while index < len(tokens) - WINDOW_SIZE:
+        while index <= len(tokens) - WINDOW_SIZE:
             window_tokens = []
             instance_label = Punctuation.NONE
 
