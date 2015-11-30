@@ -44,28 +44,28 @@ class Classifier(object):
         slidingWindow = SlidingWindow()
         instances = slidingWindow.list_windows(input_text)
 
-        index = 1
+        # get caffe predictions
+        punctuation_probs = []
         for instance in instances:
             probs = self.predict_caffe(instance)
-            instance_tokens = instance.get_tokens()
+            punctuation_probs.append(probs)
 
-            for i in range(len(instance_tokens)):
-                token_json = {'type': 'word', 'token': instance_tokens[i].word}
-                if POS_TAGGING:
-                    token_json['pos'] = instance_tokens[i].pos_tags
-                self.json_data[0].append(token_json)
+        # build json
+        for i, token in enumerate(input_text.tokens):
+            token_json = {'type': 'word', 'token': token.word}
+            if POS_TAGGING:
+                token_json['pos'] = token.pos_tags
+            self.json_data.append(token_json)
 
-                # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-                if index < PUNCTUATION_POS or index > len(input_text.tokens) - (WINDOW_SIZE - PUNCTUATION_POS):
-                    self.json_data[0].append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
-                else:
-                    current_punctuation = classes[numpy.argmax(probs)]
-                    class_distribution = self._get_class_distribution(probs)
-                    self.json_data[0].append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
+            # we are at the beginning or at the end of the text and do not have any predictions for punctuations
+            if i < PUNCTUATION_POS - 1 or i > len(input_text.tokens) - PUNCTUATION_POS - 1:
+                self.json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
+            else:
+                current_punctuation = classes[numpy.argmax(punctuation_probs[i - PUNCTUATION_POS + 1])]
+                class_distribution = self._get_class_distribution(punctuation_probs[i - PUNCTUATION_POS + 1])
+                self.json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
 
-            index += 1
-
-        return json.dumps(self.json_data)
+        return self.json_data
 
     def predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
@@ -82,6 +82,6 @@ class Classifier(object):
     def _get_class_distribution(self, probs):
         json_data = {}
         for i in range (0, len(classes)):
-            json_data[classes[i]] = probs[0][i]
+            json_data[classes[i]] = str(probs[0][i])
         return json_data
 

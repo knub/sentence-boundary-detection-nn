@@ -18,34 +18,17 @@ def index():
 @app.route("/classify", methods = ['POST'])
 def classify():
     assert request.method == 'POST'
-    text = "The sun is shining Let's go outside"
-#    json_data = classifier.predict_text(text)
-
-    data = [
-        {
-            "type": "word",
-            "token": "The",
-            "pos": "DET",
-        },
-        {
-            "type": "punctuation",
-            "punctuation": "NONE",
-            "probs": {
-                "NONE": 0.99,
-                "COMMA": 0.05,
-                "PERIOD": 0.2
-            }
-        }
-    ]
+    text = request.form['text']
+    data = classifier.predict_text(text)
     return json.dumps(data)
 
 if __name__ == "__main__":
-    vectorfile = ""
-    caffeproto = ""
-    caffemodel = ""
+    vectorfile = "models/GoogleNews-vectors-negative300.bin" # vectors.bin
+    caffeproto = "models/deploy.prototxt"
+    caffemodel = "models/model.caffemodel"
 
-    # vector = Word2VecFile(vectorfile)
-    # net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
-    # classifier = Classifier(net, vector)
+    vector = Word2VecFile(vectorfile)
+    net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
+    classifier = Classifier(net, vector)
 
-    app.run(debug = True)
+    app.run(debug = True, use_reloader = False)

@@ -14,7 +14,7 @@ $(document).ready(function() {
 
     $("#button-punctuate").click(function() {
         var text = {
-            text: $('#textarea-input').val();
+            text: $('#textarea-input').val()
         };
         $.post("/classify", text, function(response, textStatus) {
                 displayResult(response);
