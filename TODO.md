@@ -19,10 +19,10 @@
 
 ### Ideas
 
-* Fix "St. Petersburg" in TalkXMLParser
-* Deploy Script: separate testing and developing from running demo
+* [DONE] Fix "St. Petersburg" in TalkXMLParser
+* [DONE] Deploy Script: separate testing and developing from running demo
 * Consider features like: There was a question word in the last k statements
-* Try LSTM (ask Christian Bartz for better Caffe LSTM implementation)
+* Try LSTM: https://github.com/Russell91/nlpcaffe
 * Data aggregation: rotation, some bit fiddling
 * Tackle class imbalance (Xiaoyin said, that this does not matter.)
 * Tokenizer: Use tokenizer which maximizes hit rate in word vector
