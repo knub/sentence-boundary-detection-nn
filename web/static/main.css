@@ -1,0 +1,13 @@
+#punctuation {
+    padding: 15px;
+    background: #EEE;
+}
+.token {
+    background: #CCC;
+    border-radius: 4px;
+    padding: 5px;
+    margin: 10px 10px;
+}
+.token-punctuation {
+    background: #F2D0D8;
+}
