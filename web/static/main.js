@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     function displayResult(tokens) {
         var $resultDiv = $("#punctuation");
-        $resultDiv.html("");
+        $resultDiv.empty("");
         tokens.forEach(function(token) {
             if (token.type == "word") {
                 $resultDiv.append("<span class='token token-" + token.type + "'>" + token.token + "</span>");
