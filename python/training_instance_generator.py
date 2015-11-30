@@ -40,8 +40,7 @@ class TrainingInstanceGenerator():
             progress = int(i * 100.0 / count)
             sys.stdout.write(str(progress) + "% ")
             sys.stdout.flush()
-
-            
+ 
             texts = parser.parse()
 
             for text in texts:

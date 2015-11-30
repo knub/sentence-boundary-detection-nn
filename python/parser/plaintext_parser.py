@@ -16,8 +16,6 @@ class PlaintextParser(AbstractParser):
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
-        texts = []
-
         text = Text()
 
         with open(self.filename, "r") as file_:
@@ -25,19 +23,15 @@ class PlaintextParser(AbstractParser):
                 line = unicode(line_unenc.encode('utf8'))
                 if line.startswith(TEXT_SEPARATOR):
                     if (len(text.sentences) > 0):
-                        texts.append(text)
+                        yield text
                         text = Text()
-                    continue
+                        continue
                 sentences = self.nlp_pipeline.sentence_segmentation(line)
                 for sentence in sentences:
                     s = Sentence()
                     s.set_sentence_text(sentence)
                     s.set_tokens(self.nlp_pipeline.parse_text(sentence))
                     text.add_sentence(s)
-
-        texts.append(text)
-
-        return texts
 
 
 ################

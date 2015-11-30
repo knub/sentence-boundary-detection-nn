@@ -11,8 +11,6 @@ class XMLParser(AbstractParser):
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
-        talks = []
-
         mteval = xml.etree.ElementTree.parse(self.xml_file).getroot()
         srcset = mteval.find("srcset")
         for doc in srcset.findall('doc'):
@@ -26,9 +24,7 @@ class XMLParser(AbstractParser):
                 sentence.set_tokens(self.nlp_pipeline.parse_text(sentence_text))
                 talk.add_sentence(sentence)
 
-            talks.append(talk)
-
-        return talks
+            yield talk
 
 
 ################
