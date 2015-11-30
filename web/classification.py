@@ -50,7 +50,10 @@ class Classifier(object):
             instance_tokens = instance.get_tokens()
 
             for i in range(len(instance_tokens)):
-                self.json_data[0].append({'type': 'word', 'token': instance_tokens[i].word, 'pos': instance_tokens[i].pos_tags})
+                token_json = {'type': 'word', 'token': instance_tokens[i].word}
+                if POS_TAGGING:
+                    token_json['pos'] = instance_tokens[i].pos_tags
+                self.json_data[0].append(token_json)
 
                 # we are at the beginning or at the end of the text and do not have any predictions for punctuations
                 if index < PUNCTUATION_POS or index > len(input_text.tokens) - (WINDOW_SIZE - PUNCTUATION_POS):
