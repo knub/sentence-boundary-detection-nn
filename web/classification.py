@@ -3,11 +3,14 @@ sys.path.append("../python/")
 import numpy, caffe
 import json
 from word2vec_file import Word2VecFile
-from sliding_window import SlidingWindow, PUNCTUATION_POS
+from sliding_window import SlidingWindow
 from nlp_pipeline import NlpPipeline
+from sbd_config import config
 
 classes = ["NONE", "COMMA", "PERIOD"]
-classes_as_string = ["", ",", "."]
+
+WINDOW_SIZE = config.getint('windowing', 'window_size')
+PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
 
 class InputText(object):
 
@@ -38,19 +41,23 @@ class Classifier(object):
         slidingWindow = SlidingWindow()
         instances = slidingWindow.list_windows(input_text)
 
-        punctuations = []
+        index = 1
         for instance in instances:
             probs = self.predict_caffe(instance)
-            punctuations.append(numpy.argmax(probs))
+            instance_tokens = instance.get_tokens()
 
-        for i in range(len(punctuations) - 1, -1, -1):
-            input_text.tokens.insert(i + PUNCTUATION_POS, classes_as_string[punctuations[i]])
+            for i in range(len(instance_tokens)):
+                self.json_data[0].append( { 'token': instance_tokens[i].word, 'pos': instance_tokens[i].pos_tags })
 
-        punctuated_text = ""
-        for t in input_text.tokens:
-            punctuated_text += t
+                # we are at the beginning or at the end of the text and do not have any predictions for punctuations
+                if index < PUNCTUATION_POS or index > len(input_text.tokens) - (WINDOW_SIZE - PUNCTUATION_POS):
+                    self.json_data[0].append( { 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0 }})
+                else:
+                    current_punctuation = classes[numpy.argmax(probs)]
+                    class_distribution = self._get_class_distribution(probs)
+                    self.json_data[0].append( { 'punctuation': current_punctuation, 'probs': class_distribution })
 
-        self.json_data[0]['text'] = punctuated_text
+            index += 1
 
         return json.dumps(self.json_data)
 
@@ -65,4 +72,10 @@ class Classifier(object):
 
         out = self.net.forward()
         return out['softmax']
+
+    def _get_class_distribution(self, probs):
+        json_data = {}
+        for i in range (0, len(classes)):
+            json_data[classes[i]] = probs[0][i]
+        return json_data
 

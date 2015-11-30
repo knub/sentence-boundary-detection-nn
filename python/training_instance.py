@@ -41,3 +41,6 @@ class TrainingInstance(object):
         if not USE_QUESTION_MARK and self.label == Punctuation.QUESTION:
             return Punctuation.PERIOD.value
         return self.label.value
+
+    def get_tokens(self):
+        return self.tokens
