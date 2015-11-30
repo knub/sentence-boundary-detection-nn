@@ -18,5 +18,17 @@
     float: left;
 }
 .token-punctuation {
-    background: #F2D0D8;
+    background: #F2C38A;
+}
+.token-NONE {
+    background: #F2C38A;
+    white-space: pre-wrap;
+}
+.token-COMMA {
+    background: #F2C38A;
+    white-space: pre-line;
+}
+.token-PERIOD {
+    background: #F2C38A;
+    white-space: pre-line;
 }

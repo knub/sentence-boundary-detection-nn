@@ -9,9 +9,9 @@ $(document).ready(function() {
             } else if (token.type == "punctuation") {
                 var probs_str = "";
                 for (var key in token.probs) {
-                    probs_str += key + ": " + token.probs[key] + "; "
+                    probs_str += key + ": " + (token.probs[key] * 100 ).toFixed(2) + "% &#013;"
                 };
-                $resultDiv.append("<span title='" + probs_str + "' class='token token-" + token.type + "'>" + token.punctuation + "</span>");
+                $resultDiv.append("<span title='" + probs_str + "' class='token token-" + token.punctuation + "'>" + token.punctuation + "</span>");
             }
         });
     };
