@@ -26,6 +26,7 @@ class TrainingInstanceGenerator(object):
         window_slider = sliding_window.SlidingWindow()
         # count how often each type (COMMA, PERIOD etc.) is in the instances
         class_distribution = dict()
+        prev_progress = 0
 
         count = len(parsers)
 
@@ -37,9 +38,11 @@ class TrainingInstanceGenerator(object):
             plain_text_instances_file = open(database + "/../train_instances.txt", "w")
 
         for i, parser in enumerate(parsers):
-            progress = int(i * 100.0 / count)
-            sys.stdout.write(str(progress) + "% ")
-            sys.stdout.flush()
+            progress = int(parser.progress() * 100)
+            if progress > prev_progress:
+                sys.stdout.write(str(progress) + "% ")
+                sys.stdout.flush()
+                prev_progress = progress
  
             texts = parser.parse()
 
