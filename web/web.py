@@ -1,14 +1,17 @@
 from flask import Flask
-from classification import Classifier
+from flask import render_template
+
 import sys
 sys.path.append("../python/")
+from classification import Classifier
 from word2vec_file import Word2VecFile
 import caffe
+
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "Hello World!"
+    return render_template('index.html')
 
 @app.route("/classify")
 def classify():
@@ -17,7 +20,6 @@ def classify():
     return "punctuated text as json"
 
 if __name__ == "__main__":
-
     vectorfile = ""
     caffeproto = ""
     caffemodel = ""
@@ -27,3 +29,4 @@ if __name__ == "__main__":
     classifier = Classifier(net, vector)
 
     app.run()
+    app.run(debug = True)
