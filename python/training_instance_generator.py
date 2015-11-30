@@ -8,11 +8,13 @@ import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
 from sbd_config import config
+from tokens import Punctuation
 
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/rice/Windows/uni/master4/paomr/vectors.bin" #"/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
+LABEL_NR =  if config.getboolean('features', 'use_question_mark'): len(Punctuation) else: len(Punctuation) - 1
 
 
 class TrainingInstanceGenerator(object):
@@ -65,7 +67,7 @@ class TrainingInstanceGenerator(object):
                     ## calc class distribution
                    # print str(class_distribution.get(training_instance.label, 0))
                     nr_instances += 1
-                    if (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) -0.3 <= 0.05:
+                    if (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - 0.3 <= 0.05:
                       #  print str(training_instance.label) + " " + str(class_distribution.get(training_instance.label, 0) / max(nr_instances_used, 1))
                         s = unicode(training_instance) + "\n"
     #                    s = s + unicode(training_instance.get_array()) + "\n\n"
