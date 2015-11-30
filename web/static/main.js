@@ -7,7 +7,11 @@ $(document).ready(function() {
             if (token.type == "word") {
                 $resultDiv.append("<span class='token token-" + token.type + "'>" + token.token + "</span>");
             } else if (token.type == "punctuation") {
-                $resultDiv.append("<span class='token token-" + token.type + "'>" + token.punctuation + "</span>");
+                var probs_str = "";
+                for (var key in token.probs) {
+                    probs_str += key + ": " + token.probs[key] + "; "
+                };
+                $resultDiv.append("<span title='" + probs_str + "' class='token token-" + token.type + "'>" + token.punctuation + "</span>");
             }
         });
     };

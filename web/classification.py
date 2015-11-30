@@ -63,7 +63,7 @@ class Classifier(object):
 
             # we are at the beginning or at the end of the text and do not have any predictions for punctuations
             if i < PUNCTUATION_POS - 1 or i > len(input_text.tokens) - PUNCTUATION_POS - 1:
-                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
+                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
             else:
                 current_punctuation = classes[numpy.argmax(punctuation_probs[i - PUNCTUATION_POS + 1])]
                 class_distribution = self._get_class_distribution(punctuation_probs[i - PUNCTUATION_POS + 1])
