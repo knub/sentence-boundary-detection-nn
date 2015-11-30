@@ -29,9 +29,10 @@ class InputText(object):
 
 class Classifier(object):
 
-    def __init__(self, net, word2vec):
+    def __init__(self, net, word2vec, debug = False):
         self.word2vec = word2vec
         self.net = net
+        self.debug = debug
 
     def predict_text(self, text):
         input_text = InputText(text)
@@ -39,7 +40,10 @@ class Classifier(object):
 
         for token in input_text.tokens:
             if not token.is_punctuation():
-                token.word_vec = self.word2vec.get_vector(token.word.lower())
+                if self.debug:
+                    token.word_vec = numpy.zeros(300)
+                else:
+                    token.word_vec = self.word2vec.get_vector(token.word.lower())
 
         slidingWindow = SlidingWindow()
         instances = slidingWindow.list_windows(input_text)
