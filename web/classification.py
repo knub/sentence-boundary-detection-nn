@@ -4,13 +4,16 @@ import numpy, caffe
 import json
 from word2vec_file import Word2VecFile
 from sliding_window import SlidingWindow
-from nlp_pipeline import NlpPipeline
+from nlp_pipeline import NlpPipeline, PosTag
 from sbd_config import config
 
 classes = ["NONE", "COMMA", "PERIOD"]
 
 WINDOW_SIZE = config.getint('windowing', 'window_size')
 PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
+POS_TAGGING = config.getboolean('features', 'pos_tagging')
+
+FEATURE_LENGTH = 300 if not POS_TAGGING else 300 + len(PosTag)
 
 class InputText(object):
 
@@ -47,15 +50,15 @@ class Classifier(object):
             instance_tokens = instance.get_tokens()
 
             for i in range(len(instance_tokens)):
-                self.json_data[0].append( { 'token': instance_tokens[i].word, 'pos': instance_tokens[i].pos_tags })
+                self.json_data[0].append({'type': 'word', 'token': instance_tokens[i].word, 'pos': instance_tokens[i].pos_tags})
 
                 # we are at the beginning or at the end of the text and do not have any predictions for punctuations
                 if index < PUNCTUATION_POS or index > len(input_text.tokens) - (WINDOW_SIZE - PUNCTUATION_POS):
-                    self.json_data[0].append( { 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0 }})
+                    self.json_data[0].append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
                 else:
                     current_punctuation = classes[numpy.argmax(probs)]
                     class_distribution = self._get_class_distribution(probs)
-                    self.json_data[0].append( { 'punctuation': current_punctuation, 'probs': class_distribution })
+                    self.json_data[0].append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
 
             index += 1
 
@@ -65,7 +68,7 @@ class Classifier(object):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         batchsize = 1
-        self.net.blobs['data'].reshape(batchsize,1,5,300)
+        self.net.blobs['data'].reshape(batchsize,1, 5, FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
         self.net.blobs['data'].data[...] = reshaped_array
