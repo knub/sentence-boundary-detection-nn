@@ -32,10 +32,10 @@ class Classifier(object):
     def __init__(self, net, word2vec):
         self.word2vec = word2vec
         self.net = net
-        self.json_data = []
 
     def predict_text(self, text):
         input_text = InputText(text)
+        json_data = []
 
         for token in input_text.tokens:
             if not token.is_punctuation():
@@ -55,17 +55,17 @@ class Classifier(object):
             token_json = {'type': 'word', 'token': token.word}
             if POS_TAGGING:
                 token_json['pos'] = token.pos_tags
-            self.json_data.append(token_json)
+            json_data.append(token_json)
 
             # we are at the beginning or at the end of the text and do not have any predictions for punctuations
             if i < PUNCTUATION_POS - 1 or i > len(input_text.tokens) - PUNCTUATION_POS - 1:
-                self.json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
+                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'pos': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
             else:
                 current_punctuation = classes[numpy.argmax(punctuation_probs[i - PUNCTUATION_POS + 1])]
                 class_distribution = self._get_class_distribution(punctuation_probs[i - PUNCTUATION_POS + 1])
-                self.json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
+                json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
 
-        return self.json_data
+        return json_data
 
     def predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
