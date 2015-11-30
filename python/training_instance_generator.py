@@ -3,6 +3,7 @@ from argparse_util import *
 
 from parser.xml_parser import XMLParser
 from parser.plaintext_parser import PlaintextParser
+from parser.line_parser import LineParser
 import sliding_window
 from word2vec_file import Word2VecFile
 from level_db_creator import LevelDBCreator
@@ -10,7 +11,7 @@ from sbd_config import config
 
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
-SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
+SMALL_VECTOR_FILE = "/home/rice/Windows/uni/master4/paomr/vectors.bin" #"/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
 
 
@@ -31,6 +32,7 @@ class TrainingInstanceGenerator(object):
         count = len(parsers)
 
         nr_instances = 0
+        nr_instances_used = 0
 
         if is_test:
             plain_text_instances_file = open(database + "/../test_instances.txt", "w")
@@ -59,18 +61,25 @@ class TrainingInstanceGenerator(object):
 
                 # write training instances to level db
                 for training_instance in training_instances:
-                    s = unicode(training_instance) + "\n"
-#                    s = s + unicode(training_instance.get_array()) + "\n\n"
-                    s += "\n"
-                    plain_text_instances_file.write(s.encode('utf8'))
+
+                    ## calc class distribution
+                   # print str(class_distribution.get(training_instance.label, 0))
                     nr_instances += 1
-                    class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
-                    level_db.write_training_instance(training_instance)
+                    if (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) -0.3 <= 0.05:
+                      #  print str(training_instance.label) + " " + str(class_distribution.get(training_instance.label, 0) / max(nr_instances_used, 1))
+                        s = unicode(training_instance) + "\n"
+    #                    s = s + unicode(training_instance.get_array()) + "\n\n"
+                        s += "\n"
+                        plain_text_instances_file.write(s.encode('utf8'))
+                        nr_instances_used += 1
+                        class_distribution[training_instance.label] = class_distribution.get(training_instance.label, 0) + 1
+                        level_db.write_training_instance(training_instance)
 
         plain_text_instances_file.close()
         print
 
-        print("Created " + str(nr_instances) + " instances.")
+        print("Orininally " + str(nr_instances) + " instances.")
+        print("Created " + str(nr_instances_used) + " instances." )
         print("Class distribution:")
         print(class_distribution)
 
@@ -105,8 +114,10 @@ if __name__ == '__main__':
     elif args.vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
-        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
+        training_parsers = [#XMLParser("/home/ms2015t3/data/train-talk.xml")
+            LineParser("/home/rice/Windows/uni/master4/paomr/Dataset/train200k")
+        ]
+        test_parsers = []#XMLParser("/home/ms2015t3/data/test-talk.xml")]
 
     sentence_home = os.environ['SENTENCE_HOME']
 
