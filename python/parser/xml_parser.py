@@ -6,12 +6,12 @@ from nlp_pipeline import NlpPipeline
 
 
 class XMLParser(AbstractParser):
-    def __init__(self, xml_file):
-        self.xml_file = xml_file
+    def __init__(self, filename):
+        super(C, self).method(filename)
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
-        mteval = xml.etree.ElementTree.parse(self.xml_file).getroot()
+        mteval = xml.etree.ElementTree.parse(self.filename).getroot()
         srcset = mteval.find("srcset")
         for doc in srcset.findall('doc'):
             talk = Text()
@@ -26,13 +26,15 @@ class XMLParser(AbstractParser):
 
             yield talk
 
+    def progress(self):
+        return self._no_progress_function()
 
 ################
 # Example call #
 ################
 
-def main(xml_file):
-    parser = XMLParser(xml_file)
+def main(filename):
+    parser = XMLParser(filename)
     talks = parser.parse()
     for talk in talks:
         print(talk)

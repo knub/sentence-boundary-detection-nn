@@ -2,7 +2,7 @@ import argparse, numpy, leveldb
 from caffe.proto import caffe_pb2
 
 
-class LevelDBCreator():
+class LevelDBCreator(object):
     """create a new level db, fill it with word vectors"""
 
     def __init__(self, filename, batchsize=1000):

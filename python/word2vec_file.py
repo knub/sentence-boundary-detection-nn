@@ -9,7 +9,7 @@ ENCODING = 'UTF-8'
 KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
 
 
-class Word2VecFile():
+class Word2VecFile(object):
     """reads a binary word vector file, returns vectors for single words"""
     def __init__(self, filename, use_this_vector=True):
         # the following variable counts word, that are not covered in the given vector

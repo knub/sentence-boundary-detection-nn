@@ -12,7 +12,8 @@ sys.setdefaultencoding('utf8')
 
 class PlaintextParser(AbstractParser):
     def __init__(self, filename):
-        self.filename = filename
+        super(PlaintextParser, self).__init__(filename)
+        self._init_line_count_progress()
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
@@ -20,6 +21,7 @@ class PlaintextParser(AbstractParser):
 
         with open(self.filename, "r") as file_:
             for line_unenc in file_:
+                self._progress += 1
                 line = unicode(line_unenc.encode('utf8'))
                 if line.startswith(TEXT_SEPARATOR):
                     if (len(text.sentences) > 0):
@@ -32,6 +34,11 @@ class PlaintextParser(AbstractParser):
                     s.set_sentence_text(sentence)
                     s.set_tokens(self.nlp_pipeline.parse_text(sentence))
                     text.add_sentence(s)
+        if (len(text.sentences) > 0):
+            yield text
+
+    def progress(self):
+        return self._line_count_progress()
 
 
 ################
@@ -41,9 +48,9 @@ class PlaintextParser(AbstractParser):
 def main(filename):
     parser = PlaintextParser(filename)
     texts = parser.parse()
-    for text in texts:
-        print "text:"
-        print(text)
+    for i, text in enumerate(texts):
+        print "progress %f, text %d:" % (parser.progress(), i)
+        print text
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the plain text file parsing')

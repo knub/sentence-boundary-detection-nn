@@ -14,7 +14,7 @@ SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
 
 
-class TrainingInstanceGenerator():
+class TrainingInstanceGenerator(object):
     """reads the original data, process them and writes them to a level-db"""
 
     def __init__(self, vector_file):

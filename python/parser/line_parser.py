@@ -10,11 +10,11 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-###exception when config use questionmark true
-
 class LineParser(AbstractParser):
 
-    def __init__(self, file):
+    def __init__(self, filename):
+        super(LineParser, self).__init__(filename)
+        self._init_line_count_progress()
 
         if config.getboolean('features', 'use_question_mark'):
             raise NameError("Question marks not supported by LineParser")
@@ -23,17 +23,16 @@ class LineParser(AbstractParser):
             self.nlp_pipeline = NlpPipeline()
         else:
             self.nlp_pipeline = None
-        
-        self.file = file
 
     def parse(self):
-        with open(self.file, "r") as file_:
+        with open(self.filename, "r") as file_:
             text = Text()
             sentence = Sentence()
             sentence.tokens = []
 
             i = 0
             for line_unenc in file_:
+                self._progress += 1
                 line = unicode(line_unenc.encode('utf8'))
                 i += 1
                 line = line.encode('utf8')
@@ -49,7 +48,10 @@ class LineParser(AbstractParser):
                     sentence = Sentence()
                     sentence.tokens = []
         return [text]
-    
+
+    def progress(self):
+        return self._line_count_progress()
+ 
     def __createToken(self, word, period):
         wordToken = WordToken(word)
         punctuationToken = None
