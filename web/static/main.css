@@ -1,12 +1,19 @@
 #punctuation {
     padding: 15px;
+    margin: 15px;
+    min-height: 100px;
     background: #EEE;
+}
+#textarea-input {
+    border: 1px solid black;
+    font-size: 1.5em;
+    margin: 30px 2px;
 }
 .token {
     background: #CCC;
     border-radius: 4px;
     padding: 5px;
-    margin: 10px 10px;
+    margin: 10px;
 }
 .token-punctuation {
     background: #F2D0D8;

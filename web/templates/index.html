@@ -16,12 +16,22 @@
         <script src="static/main.js"></script>
     </head>
     <body>
-        <h1>Sentence Boundary Detection</h1>
-        <form>
-            <textarea id="textarea-input" class="form-control" rows="3" placeholder="Enter unpunctuated text">The sun is shining let's go outside</textarea>
-            <button id="button-punctuate" type="button">Punctuate!</button>
-        </form>
-        <div id="punctuation">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <h1>Sentence Boundary Detection</h1>
+                    <form>
+                        <textarea id="textarea-input" class="form-control" rows="5" placeholder="Enter unpunctuated text">The sun is shining let's go outside</textarea>
+                        <div class="pull-right">
+                            <button id="button-punctuate" class="btn btn-success btn-lg" type="button">Punctuate!</button>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                    <div id="punctuation" class="clearfix"></div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
         </div>
     </body>
 </html>
