@@ -7,7 +7,7 @@ from nlp_pipeline import NlpPipeline
 
 class XMLParser(AbstractParser):
     def __init__(self, filename):
-        super(C, self).method(filename)
+        super(XMLParser, self).__init__(filename)
         self.nlp_pipeline = NlpPipeline()
 
     def parse(self):
