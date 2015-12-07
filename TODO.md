@@ -23,6 +23,11 @@
 4. Build a model for audio.
 5. Implementation of post-processing the output of the model.
 
+### TEST SERIES
+* balanced classes
+* with/without question mark
+* pos tagging
+* only line parser input
 
 ### Questions
 
