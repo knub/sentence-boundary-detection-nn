@@ -15,7 +15,8 @@ GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-neg
 SMALL_VECTOR_FILE = "/home/rice/Windows/uni/master4/paomr/vectors.bin" #"/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
-CLASS_DISTRIBUTION_VARIANTION = 0.05
+CLASS_DISTRIBUTION_VARIANTION = 0.10
+USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
 
 
 
@@ -38,9 +39,12 @@ class TrainingInstanceGenerator(object):
         nr_instances = 0
         nr_instances_used = 0
         label_nr =  len(Punctuation)
-        if !config.getboolean('features', 'use_question_mark'): 
+        if not (USE_QUESTION_MARK): 
             label_nr -=  1
-        perfect_distribution = label_nr / float(100)
+        perfect_distribution = label_nr / float(10)
+
+        print perfect_distribution;
+        print CLASS_DISTRIBUTION_VARIANTION;
 
 
         if is_test:
@@ -74,7 +78,7 @@ class TrainingInstanceGenerator(object):
                     ## calc class distribution
                    # print str(class_distribution.get(training_instance.label, 0))
                     nr_instances += 1
-                    if (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution <= CLASS_DISTRIBUTION_VARIANTION:
+                    if (not CLASS_DISTRIBUTION_NORMALIZATION) or ((class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution <= CLASS_DISTRIBUTION_VARIANTION):
                       #  print str(training_instance.label) + " " + str(class_distribution.get(training_instance.label, 0) / max(nr_instances_used, 1))
                         s = unicode(training_instance) + "\n"
     #                    s = s + unicode(training_instance.get_array()) + "\n\n"
