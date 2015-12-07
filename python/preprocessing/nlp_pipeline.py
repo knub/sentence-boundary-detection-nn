@@ -38,6 +38,7 @@ class NlpPipeline(object):
             ",": Punctuation.COMMA,
             ":": Punctuation.COMMA,
             "-": Punctuation.COMMA,
+            "--": Punctuation.COMMA,
             "?": Punctuation.QUESTION
         }
         self.inv_pos_tag_mapping = {
