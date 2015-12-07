@@ -75,7 +75,7 @@ class TrainingInstanceGenerator(object):
                     ## calc class distribution
                    # print str(class_distribution.get(training_instance.label, 0))
                     nr_instances += 1
-                    if (not CLASS_DISTRIBUTION_NORMALIZATION) or ((class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution <= CLASS_DISTRIBUTION_VARIANTION):
+                    if is_test or (not CLASS_DISTRIBUTION_NORMALIZATION) or ((class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution <= CLASS_DISTRIBUTION_VARIANTION):
                       #  print str(training_instance.label) + " " + str(class_distribution.get(training_instance.label, 0) / max(nr_instances_used, 1))
                         s = unicode(training_instance) + "\n"
     #                    s = s + unicode(training_instance.get_array()) + "\n\n"
