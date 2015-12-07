@@ -1,7 +1,8 @@
 import numpy
-#import sliding_window
+
+from common.sbd_config import config
+
 from nlp_pipeline import PosTag
-from sbd_config import config
 from tokens import Punctuation
 
 WINDOW_SIZE = config.getint('windowing', 'window_size')

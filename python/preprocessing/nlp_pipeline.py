@@ -1,7 +1,9 @@
 import nltk, nltk.data
 from enum import Enum
+
+from common.sbd_config import config
+
 from tokens import Punctuation, PunctuationToken, WordToken
-from sbd_config import config
 
 
 POS_TAGGING = config.getboolean('features', 'pos_tagging')

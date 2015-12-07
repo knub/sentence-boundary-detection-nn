@@ -1,10 +1,12 @@
 import sys, argparse, os
-from argparse_util import *
+
+from common.argparse_util import *
+from common.sbd_config import config
+from preprocessing.nlp_pipeline import NlpPipeline
+from preprocessing.text import Text, Sentence
+from preprocessing.tokens import WordToken, PunctuationToken, Punctuation
+
 from abstract_parser import AbstractParser
-from nlp_pipeline import NlpPipeline
-from text import Text, Sentence
-from tokens import WordToken, PunctuationToken, Punctuation
-from sbd_config import config
 
 reload(sys)
 sys.setdefaultencoding('utf8')

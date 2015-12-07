@@ -1,9 +1,10 @@
 import xml.etree.ElementTree, sys, os.path, re
-from argparse_util import *
-from text import *
-from abstract_parser import AbstractParser
-from nlp_pipeline import NlpPipeline
 
+from common.argparse_util import *
+from preprocessing.nlp_pipeline import NlpPipeline
+from preprocessing.text import *
+
+from abstract_parser import AbstractParser
 
 class XMLParser(AbstractParser):
     def __init__(self, filename):
