@@ -68,11 +68,12 @@ class TrainingInstanceGenerator(object):
                                 punctuation_string = "PERIOD"
                             else:
                                 next_token = tokens[i + 1]
-                                if next_token.is_punctuation:
+                                if next_token.is_punctuation():
                                     punctuation_string = str(next_token.punctuation_type)
+                                    punctuation_string = punctuation_string[12:]
                                 else:
                                     punctuation_string = "O"
-                            foo.write(token.word + "\t" + punctuation_string "\n")
+                            foo.write(token.word.lower() + "\t" + punctuation_string + "\n")
                             token.word_vec = self.word2vec.get_vector(token.word.lower())
 
                 # get the training instances
