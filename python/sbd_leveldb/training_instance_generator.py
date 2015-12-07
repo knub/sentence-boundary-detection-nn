@@ -139,10 +139,15 @@ if __name__ == '__main__':
     elif args.vector_file == "glove":
         word2vec = GloveFile(GLOVE_VECTOR_FILE)
         training_parsers = [
-            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/train200k")
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml")
+#            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/train200k")
         ]
         test_parsers = [
-            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
+#            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
+            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
     elif args.vector_file == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
