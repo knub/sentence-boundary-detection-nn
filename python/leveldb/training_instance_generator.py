@@ -99,7 +99,7 @@ class TrainingInstanceGenerator(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    parser.add_argument('vector_file', metavar="vector_file {'small' or 'google'}", choices=['small', 'google'])
+    parser.add_argument('vector_file', metavar="vector_file {'small' or 'google' or 'glove'}", choices=['small', 'google', 'glove'])
     parser.add_argument('data_folder', help='folder for lmdb creation')
     args = parser.parse_args()
 
