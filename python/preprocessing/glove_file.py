@@ -1,7 +1,5 @@
 import sys, argparse, struct, numpy
-
 from common.sbd_config import config
-
 
 ENCODING = 'UTF-8'
 KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
@@ -10,7 +8,7 @@ KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
 class GloveFile(object):
     """reads a binary word vector file, returns vectors for single words"""
 
-    def __init__(self, filename, use_this_vector=True):
+    def __init__(self, filename):
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
@@ -36,15 +34,17 @@ class GloveFile(object):
         index = 0
         with open(filename) as f:
             for line in f:
-                if index % 10000 == 0:
+                if index % 100000 == 0:
                     print("Parsed %d/%d lines." % (index, self.words))
                 parts = line.split(" ")
                 word = parts[0]
-                vector = parts[:1]
+                vector = parts[1:]
 
                 self.word2index[word] = index
                 for i in range (len(vector)):
-                    self.vector_array[index + i] = vector[i]
+                    self.vector_array[index][i] = float(vector[i])
+
+                index += 1
 
         self.__file.close()
         print('Parsing finished!')
@@ -66,11 +66,3 @@ class GloveFile(object):
                 return self.vector_array[idx]
             else:
                 return self.average_vector
-
-
-
-
-if __name__ == '__main__':
-    glovefile = GloveFile("/home/tanja/Repositories/sentence-boundary-detection-nn/glove.6B.50d.txt")
-    word = "test"
-    print(word, glovefile.get_vector(word))
