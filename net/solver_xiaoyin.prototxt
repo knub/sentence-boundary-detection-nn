@@ -1,6 +1,6 @@
-train_net: "/home/fb10dl01/workspace/nlp-apps/train/prototxt/C5/C5_4_train.prototxt"
-test_net: "/home/fb10dl01/workspace/nlp-apps/train/prototxt/C5/C5_4_test.prototxt"
-test_iter: 1156
+train_net: "A2_4_train.prototxt"
+test_net: "A2_4_test.prototxt"
+test_iter: 1
 test_interval: 5000
 base_lr: 0.01
 lr_policy: "step"
@@ -11,7 +11,7 @@ max_iter: 1000000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 100000
-snapshot_prefix: "/home/fb10dl01/workspace/nlp-apps/train/snapshots/LREC_CC2_4"
+snapshot_prefix: "snapshots/"
 solver_mode: GPU
 
 # ./build/tools/caffe train -solver xyche/solver.prototxt

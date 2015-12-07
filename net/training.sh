@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT="sentence"
+SOLVER="solver_xiaoyin.prototxt"
 
 # Check if called with name
 if [ $# -ne 1 ]; then
@@ -43,7 +44,7 @@ function cleanup() {
 rm snapshots/* 2> /dev/null
 
 # Saving setup
-cp net.prototxt solver.prototxt training.sh experiments/$FOLDER_NAME
+cp net.prototxt $SOLVER training.sh experiments/$FOLDER_NAME
 
 # Setting interrupt trap
 trap 'cleanup "Training interrupted"; exit 1' INT
@@ -52,7 +53,7 @@ trap 'cleanup "Training interrupted"; exit 1' INT
 # export CAFFE_ROOT="$HOME/caffe-tmbo"
 
 $CAFFE_ROOT/build/tools/caffe train \
-    -solver ./experiments/$FOLDER_NAME/solver.prototxt 2> $TRAINING_LOG_NAME
+    -solver ./experiments/$FOLDER_NAME/$SOLVER 2> $TRAINING_LOG_NAME
 
 # Resetting interrupt handling
 trap - INT

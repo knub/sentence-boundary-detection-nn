@@ -4,8 +4,8 @@ layer {
   top: "data"
   top: "label"
   hdf5_data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/net/train_hdf5s"
-    batch_size: 256
+    source: "/home/ms2015t3/sentence-boundary-detection-nn/net/test_hdf5s"
+    batch_size: 12000
   }
 }
 layer {
@@ -114,6 +114,8 @@ layer {
   bottom: "ip4"
   bottom: "label"
   top: "accuracy"
+  top: "recall_per_class"
+  top: "precision_per_class"
 }
 layer {
   name: "loss"
