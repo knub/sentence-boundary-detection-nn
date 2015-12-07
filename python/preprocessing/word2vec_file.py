@@ -55,9 +55,9 @@ class Word2VecFile(object):
             for f_index in range(0, self.vector_size):
                 f_bytes = self.__file.read(4)
                 self.vector_array[w_index][f_index] = struct.unpack('f', f_bytes)[0]
-            self.average_vector += self.vector_array[w_index]
+#            self.average_vector += self.vector_array[w_index]
         self.__file.close()
-        self.average_vector /= self.words
+#        self.average_vector /= self.words
         print('Parsing finished!')
 
     def __del__(self):
