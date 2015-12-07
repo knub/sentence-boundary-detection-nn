@@ -2,6 +2,7 @@
 train_instances.txt
 test_instances.txt
 config.ini
+lineparsing
 
 # Caffe files
 *.tlog
@@ -18,6 +19,7 @@ __pycache__/
 # Python virtual environment
 .env
 p3/
+p2/
 *.pyc
 
 # Database file

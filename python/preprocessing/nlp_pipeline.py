@@ -30,7 +30,7 @@ class NlpPipeline(object):
 
     def __init__(self):
         self.punkt = None
-        self.punctuation_regex = re.compile("^\p+$")
+        self.punctuation_regex = re.compile("^\p{posix_punct}+$")
         self.punctuation_mapping = {
             ";": Punctuation.PERIOD,
             ".": Punctuation.PERIOD,
