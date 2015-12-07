@@ -86,7 +86,7 @@ layer {
   bottom: "fc1"
   top: "fc2"
   inner_product_param {
-    num_output: 2048
+    num_output: 4096
     weight_filler {
       type: "xavier"
     }
@@ -134,15 +134,16 @@ layer {
   bottom: "fc3"
   top: "fc3"
 }
-layer {
-  name: "drop3"
-  type: "Dropout"
-  bottom: "fc3"
-  top: "fc3"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
+# layer {
+#   name: "drop3"
+#   type: "Dropout"
+#   bottom: "fc3"
+#   top: "fc3"
+#   dropout_param {
+#     dropout_ratio: 0.5
+#   }
+# }
+
 #
 # Fully Connected Layer Final - Preparation for Output
 #
