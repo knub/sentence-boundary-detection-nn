@@ -5,7 +5,7 @@ test_initialization: true
 # Test every nth iteration
 test_interval: 1000
 # How many iterations per test
-test_iter: 1
+test_iter: 12
 
 # Base learning rate
 base_lr: 0.001
