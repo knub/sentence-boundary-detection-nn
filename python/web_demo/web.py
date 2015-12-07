@@ -20,9 +20,9 @@ def classify():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo')
-    parser.add_argument('caffeproto', help='the deploy prototxt of your trained model', default='web_demo/models/deploy.prototxt', nargs='?')
-    parser.add_argument('caffemodel', help='the trained caffemodel', default='web_demo/models/model.caffemodel', nargs='?')
-    parser.add_argument('vectorfile', help='the google news word vector', default='web_demo/models/GoogleNews-vectors-negative300.bin', nargs='?')
+    parser.add_argument('caffeproto', help='the deploy prototxt of your trained model', default='models/deploy.prototxt', nargs='?')
+    parser.add_argument('caffemodel', help='the trained caffemodel', default='models/model.caffemodel', nargs='?')
+    parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
