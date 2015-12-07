@@ -1,5 +1,6 @@
 import nltk, nltk.data
 from enum import Enum
+import regex as re
 
 from common.sbd_config import config
 
@@ -29,6 +30,7 @@ class NlpPipeline(object):
 
     def __init__(self):
         self.punkt = None
+        self.punctuation_regex = re.compile("^\p+$")
         self.punctuation_mapping = {
             ";": Punctuation.PERIOD,
             ".": Punctuation.PERIOD,
@@ -97,13 +99,15 @@ class NlpPipeline(object):
         raw_tokens = nltk.word_tokenize(text)
         tokens = []
 
-        for i in range(0, len(raw_tokens)):
+        for i in range(len(raw_tokens)):
             raw_token = raw_tokens[i]
 
             if raw_token in self.punctuation_mapping:
                 punctuation_type = self.punctuation_mapping[raw_token]
                 tokens.append(PunctuationToken(raw_token, punctuation_type))
             else:
+                if re.match(self.punctuation_regex, raw_token):
+                    continue
                 raw_token = self._replace_number(raw_token)
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
