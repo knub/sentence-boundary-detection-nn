@@ -38,15 +38,15 @@ class TrainingInstanceGenerator(object):
             plain_text_instances_file = open(database + "/../train_instances.txt", "w")
 
         for i, parser in enumerate(parsers):
-            progress = int(parser.progress() * 100)
-            if progress > prev_progress:
-                sys.stdout.write(str(progress) + "% ")
-                sys.stdout.flush()
-                prev_progress = progress
  
             texts = parser.parse()
 
             for text in texts:
+                progress = int(parser.progress() * 100)
+                if progress > prev_progress:
+                    sys.stdout.write(str(progress) + "% ")
+                    sys.stdout.flush()
+                    prev_progress = progress
 
                 for sentence in text.sentences:
                     # get the word vectors for all token in the sentence
