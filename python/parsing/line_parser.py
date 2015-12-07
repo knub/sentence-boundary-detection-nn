@@ -32,16 +32,20 @@ class LineParser(AbstractParser):
             sentence = Sentence()
             sentence.tokens = []
 
-            i = 0
             for line_unenc in file_:
                 self._progress += 1
-                line = unicode(line_unenc.encode('utf8'))
-                i += 1
-                line = line.encode('utf8')
-                line = line.rstrip() 
-                splittedLine = line.split('\t')
-                word = unicode(splittedLine[0])
-                period = unicode(splittedLine[1])
+
+                # parse line
+                line = unicode(line_unenc, errors='ignore')
+                line = line.rstrip()
+
+                # split line into word and type
+                splitted_line= line.split('\t')
+                word = unicode(splitted_line[0])
+                if "?" in word and len(word) > 0:
+                    word = word.replace("?", "")
+                period = unicode(splitted_line[1])
+
                 sentence.tokens.extend(self.__createToken(word,period))
                 if period == 'PERIOD':
                     if self.nlp_pipeline != None:
@@ -77,8 +81,8 @@ class LineParser(AbstractParser):
 def main(filename):
     parser = LineParser(filename)
     texts = parser.parse()
-    for text in texts:
-        print(text)
+    #for text in texts:
+        # print(text)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the line text file parsing')
