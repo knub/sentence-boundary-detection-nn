@@ -10,3 +10,6 @@ punctuation_position = 3
 [features]
 use_question_mark = true
 pos_tagging = false
+
+[data]
+normalize_class_distribution = false
