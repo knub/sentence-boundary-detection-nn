@@ -35,7 +35,7 @@ layer {
   data_param {
     source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/glove_basic_5_3_pos-false_qm-false_word-this/test"
 #### BLOCKSTART: TRAIN
-    batch_size: 1024
+    batch_size: 12000
 #### BLOCKEND: TRAIN
 #### BLOCKSTART: FULLTEST
 #    batch_size: 14447
