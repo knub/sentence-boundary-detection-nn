@@ -8,6 +8,7 @@ from parsing.xml_parser import XMLParser
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.tokens import Punctuation
 from preprocessing.word2vec_file import Word2VecFile
+from preprocessing.glove_file import GloveFile
 
 from level_db_creator import LevelDBCreator
 
@@ -23,8 +24,8 @@ USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
 class TrainingInstanceGenerator(object):
     """reads the original data, process them and writes them to a level-db"""
 
-    def __init__(self, vector_file):
-        self.word2vec = Word2VecFile(vector_file)
+    def __init__(self, word2vec):
+        self.word2vec = word2vec
         self.test_talks = set()
 
     def generate(self, parsers, database, is_test):
@@ -107,10 +108,10 @@ if __name__ == '__main__':
     test_data = []
     training_parsers = []
     test_parsers = []
-    vector_file = ""
+    word2vec = None
 
     if args.vector_file == "google":
-        vector_file = GOOGLE_VECTOR_FILE
+        word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
         training_parsers = [
             # PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
@@ -122,7 +123,7 @@ if __name__ == '__main__':
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
     elif args.vector_file == "glove":
-        vector_file = GLOVE_VECTOR_FILE
+        word2vec = GloveFile(GLOVE_VECTOR_FILE)
         training_parsers = [
             LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/train200k")
         ]
@@ -130,7 +131,7 @@ if __name__ == '__main__':
             LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
         ]
     elif args.vector_file == "small":
-        vector_file = SMALL_VECTOR_FILE
+        word2vec = Word2VecFile(SMALL_VECTOR_FILE)
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
         test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
 
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     os.mkdir(database)
     shutil.copy(sentence_home + "/python/config.ini", database)
 
-    generator = TrainingInstanceGenerator(vector_file)
+    generator = TrainingInstanceGenerator(word2vec)
     print("Generating test data .. ")
     start = time.time()
     generator.generate(test_parsers, database + "/test", is_test = True)
