@@ -1,9 +1,11 @@
 import numpy
+
+from common.sbd_config import config
+
 from nlp_pipeline import Punctuation, NlpPipeline
-from tokens import PunctuationToken
 from text import Sentence, Text
+from tokens import PunctuationToken
 from training_instance import TrainingInstance
-from sbd_config import config
 
 WINDOW_SIZE = config.getint('windowing', 'window_size')
 PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')

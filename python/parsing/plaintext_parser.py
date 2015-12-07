@@ -1,9 +1,10 @@
 import argparse, sys, os
-from argparse_util import *
-from abstract_parser import AbstractParser
-from nlp_pipeline import NlpPipeline
-from text import Sentence, Text
 
+from common.argparse_util import *
+from preprocessing.nlp_pipeline import NlpPipeline
+from preprocessing.text import Sentence, Text
+
+from abstract_parser import AbstractParser
 
 TEXT_SEPARATOR = "################################################################################"
 

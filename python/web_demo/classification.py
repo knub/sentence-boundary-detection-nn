@@ -1,11 +1,10 @@
-import sys
-sys.path.append("../python/")
 import numpy, caffe
 import json
-from word2vec_file import Word2VecFile
-from sliding_window import SlidingWindow
-from nlp_pipeline import NlpPipeline, PosTag
-from sbd_config import config
+
+from common.sbd_config import config
+from preprocessing.nlp_pipeline import NlpPipeline, PosTag
+from preprocessing.sliding_window import SlidingWindow
+from preprocessing.word2vec_file import Word2VecFile
 
 classes = ["NONE", "COMMA", "PERIOD"]
 
