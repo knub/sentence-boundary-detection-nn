@@ -17,7 +17,7 @@ SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 GLOVE_VECTOR_FILE = "/home/ms2015t3/glove.6B.50d.txt"
 LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
-CLASS_DISTRIBUTION_VARIANTION = 0.05
+CLASS_DISTRIBUTION_VARIATION = 0.05
 USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
 
 
@@ -40,7 +40,7 @@ class TrainingInstanceGenerator(object):
         label_nr = len(Punctuation)
         if not USE_QUESTION_MARK:
             label_nr -= 1
-        perfect_distribution = label_nr / float(10)
+        perfect_distribution = 1.0 / label_nr
 
         if is_test:
             plain_text_instances_file = open(database + "/../test_instances.txt", "w")
@@ -84,9 +84,7 @@ class TrainingInstanceGenerator(object):
                     nr_instances += 1
                     class_variation = (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution
 
-                    if is_test or (not CLASS_DISTRIBUTION_NORMALIZATION) or (class_variation <= CLASS_DISTRIBUTION_VARIANTION):
-                        #  print str(training_instance.label) + " " + str(class_distribution.get(training_instance.label, 0) / max(nr_instances_used, 1))
-
+                    if is_test or (not CLASS_DISTRIBUTION_NORMALIZATION) or (class_variation <= CLASS_DISTRIBUTION_VARIATION):
                         # write instance to file
                         s = unicode(training_instance) + "\n"
                         s += "\n"
@@ -103,7 +101,7 @@ class TrainingInstanceGenerator(object):
         plain_text_instances_file.close()
         print("")
 
-        print("Orininally " + str(nr_instances) + " instances.")
+        print("Originally " + str(nr_instances) + " instances.")
         print("Created " + str(nr_instances_used) + " instances." )
         print("Class distribution:")
         print(class_distribution)
