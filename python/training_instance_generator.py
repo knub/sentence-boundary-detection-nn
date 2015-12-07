@@ -15,7 +15,7 @@ GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-neg
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
-CLASS_DISTRIBUTION_VARIANTION = 0.10
+CLASS_DISTRIBUTION_VARIANTION = 0.05
 USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
 
 
@@ -42,9 +42,6 @@ class TrainingInstanceGenerator(object):
         if not (USE_QUESTION_MARK): 
             label_nr -=  1
         perfect_distribution = label_nr / float(10)
-
-        print perfect_distribution;
-        print CLASS_DISTRIBUTION_VARIANTION;
 
 
         if is_test:
