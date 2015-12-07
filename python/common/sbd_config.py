@@ -9,7 +9,7 @@ if 'SENTENCE_HOME' in os.environ:
     # if environment variable is set, we take that directory instead
     config_path = os.path.join(os.environ['SENTENCE_HOME'], 'python/config.ini')
 config = ConfigParser.ConfigParser()
-print "Reading config: %s" % config_path
+print("Reading config: %s" % config_path)
 config.read(config_path)
 
 # check validity:

@@ -137,9 +137,11 @@ class NlpPipeline(object):
         return self.punkt.tokenize(text.strip())
 
     def _replace_number(self, word):
-        if any(c.isdigit() or c == ',' or c == '.' for c in word):
-            return "1"
         if word[:-2].isdigit() and (word.endswith("st") or word.endswith("nd") or word.endswith("rd") or word.endswith("th")):
             return "1st"
-        return word
+        try:
+            float(word)
+            return "1"
+        except ValueError:
+            return word
 

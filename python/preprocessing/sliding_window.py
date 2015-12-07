@@ -28,10 +28,7 @@ class SlidingWindow(object):
                 current_token = tokens[i]
                 is_punctuation = current_token.is_punctuation()
 
-                # check if the next token is also a punctuation token, error if yes
-#                if is_punctuation and i + 1 < len(tokens) and tokens[i + 1].is_punctuation():
-#                    # TODO: Double-check again, whether this is an issue or not
-#                    raise Exception("Two Punctuations in a row:\nSentence: " + talk.gold_text + "\n" + str(current_token) + " and " + str(tokens[i + 1]))
+                # if there are two punctuations in a row, the last punctuation token is taken
 
                 if not is_punctuation:
                     word_count += 1
