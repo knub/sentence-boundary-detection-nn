@@ -1,9 +1,11 @@
 import numpy
+
+from common.sbd_config import config
+
 from nlp_pipeline import Punctuation, NlpPipeline
-from tokens import PunctuationToken
 from text import Sentence, Text
+from tokens import PunctuationToken
 from training_instance import TrainingInstance
-from sbd_config import config
 
 WINDOW_SIZE = config.getint('windowing', 'window_size')
 PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
@@ -26,10 +28,7 @@ class SlidingWindow(object):
                 current_token = tokens[i]
                 is_punctuation = current_token.is_punctuation()
 
-                # check if the next token is also a punctuation token, error if yes
-#                if is_punctuation and i + 1 < len(tokens) and tokens[i + 1].is_punctuation():
-#                    # TODO: Double-check again, whether this is an issue or not
-#                    raise Exception("Two Punctuations in a row:\nSentence: " + talk.gold_text + "\n" + str(current_token) + " and " + str(tokens[i + 1]))
+                # if there are two punctuations in a row, the last punctuation token is taken
 
                 if not is_punctuation:
                     word_count += 1

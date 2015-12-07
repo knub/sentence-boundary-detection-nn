@@ -1,7 +1,9 @@
 import nltk, nltk.data
 from enum import Enum
+
+from common.sbd_config import config
+
 from tokens import Punctuation, PunctuationToken, WordToken
-from sbd_config import config
 
 
 POS_TAGGING = config.getboolean('features', 'pos_tagging')
@@ -135,9 +137,11 @@ class NlpPipeline(object):
         return self.punkt.tokenize(text.strip())
 
     def _replace_number(self, word):
-        if any(c.isdigit() or c == ',' or c == '.' for c in word):
-            return "1"
         if word[:-2].isdigit() and (word.endswith("st") or word.endswith("nd") or word.endswith("rd") or word.endswith("th")):
             return "1st"
-        return word
+        try:
+            float(word)
+            return "1"
+        except ValueError:
+            return word
 

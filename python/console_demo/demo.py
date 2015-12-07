@@ -1,8 +1,9 @@
 import argparse, numpy, caffe
-from word2vec_file import Word2VecFile
-from sliding_window import SlidingWindow, PUNCTUATION_POS
-from nlp_pipeline import NlpPipeline
-from talk_parser import Sentence
+
+from preprocessing.nlp_pipeline import NlpPipeline
+from preprocessing.sliding_window import SlidingWindow, PUNCTUATION_POS
+from preprocessing.text import Sentence
+from preprocessing.word2vec_file import Word2VecFile
 
 classes = ["NONE", "COMMA", "PERIOD", "QUESTION"]
 classes_as_string = ["", ",", ".", "?"]

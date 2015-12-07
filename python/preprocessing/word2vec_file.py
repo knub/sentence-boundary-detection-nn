@@ -1,8 +1,7 @@
-import sys, argparse, struct 
-from argparse_util import *
+import sys, argparse, struct, numpy
 
-import numpy
-from sbd_config import config
+from common.argparse_util import *
+from common.sbd_config import config
 
 
 ENCODING = 'UTF-8'

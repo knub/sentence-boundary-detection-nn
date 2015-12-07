@@ -12,6 +12,8 @@
   * total accuracy: 0.911133
   * NONE: Precision: 0.921132, Recall: 0.992375
   * PERIOD: Precision: 0.628571, Recall: 0.4
+* Question: How did you achieve the values from the paper?
+* Presentation
 
 ### TODO
 
@@ -21,6 +23,11 @@
 4. Build a model for audio.
 5. Implementation of post-processing the output of the model.
 
+### TEST SERIES
+* balanced classes
+* with/without question mark
+* pos tagging
+* only line parser input
 
 ### Questions
 

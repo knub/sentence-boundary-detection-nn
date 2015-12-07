@@ -2,9 +2,11 @@
 
 To execute all python scripts in this folder, please use this folder as the working directory. For example:
 ```
-python word2vec_file.py -h
-python parser/plaintext_parser.py -h
-python demo/demo.py -h
+python leveldb/level_db_creator.py -h
+python preprocessing/word2vec_file.py -h
+python parsing/plaintext_parser.py -h
+python console_demo/demo.py -h
+python web_demo/web.py -h
 ```
 
 ## Demo
@@ -16,7 +18,7 @@ To avoid long loading times, you can preload the word vector and the model. Open
 ```
 >>> import caffe
 >>> import demo.demo as d
->>> from word2vec_file import Word2VecFile
+>>> from preprocessing.word2vec_file import Word2VecFile
 >>> vector = Word2VecFile('../../ms-2015-t3/GoogleNews-vectors-negative300.bin')
 >>> net = caffe.Net('/home/ms2015t3/sentence-boundary-detection-nn-joseph/net/net.prototxt', '/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/20151115-171451_basic_features/_iter_100000.caffemodel', caffe.TEST)
 ```

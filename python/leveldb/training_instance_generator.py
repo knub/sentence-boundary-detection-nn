@@ -1,15 +1,15 @@
 import operator, os, shutil, sys, time, argparse
-from argparse_util import *
 
-from parser.xml_parser import XMLParser
-from parser.plaintext_parser import PlaintextParser
-from parser.line_parser import LineParser
-import sliding_window
-from word2vec_file import Word2VecFile
+from common.argparse_util import *
+from common.sbd_config import config
+from parsing.line_parser import LineParser
+from parsing.plaintext_parser import PlaintextParser
+from parsing.xml_parser import XMLParser
+from preprocessing.sliding_window import SlidingWindow
+from preprocessing.tokens import Punctuation
+from preprocessing.word2vec_file import Word2VecFile
+
 from level_db_creator import LevelDBCreator
-from sbd_config import config
-from tokens import Punctuation
-
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
@@ -29,7 +29,7 @@ class TrainingInstanceGenerator(object):
 
     def generate(self, parsers, database, is_test):
         level_db = LevelDBCreator(database)
-        window_slider = sliding_window.SlidingWindow()
+        window_slider = SlidingWindow()
         # count how often each type (COMMA, PERIOD etc.) is in the instances
         class_distribution = dict()
         prev_progress = 0
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         vector_file = GOOGLE_VECTOR_FILE
 
         training_parsers = [
-            PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
+#            PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
