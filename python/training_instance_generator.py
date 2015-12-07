@@ -12,7 +12,7 @@ from tokens import Punctuation
 
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
-SMALL_VECTOR_FILE = "/home/rice/Windows/uni/master4/paomr/vectors.bin" #"/home/ms2015t3/vectors.bin"
+SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
 CLASS_DISTRIBUTION_VARIANTION = 0.10
@@ -127,10 +127,8 @@ if __name__ == '__main__':
     elif args.vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_parsers = [#XMLParser("/home/ms2015t3/data/train-talk.xml")
-            LineParser("/home/rice/Windows/uni/master4/paomr/Dataset/train200k")
-        ]
-        test_parsers = []#XMLParser("/home/ms2015t3/data/test-talk.xml")]
+        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]        ]
+        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
 
     sentence_home = os.environ['SENTENCE_HOME']
 
