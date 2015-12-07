@@ -59,13 +59,21 @@ class TrainingInstanceGenerator(object):
                     prev_progress = progress
 
                 for sentence in text.sentences:
+                    tokens = sentence.get_tokens()
                     # get the word vectors for all tokens in the sentence
-                    for token in sentence.get_tokens():
+                    for i in range(len(tokens)):
+                        token = tokens[i]
                         if not token.is_punctuation():
-                            foo.write(token.word + "\n")
+                            if i == len(tokens) - 1:
+                                punctuation_string = "PERIOD"
+                            else:
+                                next_token = tokens[i + 1]
+                                if next_token.is_punctuation:
+                                    punctuation_string = str(next_token.punctuation_type)
+                                else:
+                                    punctuation_string = "O"
+                            foo.write(token.word + "\t" + punctuation_string "\n")
                             token.word_vec = self.word2vec.get_vector(token.word.lower())
-                        else:
-                            foo.write(token.punctuation_type + "\n")
 
                 # get the training instances
                 training_instances = window_slider.list_windows(text)
