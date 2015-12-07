@@ -12,6 +12,8 @@
   * total accuracy: 0.911133
   * NONE: Precision: 0.921132, Recall: 0.992375
   * PERIOD: Precision: 0.628571, Recall: 0.4
+* Question: What are precision and recall values in your paper? Averaged?
+* Presentation
 
 ### TODO
 
