@@ -1,3 +1,18 @@
+### Meeting 07.12.
+
+* Web Demo
+* Parsed Wikipedia
+* Integrate more data (train-file, Wikipedia) -> different source files
+* Balanced training set: PERIOD vs NONE vs COMMA
+* Configuration via config-file
+* Replace numbers with default numbers
+* Fix duplicates in training data
+* Use 'this'-vector as default word vector
+* Training: 
+  * total accuracy: 0.911133
+  * NONE: Precision: 0.921132, Recall: 0.992375
+  * PERIOD: Precision: 0.628571, Recall: 0.4
+
 ### TODO
 
 1. Improve model for lexical features!
