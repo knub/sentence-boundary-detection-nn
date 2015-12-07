@@ -11,16 +11,16 @@ python web_demo/web.py -h
 
 ## Demo
 
-For a one-time live interactive command line demo please run `python demo/demo.py` and use the correct parameters (use `python demo/demo.py -h` for help).
+For a one-time live interactive command line demo please run `python console_demo/demo.py` and use the correct parameters (use `python console_demo/demo.py -h` for help).
 
-To avoid long loading times, you can preload the word vector and the model. Open a python shell with `python` and import the word vector and model manually with the following code (adapt your local paths if neccesary): 
+To avoid long loading times, you can preload the word vector and the model. Open a python shell with `python` and import the word vector and model manually with the following code (adapt your paths to GoogleNewsVector.bin, net.prototxt and model.caffemodel):
 
 ```
 >>> import caffe
 >>> import demo.demo as d
 >>> from preprocessing.word2vec_file import Word2VecFile
->>> vector = Word2VecFile('../../ms-2015-t3/GoogleNews-vectors-negative300.bin')
->>> net = caffe.Net('/home/ms2015t3/sentence-boundary-detection-nn-joseph/net/net.prototxt', '/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/20151115-171451_basic_features/_iter_100000.caffemodel', caffe.TEST)
+>>> vector = Word2VecFile('GoogleNewsVector.bin')
+>>> net = caffe.Net('net.prototxt', 'model.caffemodel', caffe.TEST)
 ```
 If you get an error on importing caffe, try using your virtual environment, or add the neccesary paths to your `PYTHONPATH`.
 

@@ -23,10 +23,11 @@ if __name__ == "__main__":
     parser.add_argument('caffeproto', help='the deploy prototxt of your trained model', default='web_demo/models/deploy.prototxt', nargs='?')
     parser.add_argument('caffemodel', help='the trained caffemodel', default='web_demo/models/model.caffemodel', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='web_demo/models/GoogleNews-vectors-negative300.bin', nargs='?')
+    parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
     net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
-    if not DEBUG:
+    if not args.debug:
         vector = Word2VecFile(args.vectorfile)
         classifier = Classifier(net, vector)
         app.run(debug = True, use_reloader = False)
