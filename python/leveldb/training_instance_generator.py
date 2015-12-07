@@ -13,6 +13,7 @@ from level_db_creator import LevelDBCreator
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
+GLOVE_VECTOR_FILE = "/home/ms2015t3/glove.6B.50d.txt"
 LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
 CLASS_DISTRIBUTION_VARIANTION = 0.05
@@ -119,6 +120,14 @@ if __name__ == '__main__':
         ]
         test_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
+        ]
+    elif args.vector_file == "glove":
+        vector_file = GLOVE_VECTOR_FILE
+        training_parsers = [
+            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/train200k")
+        ]
+        test_parsers = [
+            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
         ]
     elif args.vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
