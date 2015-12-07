@@ -50,6 +50,7 @@ class TrainingInstanceGenerator(object):
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
 
+            foo = open("lineparsing", "w")
             for text in texts:
                 progress = int(text_parser.progress() * 100)
                 if progress > prev_progress:
@@ -58,10 +59,13 @@ class TrainingInstanceGenerator(object):
                     prev_progress = progress
 
                 for sentence in text.sentences:
-                    # get the word vectors for all token in the sentence
+                    # get the word vectors for all tokens in the sentence
                     for token in sentence.get_tokens():
                         if not token.is_punctuation():
+                            foo.write(token.word + "\n")
                             token.word_vec = self.word2vec.get_vector(token.word.lower())
+                        else:
+                            foo.write(token.punctuation_type + "\n")
 
                 # get the training instances
                 training_instances = window_slider.list_windows(text)
@@ -85,6 +89,7 @@ class TrainingInstanceGenerator(object):
 
                         # write to level db
                         level_db.write_training_instance(training_instance)
+            foo.close()
 
         plain_text_instances_file.close()
         print("")
@@ -133,7 +138,8 @@ if __name__ == '__main__':
     elif args.vector_file == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
-        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
+#        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
+        test_parsers = [XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")]
 
     sentence_home = os.environ['SENTENCE_HOME']
 
@@ -164,6 +170,9 @@ if __name__ == '__main__':
     generator.generate(test_parsers, database + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
+    if args.vector_file == "small":
+        print "Stopping after test instance creation"
+        sys.exit(0)
     print("Generating training data .. ")
     start = time.time()
     generator.generate(training_parsers, database + "/train", is_test = False)
