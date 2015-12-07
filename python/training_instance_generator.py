@@ -127,7 +127,7 @@ if __name__ == '__main__':
     elif args.vector_file == "small":
         vector_file = SMALL_VECTOR_FILE
 
-        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]        ]
+        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
         test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
 
     sentence_home = os.environ['SENTENCE_HOME']
