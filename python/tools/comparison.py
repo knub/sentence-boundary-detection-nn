@@ -1,94 +1,96 @@
 import math, sys
+import numpy
 
 OUR = "/home/tanja/Desktop/output"
 XIAOYIN_DATA = "/home/tanja/Desktop/xiayin_data"
 XIAOYIN_LABEL = "/home/tanja/Desktop/xiayin_label"
 
-WINDOW = 20
+WINDOW = 80
 TAKE = 12000
 COUNT = 12000
 SKIP = 2
 DIFF = 0.001
+INSTANCE_SIZE = 250
 
-our_data = []
+our_data = numpy.zeros((TAKE, INSTANCE_SIZE))
 our_label = []
-xiaoyin_data = []
+xiaoyin_data = numpy.zeros((TAKE, INSTANCE_SIZE))
 xiaoyin_label = []
 
-i = 0
+instance_count = 0
 with open(OUR, "r") as file_:
     for line in file_:
-        if i > TAKE:
+        if instance_count >= TAKE:
             continue
-        i += 1
+
         line = line.rstrip()
         label = line[-1]
         our_label.append(float(label))
 
         line = line[1:-4]
         parts = line.split(", ")
-        for p in parts:
-            our_data.append(float(p))
+        for i, p in enumerate(parts):
+            our_data[instance_count][i] = float(p)
 
-i = 0
+        instance_count += 1
+
+instance_count = 0
 with open(XIAOYIN_LABEL, "r") as file_:
     for line in file_:
-        if i > TAKE:
+        if instance_count >= TAKE:
             continue
-        if i < SKIP:
-            i += 1
+        if instance_count < SKIP:
+            instance_count += 1
             continue
-        i += 1
         line = line.rstrip()
         xiaoyin_label.append(float(line))
+        instance_count += 1
 
-i = 0
+instance_count = 0
 with open(XIAOYIN_DATA, "r") as file_:
     for line in file_:
-        if i > TAKE:
+        if instance_count >= TAKE:
             continue
-        if i < SKIP:
-            i += 1
+        if instance_count < SKIP:
+            instance_count += 1
             continue
-        i += 1
         parts = line.split("\t")
-        for p in parts:
-            xiaoyin_data.append(float(p))
+        for i, p in enumerate(parts):
+            xiaoyin_data[instance_count][i] = float(p)
+        instance_count += 1
 
-assert(len(our_data) - (250 * SKIP) == len(xiaoyin_data))
+assert(len(our_data)  == len(xiaoyin_data))
 assert(len(our_label) - SKIP == len(xiaoyin_label))
+
+
+def check_instance(a, b):
+    for i in range(INSTANCE_SIZE):
+        if DIFF < math.fabs(a[i] - b[i]):
+            return False
+    return True
 
 
 count_label = 0
 count_data = 0
 
-for i in range(len(xiaoyin_data)):
-    if DIFF < math.fabs(our_data[i] - xiaoyin_data[i]):
-        instance_nr = int(i / 250)
-        index = i - (instance_nr * 250)
 
-        print(our_data[i])
-        print(xiaoyin_data[i])
-        print("INSTANCE_NR", instance_nr)
-        print("INDEX", index)
-        sys.exit(0)
-
-        for j in range(max(0, i-WINDOW), min(len(xiaoyin_data), i + WINDOW)):
-            if our_data[j] == xiaoyin_data[i] or our_data[i] == xiaoyin_data[j]:
-                continue
+for instance_nr in range(TAKE):
+    equal = False
+    for i in range(max(0, instance_nr - WINDOW), min(instance_nr + WINDOW, TAKE)):
+        if check_instance(our_data[instance_nr], xiaoyin_data[i]):
+            equal = True
+            continue
+    if not equal:
         count_data += 1
-        # print("ASSERTION FAILED!")
-        # print("OUR", our_data[i], "XIAOYIN", xiaoyin_data[i])
 
-for i in range(len(xiaoyin_label)):
-    if our_label[i] != xiaoyin_label[i]:
-        for j in range(max(0, i-WINDOW), min(len(xiaoyin_label), i + WINDOW)):
-            if our_label[j] == xiaoyin_label[i] or our_label[i] == xiaoyin_label[j]:
-                continue
-        count_label += 1
-        # print("ASSERTION FAILED!")
-        # print("OUR", our_label[i], "XIAOYIN", xiaoyin_label[i])
+print("DATA", float(count_data) / TAKE)
 
 
-print("DATA", float(count_data) / (COUNT * 250))
+# for i in range(len(xiaoyin_label)):
+#     if our_label[i] != xiaoyin_label[i]:
+#         for j in range(max(0, i-WINDOW), min(len(xiaoyin_label), i + WINDOW)):
+#             if our_label[j] == xiaoyin_label[i] or our_label[i] == xiaoyin_label[j]:
+#                 continue
+#         count_label += 1
+
 print("LABEL", float(count_label) / COUNT)
