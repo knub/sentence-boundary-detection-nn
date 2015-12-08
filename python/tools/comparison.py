@@ -1,18 +1,26 @@
-import math
+import math, sys
 
 OUR = "/home/tanja/Desktop/output"
 XIAOYIN_DATA = "/home/tanja/Desktop/xiayin_data"
 XIAOYIN_LABEL = "/home/tanja/Desktop/xiayin_label"
 
-WINDOW = 5
+WINDOW = 20
+TAKE = 12000
+COUNT = 12000
+SKIP = 2
+DIFF = 0.001
 
 our_data = []
 our_label = []
 xiaoyin_data = []
 xiaoyin_label = []
 
+i = 0
 with open(OUR, "r") as file_:
     for line in file_:
+        if i > TAKE:
+            continue
+        i += 1
         line = line.rstrip()
         label = line[-1]
         our_label.append(float(label))
@@ -20,40 +28,51 @@ with open(OUR, "r") as file_:
         line = line[1:-4]
         parts = line.split(", ")
         for p in parts:
-            p = float(p)
-            p = math.ceil(p * 1000)/1000
             our_data.append(float(p))
 
 i = 0
 with open(XIAOYIN_LABEL, "r") as file_:
     for line in file_:
-        i += 1
-        if i < 3:
+        if i > TAKE:
             continue
+        if i < SKIP:
+            i += 1
+            continue
+        i += 1
         line = line.rstrip()
         xiaoyin_label.append(float(line))
 
 i = 0
 with open(XIAOYIN_DATA, "r") as file_:
     for line in file_:
-        i += 1
-        if i < 3:
+        if i > TAKE:
             continue
+        if i < SKIP:
+            i += 1
+            continue
+        i += 1
         parts = line.split("\t")
         for p in parts:
-            p = float(p)
-            p = math.ceil(p * 1000)/1000
-            xiaoyin_data.append(p)
+            xiaoyin_data.append(float(p))
 
-assert(len(our_data) - 500 == len(xiaoyin_data))
-assert(len(our_label) - 2 == len(xiaoyin_label))
+assert(len(our_data) - (250 * SKIP) == len(xiaoyin_data))
+assert(len(our_label) - SKIP == len(xiaoyin_label))
 
 
 count_label = 0
 count_data = 0
 
 for i in range(len(xiaoyin_data)):
-    if our_data[i] != xiaoyin_data[i]:
+    if DIFF < math.fabs(our_data[i] - xiaoyin_data[i]):
+        instance_nr = int(i / 250)
+        index = i - (instance_nr * 250)
+
+        print(our_data[i])
+        print(xiaoyin_data[i])
+        print("INSTANCE_NR", instance_nr)
+        print("INDEX", index)
+        sys.exit(0)
+
         for j in range(max(0, i-WINDOW), min(len(xiaoyin_data), i + WINDOW)):
             if our_data[j] == xiaoyin_data[i] or our_data[i] == xiaoyin_data[j]:
                 continue
@@ -71,5 +90,5 @@ for i in range(len(xiaoyin_label)):
         # print("OUR", our_label[i], "XIAOYIN", xiaoyin_label[i])
 
 
-print(float(count_data) / (12000.0 * 250))
-print(float(count_label) / 12000.0)
+print("DATA", float(count_data) / (COUNT * 250))
+print("LABEL", float(count_label) / COUNT)

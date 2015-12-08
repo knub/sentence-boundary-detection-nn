@@ -109,7 +109,7 @@ class NlpPipeline(object):
             else:
                 if re.match(self.punctuation_regex, raw_token):
                     continue
-                raw_token = self._replace_number(raw_token)
+                # raw_token = self._replace_number(raw_token)
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
 
