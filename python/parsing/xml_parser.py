@@ -10,11 +10,14 @@ class XMLParser(AbstractParser):
     def __init__(self, filename):
         super(XMLParser, self).__init__(filename)
         self.nlp_pipeline = NlpPipeline()
+        self._linenumber = self._count_docs()
+        self._progress = 0
 
     def parse(self):
         mteval = xml.etree.ElementTree.parse(self.filename).getroot()
         srcset = mteval.find("srcset")
         for doc in srcset.findall('doc'):
+            self._progress += 1
             talk = Text()
 
             for sentence in doc.findall("seg"):
@@ -28,7 +31,15 @@ class XMLParser(AbstractParser):
             yield talk
 
     def progress(self):
-        return self._no_progress_function()
+        return self._line_count_progress()
+
+    def _count_docs(self):
+        mteval = xml.etree.ElementTree.parse(self.filename).getroot()
+        srcset = mteval.find("srcset")
+        i = 0
+        for doc in srcset.findall('doc'):
+            i += 1
+        return i
 
 ################
 # Example call #
