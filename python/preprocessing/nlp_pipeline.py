@@ -2,6 +2,7 @@ import nltk, nltk.data
 from enum import Enum
 import regex as re
 
+
 from common.sbd_config import config
 
 from tokens import Punctuation, PunctuationToken, WordToken

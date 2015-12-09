@@ -1,6 +1,4 @@
-import numpy, caffe
-import json
-
+import numpy, caffe, argparse
 from common.sbd_config import config
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
@@ -40,18 +38,18 @@ class Classifier(object):
         for token in input_text.tokens:
             if not token.is_punctuation():
                 if self.debug:
-                    token.word_vec = numpy.zeros(300)
+                    token.word_vec = numpy.random.rand(FEATURE_LENGTH)
                 else:
                     token.word_vec = self.word2vec.get_vector(token.word.lower())
 
-        slidingWindow = SlidingWindow()
-        instances = slidingWindow.list_windows(input_text)
+        sliding_window = SlidingWindow()
+        instances = sliding_window.list_windows(input_text)
 
         # get caffe predictions
         punctuation_probs = []
         for instance in instances:
             probs = self.predict_caffe(instance)
-            punctuation_probs.append(probs)
+            punctuation_probs.extend(numpy.copy(probs))
 
         # build json
         for i, token in enumerate(input_text.tokens):
@@ -74,7 +72,7 @@ class Classifier(object):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         batchsize = 1
-        self.net.blobs['data'].reshape(batchsize,1, 5, FEATURE_LENGTH)
+        self.net.blobs['data'].reshape(batchsize, 1, 5, FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
         self.net.blobs['data'].data[...] = reshaped_array
@@ -85,6 +83,27 @@ class Classifier(object):
     def _get_class_distribution(self, probs):
         json_data = {}
         for i in range (0, len(classes)):
-            json_data[classes[i]] = str(probs[0][i])
+            json_data[classes[i]] = str(probs[i])
         return json_data
 
+
+
+################
+# Example call #
+################
+
+def main(caffeproto, caffemodel):
+    net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
+    classifier = Classifier(net, None, True)
+
+    text = "This is a very long text This text has two sentences"
+    data = classifier.predict_text(text)
+    print(data)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='run the web demo')
+    parser.add_argument('caffeproto', help='the deploy prototxt of your trained model', default='models/deploy.prototxt', nargs='?')
+    parser.add_argument('caffemodel', help='the trained caffemodel', default='models/model.caffemodel', nargs='?')
+    args = parser.parse_args()
+
+    main(args.caffeproto, args.caffemodel)

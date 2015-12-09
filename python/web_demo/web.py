@@ -29,7 +29,7 @@ if __name__ == "__main__":
     net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
-        classifier = Classifier(net, vector)
+        classifier = Classifier(net, vector, False)
         app.run(debug = True, use_reloader = False)
     else:
         classifier = Classifier(net, None, True)
