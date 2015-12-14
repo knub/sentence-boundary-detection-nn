@@ -5,7 +5,7 @@ import shutil
 # Set global config variable to be initialized in SbdConfig#init
 config = None
 
-CONFIG_SETTINGS_DIR = "configurations"
+CONFIGURATIONS_DIR = "configurations"
 
 config_file_schema = {
     'data': {
@@ -78,8 +78,10 @@ class SbdConfig(object):
 
     @staticmethod
     def get_db_name_from_config(config):
+        uses_ted  = '_ted'  if 'ted'  in config.get('data', 'train_files') else ''
+        uses_wiki = '_wiki' if 'wiki' in config.get('data', 'train_files') else ''
         # create proper name for the database
-        return config.get('word_vector', 'vector_file') + \
+        return config.get('word_vector', 'vector_file') + uses_ted + uses_wiki + \
                "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
                "_pos-"  + config.get('features', 'pos_tagging') + \
                "_qm-"   + config.get('features', 'use_question_mark') + \
@@ -87,7 +89,8 @@ class SbdConfig(object):
                "_nr-rep-"   + config.get('features', 'number_replacement') + \
                "_word-" + config.get('word_vector', 'key_error_vector')
 
-    def generate_config_files(self):
+    @staticmethod
+    def generate_config_files():
         option_settings = {
             ('data', 'normalize_class_distribution'): ['true', 'false'],
             ('data', 'train_files'): [
@@ -116,7 +119,19 @@ class SbdConfig(object):
         # [(window_size, punctuation_pos)]
         punctuation_settings = [
             (1, 0),
-            (1, 1)
+            (1, 1),
+            (5, 0),
+            (5, 1),
+            (5, 2),
+            (5, 3),
+            (5, 4),
+            (5, 5),
+            (8, 0),
+            (8, 2),
+            (8, 4),
+            (8, 5),
+            (8, 6),
+            (8, 8)
         ]
         punctuation_settings = [
             [(('windowing', 'window_size'), str(window_size)), (('windowing', 'punctuation_position'), str(punctuation_pos)) ]
@@ -124,14 +139,9 @@ class SbdConfig(object):
         ]
         cartesian_settings.append(punctuation_settings)
 
-        print "Debugging: "
-        for s in cartesian_settings:
-            print str(s)
-
         configurations = list(itertools.product(*cartesian_settings))
-        print "Creating " + str(len(configurations)) + " different config files."
-        shutil.rmtree(CONFIG_SETTINGS_DIR, True)
-        os.mkdir(CONFIG_SETTINGS_DIR)
+        shutil.rmtree(CONFIGURATIONS_DIR, True)
+        os.mkdir(CONFIGURATIONS_DIR)
         for c in configurations:
             # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
@@ -140,7 +150,7 @@ class SbdConfig(object):
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
             # sort and group by to output the options in correct *.ini order
-            f = open(CONFIG_SETTINGS_DIR + "/tmp", "w")
+            f = open(CONFIGURATIONS_DIR + "/tmp", "w")
             c = sorted(c, key = lambda x: x[0][0])
             for group, options in itertools.groupby(c, key = lambda x: x[0][0]):
                 f.write("[" + str(group) + "]\n")
@@ -151,9 +161,11 @@ class SbdConfig(object):
 
             # create the appropriate name for the current config
             current_config_parser = ConfigParser.ConfigParser()
-            current_config_parser.read(CONFIG_SETTINGS_DIR + "/tmp")
-            shutil.move(CONFIG_SETTINGS_DIR + "/tmp", CONFIG_SETTINGS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser))
+            current_config_parser.read(CONFIGURATIONS_DIR + "/tmp")
+            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser))
+
+        print "Created " + str(len(configurations)) + " different config files in " + CONFIGURATIONS_DIR
 
 
-config = SbdConfig(None)
-config.generate_config_files()
+if __name__ == '__main__':
+    SbdConfig.generate_config_files()
