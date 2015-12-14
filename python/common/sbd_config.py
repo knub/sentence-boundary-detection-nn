@@ -88,11 +88,6 @@ class SbdConfig(object):
                "_word-" + config.get('word_vector', 'key_error_vector')
 
     def generate_config_files(self):
-        config_file = {
-            'data': {}, 'word_vector': {}, 'windowing': {}, 'features': {}
-        }
-
-
         option_settings = {
             ('data', 'normalize_class_distribution'): ['true', 'false'],
             ('data', 'train_files'): [
@@ -136,17 +131,18 @@ class SbdConfig(object):
         configurations = list(itertools.product(*cartesian_settings))
         print "Creating " + str(len(configurations)) + " different config files."
         for c in configurations:
-            print "-----------------------------------"
+            f = open("tmp", "w")
             c = list(itertools.chain(*c))
             c.append((('data', 'test_files'), 'ted/2011.xml'))
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
             c = sorted(c, key = lambda x: x[0][0])
             for group, options in itertools.groupby(c, key = lambda x: x[0][0]):
-                print "[" + str(group) + "]"
+                f.write("[" + str(group) + "]\n")
                 for o in options:
-                    print o[0][1] + " = " + o[1]
-                print ""
+                    f.write(o[0][1] + " = " + o[1] + "\n")
+                f.write("\n")
+            f.close()
 
-# config = SbdConfig(None)
-# config.generate_config_files()
+config = SbdConfig(None)
+config.generate_config_files()
