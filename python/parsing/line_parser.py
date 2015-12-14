@@ -6,7 +6,7 @@ from preprocessing.nlp_pipeline import NlpPipeline
 from preprocessing.text import Text, Sentence
 from preprocessing.tokens import WordToken, PunctuationToken, Punctuation
 
-from abstract_parser import AbstractParser
+from abstract_parser import AbstractParser, main, parse_command_line_arguments
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -16,15 +16,19 @@ class LineParser(AbstractParser):
 
     def __init__(self, filename):
         super(LineParser, self).__init__(filename)
+        if not self.wants_this_file():
+            return
+            
         self._init_line_count_progress()
-
         if config.getboolean('features', 'use_question_mark'):
-            raise NameError("Question marks not supported by LineParser")
-
+            raise ValueError("Question marks not supported by LineParser")
         if config.getboolean('features', 'pos_tagging'):
             self.nlp_pipeline = NlpPipeline()
         else:
             self.nlp_pipeline = None
+
+    def _wanted_file_endings(self):
+        return (".line", )
 
     def parse(self):
         with open(self.filename, "r") as file_:
@@ -78,18 +82,5 @@ class LineParser(AbstractParser):
 # Example call #
 ################
 
-def main(filename):
-    parser = LineParser(filename)
-    texts = parser.parse()
-    #for text in texts:
-        # print(text)
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test the line text file parsing')
-    parser.add_argument('file', help='file contains lines with word and period value', type=lambda arg: is_valid_file(parser, arg))
-    args = parser.parse_args()
-
-    main(args.file)
-
-
-
+    parse_command_line_arguments(LineParser)

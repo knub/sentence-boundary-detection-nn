@@ -4,7 +4,7 @@ from common.argparse_util import *
 from preprocessing.nlp_pipeline import NlpPipeline
 from preprocessing.text import Sentence, Text
 
-from abstract_parser import AbstractParser
+from abstract_parser import AbstractParser, main, parse_command_line_arguments
 
 TEXT_SEPARATOR = "################################################################################"
 
@@ -14,8 +14,13 @@ sys.setdefaultencoding('utf8')
 class PlaintextParser(AbstractParser):
     def __init__(self, filename):
         super(PlaintextParser, self).__init__(filename)
+        if not self.wants_this_file():
+            return
         self._init_line_count_progress()
         self.nlp_pipeline = NlpPipeline()
+
+    def _wanted_file_endings(self):
+        return (".txt",)
 
     def parse(self):
         text = Text()
@@ -46,16 +51,5 @@ class PlaintextParser(AbstractParser):
 # Example call #
 ################
 
-def main(filename):
-    parser = PlaintextParser(filename)
-    texts = parser.parse()
-    for i, text in enumerate(texts):
-        print "progress %f, text %d:" % (parser.progress(), i)
-        print text
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test the plain text file parsing')
-    parser.add_argument('filename', help='the plain text file you want to parse', type=lambda arg: is_valid_file(parser, arg))
-    args = parser.parse_args()
-
-    main(args.filename)
+    parse_command_line_arguments(PlaintextParser)

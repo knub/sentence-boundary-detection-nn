@@ -4,14 +4,19 @@ from common.argparse_util import *
 from preprocessing.nlp_pipeline import NlpPipeline
 from preprocessing.text import *
 
-from abstract_parser import AbstractParser
+from abstract_parser import AbstractParser, main, parse_command_line_arguments
 
 class XMLParser(AbstractParser):
     def __init__(self, filename):
         super(XMLParser, self).__init__(filename)
+        if not self.wants_this_file():
+            return
         self.nlp_pipeline = NlpPipeline()
         self._linenumber = self._count_docs()
         self._progress = 0
+
+    def _wanted_file_endings(self):
+        return (".xml",)
 
     def parse(self):
         mteval = xml.etree.ElementTree.parse(self.filename).getroot()
@@ -45,15 +50,5 @@ class XMLParser(AbstractParser):
 # Example call #
 ################
 
-def main(filename):
-    parser = XMLParser(filename)
-    talks = parser.parse()
-    for talk in talks:
-        print(talk)
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test the xml file parsing')
-    parser.add_argument('filename', help='XML file containing talks', type=lambda arg: is_valid_file(parser, arg))
-    args = parser.parse_args()
-
-    main(args.filename)
+    parse_command_line_arguments(XMLParser)
