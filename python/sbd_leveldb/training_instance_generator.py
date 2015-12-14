@@ -110,7 +110,7 @@ class TrainingInstanceGenerator(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    parser.add_argument("-c", "--config_file", help="path to config file")
+    parser.add_argument('config_file', help="path to config file")
     args = parser.parse_args()
 
     # initialize config
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     SENTENCE_HOME = os.environ['SENTENCE_HOME']
     LEVEL_DB_DIR = "leveldbs"
 
-    database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + SbdConfig.get_db_name_from_config(sbd.config)
+    database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + sbd.SbdConfig.get_db_name_from_config(sbd.config)
 
     # check if database already exists
     if os.path.isdir(database):
@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     # create database folder and copy config file
     os.mkdir(database)
-    shutil.copy(args.config, database)
+    shutil.copy(args.config_file, database)
 
     # get word vector
     word2vec = None
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     # get training parsers
     training_parsers = []
     for f in training_data:
-        parser = get_parser(SENTENCE_HOME + "/data/" + f)
+        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
         if parser is None:
             print("WARNING: Could not find training parser for file %s!" % f)
         else:
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     # get test parsers
     test_parsers = []
     for f in test_data:
-        parser = get_parser(SENTENCE_HOME + "/data/" + f)
+        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
         if parser is None:
             print("WARNING: Could not find test parser for file %s!" % f)
         else:
