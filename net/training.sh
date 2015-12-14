@@ -66,7 +66,7 @@ $CAFFE_ROOT/build/tools/caffe train \
 if [ $? -ne 0 ]; then
     # Send Email Notification
     cd "${SENTENCE_HOME}/python"
-    python "common/send_email.py" "training failed" "$FOLDER_NAME" "../net/$TRAINING_LOG_NAME"
+    python "common/send_email.py" "Training failed" "$FOLDER_NAME" "../net/$TRAINING_LOG_NAME"
     cd -
     echo "Training not successful. Exiting."
     

@@ -20,7 +20,7 @@ class EmailNotification(object):
         message_with_header = "\r\n".join([
           "From: %s" % from_address,
           "To: %s" % ",".join(to_address_list),
-          "Subject: [Pamur] %s" % self.subject,
+          "Subject: [PAMuR] %s" % self.subject,
           "",
           "%s" % self.message
           ])
