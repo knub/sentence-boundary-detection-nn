@@ -2,6 +2,7 @@
 train_instances.txt
 test_instances.txt
 config.ini
+email.ini
 lineparsing
 
 # Caffe files
