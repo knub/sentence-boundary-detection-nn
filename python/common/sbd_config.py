@@ -1,4 +1,5 @@
 import ConfigParser, os
+import itertools
 
 # Set global config variable to be initialized in SbdConfig#init
 config = None
@@ -6,7 +7,6 @@ config = None
 config_file_schema = {
     'data': {
         'normalize_class_distribution': ['true', 'false'],
-        'use_wikipedia': ['true', 'false'],
         'train_files': None,
         'test_files': None
     },
@@ -86,3 +86,67 @@ class SbdConfig(object):
                "_balanced-" + config.get('data', 'normalize_class_distribution') + \
                "_nr-rep-"   + config.get('features', 'number_replacement') + \
                "_word-" + config.get('word_vector', 'key_error_vector')
+
+    def generate_config_files(self):
+        config_file = {
+            'data': {}, 'word_vector': {}, 'windowing': {}, 'features': {}
+        }
+
+
+        option_settings = {
+            ('data', 'normalize_class_distribution'): ['true', 'false'],
+            ('data', 'train_files'): [
+                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml',
+                # 'wikipedia/wikipedia.txt',
+                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml,wikipedia/wikipedia.txt'
+            ],
+            ('word_vector', 'vector_file'): ['glove', 'google'],
+            ('features', 'pos_tagging'): ['true', 'false'],
+            ('features', 'number_replacement'): ['true', 'false'],
+        }
+        # Now transform the option list from the data structure above to the following_structure
+        # [
+        #     [ (('data', 'normalize_class_distribution'), 'true'), (('data', 'normalize_class_distribution'), 'false') ],
+        #     [ .. next option .. ],
+        #     ...
+        # ]
+        # We can then use the cartesian product on this list to get all possible configs.
+        cartesian_settings = []
+        for option, values in option_settings.iteritems():
+            options = [ [(option, value)] for value in values ]
+            cartesian_settings.append(options)
+
+
+        # Now add the possible settings for the punctuation
+        # [(window_size, punctuation_pos)]
+        punctuation_settings = [
+            (1, 0),
+            (1, 1)
+        ]
+        punctuation_settings = [
+            [(('windowing', 'window_size'), str(window_size)), (('windowing', 'punctuation_position'), str(punctuation_pos)) ]
+            for window_size, punctuation_pos in punctuation_settings
+        ]
+        cartesian_settings.append(punctuation_settings)
+
+        print "Debugging: "
+        for s in cartesian_settings:
+            print str(s)
+
+        configurations = list(itertools.product(*cartesian_settings))
+        print "Creating " + str(len(configurations)) + " different config files."
+        for c in configurations:
+            print "-----------------------------------"
+            c = list(itertools.chain(*c))
+            c.append((('data', 'test_files'), 'ted/2011.xml'))
+            c.append((('word_vector', 'key_error_vector'), 'this'))
+            c.append((('features', 'use_question_mark'), 'false'))
+            c = sorted(c, key = lambda x: x[0][0])
+            for group, options in itertools.groupby(c, key = lambda x: x[0][0]):
+                print "[" + str(group) + "]"
+                for o in options:
+                    print o[0][1] + " = " + o[1]
+                print ""
+
+# config = SbdConfig(None)
+# config.generate_config_files()
