@@ -28,6 +28,7 @@
 * with/without question mark
 * pos tagging
 * only line parser input
+* with/without wikipedia
 
 ### Questions
 
