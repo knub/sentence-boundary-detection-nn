@@ -122,7 +122,7 @@ if __name__ == '__main__':
     test_parsers = []
     word2vec = None
 
-    if config.get('data', 'vector_file') == "google":
+    if config.get('word_vector', 'vector_file') == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
         training_parsers = [
             # PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
@@ -134,7 +134,7 @@ if __name__ == '__main__':
         test_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif config.get('data', 'vector_file') == "glove":
+    elif config.get('word_vector', 'vector_file') == "glove":
         word2vec = GloveFile(GLOVE_VECTOR_FILE)
         training_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
@@ -147,7 +147,7 @@ if __name__ == '__main__':
 #            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif config.get('data', 'vector_file') == "small":
+    elif config.get('word_vector', 'vector_file') == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
 #        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
@@ -157,11 +157,11 @@ if __name__ == '__main__':
 
     # create proper name for the database
     database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-        config.get('data', 'vector_file') + \
-        "balanced-" + config.get('data', 'normalize_class_distribution') + \
+        config.get('word_vector', 'vector_file') + \
         "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
         "_pos-"  + config.get('features', 'pos_tagging') + \
         "_qm-"   + config.get('features', 'use_question_mark') + \
+        "_balanced-" + config.get('data', 'normalize_class_distribution') + \
         "_nr-rep-"   + config.get('features', 'number_replacement') + \
         "_word-" + config.get('word_vector', 'key_error_vector') + \
         "_" + config.get('word_vector', 'key_error_vector')
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     generator.generate(test_parsers, database + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
-    if config.get('data', 'vector_file') == "small":
+    if config.get('word_vector', 'vector_file') == "small":
         print "Stopping after test instance creation"
         sys.exit(0)
     print("Generating training data .. ")
