@@ -13,22 +13,25 @@ if ! [[ -d $CONFIG_FOLDER ]]; then
     exit
 fi
 
-source $SENTENCE_HOME/use_python p2
-
 # Abort on first error
 set -e
 
-for config_file in "$CONFIG_FOLDER"/*
+source $SENTENCE_HOME/use_python p2
+
+for CONFIG_FILE in "$CONFIG_FOLDER"/*
 do
     cd $SENTENCE_HOME/python/
-    echo "#################### Running with $config_file ####################"
+    CONFIG="${CONFIG_FILE%.*}"
+    echo "#################### Running with $CONFIG ####################"
     echo "#################### Creating database         ####################"
-    python sbd_leveldb/training_instance_generator.py $config_file
+    python sbd_leveldb/training_instance_generator.py $CONFIG
     echo "#################### Configuring net           ####################"
-	python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$config_file
+    python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$CONFIG
     cd $SENTENCE_HOME/net/
     echo "#################### Starting training         ####################"
-	./training.sh
+    ./training.sh $CONFIG
+    echo "#################### Removing net definition   ####################"
+    rm auto.prototxt
     echo "#################### Deleting database         ####################"
-	rm -r $SENTENCE_HOME/leveldbs/$config_file
+    rm -r $SENTENCE_HOME/leveldbs/$CONFIG
 done
