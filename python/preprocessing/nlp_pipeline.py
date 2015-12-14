@@ -1,15 +1,9 @@
 import nltk, nltk.data
 from enum import Enum
 import regex as re
-
-
-from common.sbd_config import config
-
+import common.sbd_config as sbd
 from tokens import Punctuation, PunctuationToken, WordToken
 
-
-POS_TAGGING = config.getboolean('features', 'pos_tagging')
-NUMBER_REPLACEMENT = config.getboolean('features', 'number_replacement')
 
 class PosTag(Enum):
     OTHER = 0
@@ -31,6 +25,9 @@ class PosTag(Enum):
 class NlpPipeline(object):
 
     def __init__(self):
+        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
+        self.NUMBER_REPLACEMENT = sbd.config.getboolean('features', 'number_replacement')
+
         self.punkt = None
         self.punctuation_regex = re.compile("^\p{posix_punct}+$")
         self.punctuation_mapping = {
@@ -111,12 +108,12 @@ class NlpPipeline(object):
             else:
                 if re.match(self.punctuation_regex, raw_token):
                     continue
-                if NUMBER_REPLACEMENT:
+                if self.NUMBER_REPLACEMENT:
                     raw_token = self._replace_number(raw_token)
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
 
-        if POS_TAGGING:
+        if self.POS_TAGGING:
             self.pos_tag(tokens)
 
         return tokens

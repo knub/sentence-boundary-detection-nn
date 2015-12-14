@@ -1,14 +1,13 @@
 import sys, argparse, struct, numpy
-from common.sbd_config import config
-
-ENCODING = 'UTF-8'
-KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
-
+import common.sbd_config as sbd
 
 class GloveFile(object):
     """reads a binary word vector file, returns vectors for single words"""
 
     def __init__(self, filename):
+        self.ENCODING = 'UTF-8'
+        self.KEY_ERROR_VECTOR = sbd.config.get('word_vector', 'key_error_vector')
+
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
@@ -61,8 +60,8 @@ class GloveFile(object):
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
             self.nr_uncovered_words += 1
-            if KEY_ERROR_VECTOR != 'avg':
-                idx = self.word2index[KEY_ERROR_VECTOR]
+            if self.KEY_ERROR_VECTOR != 'avg':
+                idx = self.word2index[self.KEY_ERROR_VECTOR]
                 return self.vector_array[idx]
             else:
                 return self.average_vector

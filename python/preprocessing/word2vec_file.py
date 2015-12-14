@@ -1,23 +1,23 @@
 import sys, argparse, struct, numpy
 
 from common.argparse_util import *
-from common.sbd_config import config
+import common.sbd_config as sbd
 
-
-ENCODING = 'UTF-8'
-KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
-
-key_mapping = {
-    "'s": "is",
-    "a": "the",
-    "of": "from",
-    "to": "from",
-    "and": "or"
-}
 
 class Word2VecFile(object):
     """reads a binary word vector file, returns vectors for single words"""
     def __init__(self, filename, use_this_vector=True):
+        self.ENCODING = 'UTF-8'
+        self.KEY_ERROR_VECTOR = sbd.config.get('word_vector', 'key_error_vector')
+
+        self.key_mapping = {
+            "'s": "is",
+            "a": "the",
+            "of": "from",
+            "to": "from",
+            "and": "or"
+        }
+
         # the following variable counts word, that are not covered in the given vector
         # see get_vector for details
         self.not_covered_words = dict()
@@ -33,7 +33,7 @@ class Word2VecFile(object):
             print ('The file %s can not be read!' % self.__filename)
             return
 
-        first_line = self.__file.readline().decode(ENCODING).split(' ')
+        first_line = self.__file.readline().decode(self.ENCODING).split(' ')
         self.words = int(first_line[0])
         self.vector_size = int(first_line[1])
         print('File has %d words with vectors of size %d. Parsing ..' % (self.words, self.vector_size))
@@ -53,7 +53,7 @@ class Word2VecFile(object):
             while byte:
                 if byte == b" ":
                     word = b"".join(chars)
-                    self.word2index[word.decode(ENCODING)] = w_index
+                    self.word2index[word.decode(self.ENCODING)] = w_index
                     chars = []
                     break
                 if byte != b"\n":
@@ -73,16 +73,16 @@ class Word2VecFile(object):
 
     def get_vector(self, word):
         try:
-            if word in key_mapping:
-                word = key_mapping[word]
+            if word in self.key_mapping:
+                word = self.key_mapping[word]
             idx = self.word2index[word]
             self.nr_covered_words += 1
             return self.vector_array[idx]
         except KeyError:
             self.not_covered_words[word] = self.not_covered_words.get(word, 0) + 1
             self.nr_uncovered_words += 1
-            if KEY_ERROR_VECTOR != 'avg':
-                idx = self.word2index[KEY_ERROR_VECTOR]
+            if self.KEY_ERROR_VECTOR != 'avg':
+                idx = self.word2index[self.KEY_ERROR_VECTOR]
                 return self.vector_array[idx]
             else:
                 return self.average_vector

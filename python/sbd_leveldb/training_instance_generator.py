@@ -1,7 +1,6 @@
 import operator, os, shutil, sys, time, argparse
 
 from common.argparse_util import *
-from common.sbd_config import config
 from parsing.line_parser import LineParser
 from parsing.plaintext_parser import PlaintextParser
 from parsing.xml_parser import XMLParser
@@ -11,15 +10,11 @@ from preprocessing.word2vec_file import Word2VecFile
 from preprocessing.glove_file import GloveFile
 
 from level_db_creator import LevelDBCreator
+import common.sbd_config as sbd
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 GLOVE_VECTOR_FILE = "/home/ms2015t3/glove.6B.50d.txt"
-CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
-CLASS_DISTRIBUTION_VARIATION = 0.05
-USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
-WORD_VECTOR = config.get('word_vector', 'vector_file')
-USE_WIKIPEDIA = config.getboolean('data', 'use_wikipedia')
 
 
 class TrainingInstanceGenerator(object):
@@ -116,7 +111,8 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--config", help="path to config file")
     args = parser.parse_args()
 
-    sbd_config = SbdConfig(args.config)
+    # read config
+    config_file = sbd.SbdConfig(args.config)
 
     training_data = []
     test_data = []
@@ -124,10 +120,14 @@ if __name__ == '__main__':
     test_parsers = []
     word2vec = None
 
-    sentence_home = os.environ['SENTENCE_HOME']
+    CLASS_DISTRIBUTION_NORMALIZATION = sbd.config.getboolean('data', 'normalize_class_distribution')
+    CLASS_DISTRIBUTION_VARIATION = 0.05
+    USE_QUESTION_MARK = sbd.config.getboolean('features', 'use_question_mark')
+    WORD_VECTOR = sbd.config.get('word_vector', 'vector_file')
+    USE_WIKIPEDIA = sbd.config.getboolean('data', 'use_wikipedia')
 
     # create proper name for the database
-    database = sbd_config.get_db_name()
+    database = config_file.get_db_name()
 
     # check if database already exists
     if os.path.isdir(database):
@@ -140,9 +140,9 @@ if __name__ == '__main__':
 
     # create database folder and copy config file
     os.mkdir(database)
-    shutil.copy(sentence_home + "/python/config.ini", database)
+    shutil.copy(args.config, database)
 
-    if config.get('word_vector', 'vector_file') == "google":
+    if sbd.config.get('word_vector', 'vector_file') == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
         training_parsers = [
             # PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
@@ -154,7 +154,7 @@ if __name__ == '__main__':
         test_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif config.get('word_vector', 'vector_file') == "glove":
+    elif sbd.config.get('word_vector', 'vector_file') == "glove":
         word2vec = GloveFile(GLOVE_VECTOR_FILE)
         training_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
@@ -167,7 +167,7 @@ if __name__ == '__main__':
 #            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif config.get('word_vector', 'vector_file') == "small":
+    elif sbd.config.get('word_vector', 'vector_file') == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
 #        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
@@ -179,8 +179,8 @@ if __name__ == '__main__':
     generator.generate(test_parsers, database + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
-    if config.get('word_vector', 'vector_file') == "small":
-        print "Stopping after test instance creation"
+    if sbd.config.get('word_vector', 'vector_file') == "small":
+        print("Stopping after test instance creation")
         sys.exit(0)
     print("Generating training data .. ")
     start = time.time()

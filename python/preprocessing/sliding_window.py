@@ -1,30 +1,32 @@
 import numpy
 
-from common.sbd_config import config
-
+import common.sbd_config as sbd
 from nlp_pipeline import Punctuation, NlpPipeline
 from text import Sentence, Text
 from tokens import PunctuationToken
 from training_instance import TrainingInstance
 
-WINDOW_SIZE = config.getint('windowing', 'window_size')
-PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
 
 class SlidingWindow(object):
 
+    def __init__(self):
+        self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
+        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
+
     def list_windows(self, talk):
+
         tokens = talk.get_tokens()
 
         index = 0
         training_instances = []
 
-        while index <= len(tokens) - WINDOW_SIZE:
+        while index <= len(tokens) - self.WINDOW_SIZE:
             window_tokens = []
             instance_label = Punctuation.NONE
 
             i = index
             word_count = 0
-            while word_count < WINDOW_SIZE and i < len(tokens):
+            while word_count < self.WINDOW_SIZE and i < len(tokens):
                 current_token = tokens[i]
                 is_punctuation = current_token.is_punctuation()
 
@@ -36,12 +38,12 @@ class SlidingWindow(object):
                 elif i == index:
                     index += 1  ##dont parse windows with punctuations at the beginning twice
 
-                if word_count == PUNCTUATION_POS and is_punctuation:
+                if word_count == self.PUNCTUATION_POS and is_punctuation:
                     instance_label = current_token.punctuation_type
 
                 i += 1
 
-            if len(window_tokens) == WINDOW_SIZE:
+            if len(window_tokens) == self.WINDOW_SIZE:
                 training_instances.append(TrainingInstance(window_tokens, instance_label))
             index += 1
 

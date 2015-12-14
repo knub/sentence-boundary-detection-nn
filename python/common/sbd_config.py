@@ -1,5 +1,6 @@
 import ConfigParser, os
 
+# Set global config variable to be initialized in SbdConfig#init
 config = None
 
 config_file_schema = {
@@ -24,19 +25,21 @@ config_file_schema = {
     }
 }
 
+
 class SbdConfig(object):
 
     def __init__(self, config_path):
         self.config_path = config_path
 
         # if config_path not set, use default config file
-        if self.config_path == None:
+        if self.config_path is None:
             config_path = os.path.join(os.getcwd(), 'config.ini')
             if 'SENTENCE_HOME' in os.environ:
                 # if environment variable is set, we take that directory instead
                 config_path = os.path.join(os.environ['SENTENCE_HOME'], 'python/config.ini')
 
         self._read_config(config_path)
+        self._validate()
 
     def _read_config(self, config_path):
         global config

@@ -1,10 +1,12 @@
 from enum import Enum
 
+
 class Punctuation(Enum):
     NONE = 0
     COMMA = 1
     PERIOD = 2
     QUESTION = 3
+
 
 class WordToken(object):
     def __init__(self, word):
