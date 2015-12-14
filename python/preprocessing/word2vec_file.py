@@ -7,6 +7,13 @@ from common.sbd_config import config
 ENCODING = 'UTF-8'
 KEY_ERROR_VECTOR = config.get('word_vector', 'key_error_vector')
 
+key_mapping = {
+    "'s": "is",
+    "a": "the",
+    "of": "from",
+    "to": "from",
+    "and": "or"
+}
 
 class Word2VecFile(object):
     """reads a binary word vector file, returns vectors for single words"""
@@ -66,6 +73,8 @@ class Word2VecFile(object):
 
     def get_vector(self, word):
         try:
+            if word in key_mapping:
+                word = key_mapping[word]
             idx = self.word2index[word]
             self.nr_covered_words += 1
             return self.vector_array[idx]
