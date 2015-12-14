@@ -2,7 +2,7 @@ import ConfigParser, os
 from sets import Set
 
 allowed_sections = Set(['word_vector', 'windowing', 'features', 'data'])
-allowed_options = Set(['key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging', 'normalize_class_distribution', 'vector', 'number_replacement', 'wikipedia'])
+allowed_options = Set(['key_error_vector', 'window_size', 'punctuation_position', 'use_question_mark', 'pos_tagging', 'normalize_class_distribution', 'vector_file', 'number_replacement', 'wikipedia'])
 
 config_path = os.path.join(os.getcwd(), 'config.ini')
 if 'SENTENCE_HOME' in os.environ:

@@ -113,10 +113,8 @@ class TrainingInstanceGenerator(object):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    parser.add_argument('vector_file', metavar="vector_file {'small' or 'google' or 'glove'}", choices=['small', 'google', 'glove'])
-    parser.add_argument('data_folder', help='folder for lmdb creation')
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
+    # args = parser.parse_args()
 
     training_data = []
     test_data = []
@@ -124,9 +122,7 @@ if __name__ == '__main__':
     test_parsers = []
     word2vec = None
 
-
-
-    if args.vector_file == "google":
+    if config.get('data', 'vector_file') == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
         training_parsers = [
             # PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
@@ -138,7 +134,7 @@ if __name__ == '__main__':
         test_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif args.vector_file == "glove":
+    elif config.get('data', 'vector_file') == "glove":
         word2vec = GloveFile(GLOVE_VECTOR_FILE)
         training_parsers = [
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
@@ -151,7 +147,7 @@ if __name__ == '__main__':
 #            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
             XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
         ]
-    elif args.vector_file == "small":
+    elif config.get('data', 'vector_file') == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
 #        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
@@ -160,9 +156,8 @@ if __name__ == '__main__':
     sentence_home = os.environ['SENTENCE_HOME']
 
     # create proper name for the database
-    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + args.data_folder + \
-        "_"      + config.get('windowing', 'window_size') + \
-        "_"      + config.get('windowing', 'punctuation_position') + \
+    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
+        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') \
         "_pos-"  + config.get('features', 'pos_tagging') + \
         "_qm-"   + config.get('features', 'use_question_mark') + \
         "_word-" + config.get('word_vector', 'key_error_vector')
@@ -186,7 +181,7 @@ if __name__ == '__main__':
     generator.generate(test_parsers, database + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
-    if args.vector_file == "small":
+    if config.get('data', 'vector_file') == "small":
         print "Stopping after test instance creation"
         sys.exit(0)
     print("Generating training data .. ")
