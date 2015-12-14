@@ -10,7 +10,7 @@ auto.prototxt
 # Caffe files
 *.tlog
 *.tstlog
-leveldbs/
+leveldbs
 net/experiments/
 net/snapshots/
 
