@@ -65,6 +65,10 @@ def main(args):
         train_data_layer = get_train_data_layer(net)
         train_data_layer.data_param.source = db_pair_dir + "/train"
 
+    if args.print:
+        test_data_layer = get_test_data_layer(net)
+        print test_data_layer.data_param.source.replace("/test", "")
+
     # write changed net to output
     args.output.write(str(net))
 
@@ -73,6 +77,7 @@ if __name__ == '__main__':
     parser.add_argument('prototxt', help='the original net prototxt', type=argparse.FileType('r'))
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-d','--deploy', help='preset: deploy; remove data layers, add softmax', action='store_true')
+    group.add_argument('-p','--print', help='Whether to print the database folder or not', action='store_true')
     group.add_argument('-t','--train', help='preset: make training net on test/train leveldb in directory', metavar='directory')
     parser.add_argument('-o','--output', help='output of the modified net', type=argparse.FileType('w'), default=sys.stdout, metavar='output')
     # parser.add_argument('-v','--verbose', help='be verbose', action='store_true')
