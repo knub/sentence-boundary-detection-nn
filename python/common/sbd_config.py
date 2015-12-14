@@ -3,8 +3,8 @@ from sets import Set
 
 config_file_schema = {
     'data': {
-        'normalize_class_distribution': [True, False],
-        'use_wikipedia': [True, False]
+        'normalize_class_distribution': ['true', 'false'],
+        'use_wikipedia': ['true', 'false']
     },
     'word_vector': {
         'key_error_vector': None,
@@ -15,9 +15,9 @@ config_file_schema = {
         'punctuation_position': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     },
     'features': {
-        'use_question_mark': [True, False]
-        'pos_tagging': [True, False]
-        'number_replacement': [True, False]
+        'use_question_mark': ['true', 'false'],
+        'pos_tagging': ['true', 'false'],
+        'number_replacement': ['true', 'false']
     }
 }
 
@@ -30,14 +30,12 @@ config = ConfigParser.ConfigParser()
 print("Reading config: %s" % config_path)
 config.read(config_path)
 
-allowed_sections = config_file_schema.keys()
-allowed_options = [option for section in allowed_sections for option in config_file_schema[section].keys()]
-print "Debugging: " + str(allowed_sections)
-print "Debugging: " + str(allowed_options)
-
 #
 # Check validity
 #
+allowed_sections = config_file_schema.keys()
+allowed_options = [option for section in allowed_sections for option in config_file_schema[section].keys()]
+
 for section in config.sections():
     # Check if section is allowed
     assert section in config_file_schema.keys(), "Section " + section + " is not allowed!"
@@ -53,7 +51,9 @@ for section in config.sections():
         # Check allowed data range
         data_range = config_file_schema[section][name]
         if data_range is not None:
-            assert value in data_range, "Value " + str(value) + " is not allowed for option " + str(name) + " with range " + str(data_range) + "!"
+            # stringify data range so we can compare with `value`, which is a string
+            data_range = [str(data_range_point) for data_range_point in data_range]
+            assert value in data_range, "Value " + str(value) + " is not allowed for option `" + str(name) + "` with range " + str(data_range) + "!"
 
 assert len(allowed_sections) == 0, "Not all sections were set in config.ini: " + str(allowed_sections)
 assert len(allowed_options) == 0,  "Not all options were set in config.ini: "  + str(allowed_options)

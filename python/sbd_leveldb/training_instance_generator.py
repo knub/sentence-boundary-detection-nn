@@ -19,8 +19,8 @@ LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
 CLASS_DISTRIBUTION_VARIATION = 0.05
 USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
-WORD_VECTOR = config.get('word_vector', 'vector')
-USE_WIKIPEDIA = config.getboolean('data', 'wikipedia')
+WORD_VECTOR = config.get('word_vector', 'vector_file')
+USE_WIKIPEDIA = config.getboolean('data', 'use_wikipedia')
 
 
 class TrainingInstanceGenerator(object):
