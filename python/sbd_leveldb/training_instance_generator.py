@@ -122,6 +122,32 @@ if __name__ == '__main__':
     test_parsers = []
     word2vec = None
 
+    sentence_home = os.environ['SENTENCE_HOME']
+
+    # create proper name for the database
+    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
+        config.get('word_vector', 'vector_file') + \
+        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
+        "_pos-"  + config.get('features', 'pos_tagging') + \
+        "_qm-"   + config.get('features', 'use_question_mark') + \
+        "_balanced-" + config.get('data', 'normalize_class_distribution') + \
+        "_nr-rep-"   + config.get('features', 'number_replacement') + \
+        "_word-" + config.get('word_vector', 'key_error_vector') + \
+        "_" + config.get('word_vector', 'key_error_vector')
+
+    # check if database already exists
+    if os.path.isdir(database):
+        print("Deleting " + database + ". y/N?")
+        s = raw_input()
+        if s != "Y" and s != "y":
+            print("Not deleting. Exiting ..")
+            sys.exit(3)
+        shutil.rmtree(database)
+
+    # create database folder and copy config file
+    os.mkdir(database)
+    shutil.copy(sentence_home + "/python/config.ini", database)
+
     if config.get('word_vector', 'vector_file') == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
         training_parsers = [
@@ -152,32 +178,6 @@ if __name__ == '__main__':
         training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
 #        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
         test_parsers = [XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")]
-
-    sentence_home = os.environ['SENTENCE_HOME']
-
-    # create proper name for the database
-    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-        config.get('word_vector', 'vector_file') + \
-        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
-        "_pos-"  + config.get('features', 'pos_tagging') + \
-        "_qm-"   + config.get('features', 'use_question_mark') + \
-        "_balanced-" + config.get('data', 'normalize_class_distribution') + \
-        "_nr-rep-"   + config.get('features', 'number_replacement') + \
-        "_word-" + config.get('word_vector', 'key_error_vector') + \
-        "_" + config.get('word_vector', 'key_error_vector')
-
-    # check if database already exists
-    if os.path.isdir(database):
-        print("Deleting " + database + ". y/N?")
-        s = raw_input()
-        if s != "Y" and s != "y":
-            print("Not deleting. Exiting ..")
-            sys.exit(3)
-        shutil.rmtree(database)
-
-    # create database folder and copy config file
-    os.mkdir(database)
-    shutil.copy(sentence_home + "/python/config.ini", database)
 
     generator = TrainingInstanceGenerator(word2vec)
     print("Generating test data .. ")
