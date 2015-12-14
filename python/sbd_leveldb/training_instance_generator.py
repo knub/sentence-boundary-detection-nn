@@ -19,6 +19,8 @@ LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
 CLASS_DISTRIBUTION_VARIATION = 0.05
 USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
+WORD_VECTOR = config.get('word_vector', 'vector')
+USE_WIKIPEDIA = config.getboolean('data', 'wikipedia')
 
 
 class TrainingInstanceGenerator(object):
@@ -121,6 +123,8 @@ if __name__ == '__main__':
     training_parsers = []
     test_parsers = []
     word2vec = None
+
+
 
     if args.vector_file == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)

@@ -9,6 +9,7 @@ from tokens import Punctuation, PunctuationToken, WordToken
 
 
 POS_TAGGING = config.getboolean('features', 'pos_tagging')
+NUMBER_REPLACEMENT = config.getboolean('features', 'number_replacement')
 
 class PosTag(Enum):
     OTHER = 0
@@ -110,7 +111,8 @@ class NlpPipeline(object):
             else:
                 if re.match(self.punctuation_regex, raw_token):
                     continue
-                # raw_token = self._replace_number(raw_token)
+                if NUMBER_REPLACEMENT:
+                    raw_token = self._replace_number(raw_token)
                 word_token = WordToken(raw_token)
                 tokens.append(word_token)
 

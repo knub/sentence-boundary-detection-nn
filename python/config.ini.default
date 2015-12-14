@@ -2,6 +2,7 @@
 # if set to 'avg' the average word vector is taken,
 # otherwise the given word is taken as key error vector.
 key_error_vector = this
+vector = google
 
 [windowing]
 window_size = 5
@@ -10,6 +11,8 @@ punctuation_position = 3
 [features]
 use_question_mark = true
 pos_tagging = false
+number_replacement = true
 
 [data]
 normalize_class_distribution = false
+wikipedia = true
