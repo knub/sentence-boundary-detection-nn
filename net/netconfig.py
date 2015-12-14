@@ -1,90 +1,81 @@
-import argparse
+import argparse, sys
+from google.protobuf import text_format
 
-START_SYMBOL = '#### BLOCKSTART'
-END_SYMBOL = '#### BLOCKEND'
+import caffe
+from caffe.proto import caffe_pb2
 
+def get_layer_by_name(net, name):
+    for layer in net.layer:
+        if layer.name == name:
+            return layer
 
-def get_keyword(line):
-    return line.split(" ")[-1].strip()
+def get_data_layer(net, phase):
+    for layer in net.layer:
+        if layer.name == "data":
+            for value in layer.include:
+                if value.phase == phase:
+                    return layer
 
-def main(prototxt, output, omissions, additions, verbose, print_to_stdout):
-    try:
-        input_file = open(prototxt)
-    except IOError:
-        print "IOError: Could not open '%s'!" % prototxt
-        return
-    lines = input_file.readlines()
-    input_file.close()
+def get_test_data_layer(net):
+    return get_data_layer(net, caffe_pb2.TEST)
 
-    comment_change_level = 0
-    for i in range(0, len(lines)):
-        keyword = None
-        if lines[i].startswith(START_SYMBOL):
-            base_delta = 1
-            keyword = get_keyword(lines[i])
-        if lines[i].startswith(END_SYMBOL):
-            base_delta = -1
-            keyword = get_keyword(lines[i])
-        final_delta = 0
-        if keyword in omissions:
-            final_delta = base_delta
-        if keyword in additions:
-            final_delta = base_delta * -1
-        comment_change_level += final_delta
-        if verbose and keyword: print ("keyword found: %s" % lines[i]),
-        if keyword:
-            # we do not want to change the keyword lines
-            continue
-        if comment_change_level > 0:
-            lines[i] = '#' + lines[i]
-            if verbose: print ("commented out: %s" % lines[i]),
-        elif comment_change_level < 0:
-            if (lines[i][0] == "#"):
-                lines[i] = lines[i][1:]
-                if verbose: print ("commented in:  %s" % lines[i]),
-            else:
-                print "warning: line %d (%s...) should be added, but does not start with a comment symbol!" % (i, lines[i][0:10])
-        else:
-            if verbose: print ("unchanged:     %s" % lines[i]),
+def get_train_data_layer(net):
+    return get_data_layer(net, caffe_pb2.TRAIN)
 
-    if print_to_stdout:
-        for line in lines:
-            print line,
-        return 
+def replace_loss_with_softmax(net):
+    losslayer = get_layer_by_name(net, "loss")
+    losslayer.name = "softmax"
+    losslayer.type = "Softmax"
+    losslayer.bottom.remove("label")
+    losslayer.top.remove("loss")
+    losslayer.top.append("softmax")
+    return losslayer
 
-    try:
-        output_file = open(output,"w")
-    except IOError:
-        print "IOError: Could not open '%s'!" % prototxt
-        return
-    for line in lines:
-        output_file.write(line)
-    output_file.close()
-    print "Modified net saved here: %s" % output
+def main(args):
+    # read template net
+    net = caffe_pb2.NetParameter()
+    text_format.Merge(args.prototxt.read(), net)
+
+    # make deploy version of net
+    if args.deploy:
+        # remove data layers
+        net.layer.remove(get_train_data_layer(net))
+        net.layer.remove(get_test_data_layer(net))
+
+        # remove accuracy layer
+        net.layer.remove(get_layer_by_name(net, "accuracy"))
+
+        # add input
+        net.input.append("data")
+        net.input_dim.append(1)
+        net.input_dim.append(1)
+        net.input_dim.append(5)
+        net.input_dim.append(300)
+
+        # use softmax instead of loss layer
+        replace_loss_with_softmax(net)
+
+    if args.train:
+        db_pair_dir = args.train
+
+        # modify path to leveldb for test and train data layer
+        test_data_layer = get_test_data_layer(net)
+        test_data_layer.data_param.source = db_pair_dir + "/test"
+
+        train_data_layer = get_train_data_layer(net)
+        train_data_layer.data_param.source = db_pair_dir + "/train"
+
+    # write changed net to output
+    args.output.write(str(net))
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Configure your net with #### BLOCKSTART and #### BLOCKEND tags')
-    parser.add_argument('prototxt', help='the net prototxt you want to modify')
+    parser = argparse.ArgumentParser(description='Configure your net')
+    parser.add_argument('prototxt', help='the original net prototxt', type=argparse.FileType('r'))
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-d','--deploy', help='preset: deploy (omit TRAINTEST blocks, add DEPLOY), default output is deploy.prototxt', action='store_true')
-    group.add_argument('-f','--fulltest', help='preset: fulltest (omit TEST blocks, add FULLTEST), default output is fulltest.prototxt', action='store_true')
-    parser.add_argument('-o','--output', help='output path of the modified net, default is taken from preset, or output.prototxt otherwise', default='output.prototxt', metavar='output')
-    parser.add_argument('--omit', nargs='*', help='omit all blocks with these keywords (case-sensitive)', metavar='keyword', default=[])
-    parser.add_argument('--add', nargs='*', help='add all blocks with these keywords (case-sensitive)', metavar='keyword', default=[])
-    parser.add_argument('-v','--verbose', help='be verbose', action='store_true')
-    parser.add_argument('-s','--stdout', help='print output to stdout instead of writing a file', action='store_true')
+    group.add_argument('-d','--deploy', help='preset: deploy; remove data layers, add softmax', action='store_true')
+    group.add_argument('-t','--train', help='preset: make training net on test/train leveldb in directory', metavar='directory')
+    parser.add_argument('-o','--output', help='output of the modified net', type=argparse.FileType('w'), default=sys.stdout, metavar='output')
+    # parser.add_argument('-v','--verbose', help='be verbose', action='store_true')
     args = parser.parse_args()
 
-    # handle presets
-    if (args.deploy):
-        args.omit.append("TRAINTEST")
-        args.add.append("DEPLOY")
-        if args.output == "output.prototxt":
-            args.output = "deploy.prototxt"
-    if (args.fulltest):
-        args.omit.append("TRAIN")
-        args.add.append("FULLTEST")
-        if args.output == "output.prototxt":
-            args.output = "fulltest.prototxt"
-
-    main(args.prototxt, args.output, args.omit, args.add, args.verbose, args.stdout)
+    main(args)
