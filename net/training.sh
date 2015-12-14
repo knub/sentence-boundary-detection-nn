@@ -60,6 +60,10 @@ trap - INT
 
 # Check if Training successful
 if [ $? -ne 0 ]; then
+    # Send Email Notification
+    cd "${SENTENCE_HOME}/python"
+    python "common/send_email.py" "training failed" "$FOLDER_NAME" "../net/$TRAINING_LOG_NAME"
+    cd -
     echo "Training not successful. Exiting."
     exit 2
 fi
