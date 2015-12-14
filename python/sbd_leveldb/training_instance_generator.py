@@ -110,14 +110,17 @@ class TrainingInstanceGenerator(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    parser.add_argument("-c", "--config", help="path to config file")
+    parser.add_argument("-c", "--config_file", help="path to config file")
     args = parser.parse_args()
 
-    # read config
-    config_file = sbd.SbdConfig(args.config)
+    # initialize config
+    sbd.SbdConfig(args.config_file)
 
     # create proper name for the database
-    database = config_file.get_db_name()
+    sentence_home = os.environ['SENTENCE_HOME']
+    LEVEL_DB_DIR = "leveldbs"
+
+    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + SbdConfig.get_db_name_from_config(sbd.config)
 
     # check if database already exists
     if os.path.isdir(database):

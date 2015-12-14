@@ -4,6 +4,7 @@ test_instances.txt
 config.ini
 email.ini
 lineparsing
+configurations/
 
 # Caffe files
 *.tlog

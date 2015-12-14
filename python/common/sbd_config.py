@@ -1,8 +1,11 @@
 import ConfigParser, os
 import itertools
+import shutil
 
 # Set global config variable to be initialized in SbdConfig#init
 config = None
+
+CONFIG_SETTINGS_DIR = "configurations"
 
 config_file_schema = {
     'data': {
@@ -73,13 +76,10 @@ class SbdConfig(object):
         assert len(allowed_sections) == 0, "Not all sections were set in config.ini: " + str(allowed_sections)
         assert len(allowed_options) == 0,  "Not all options were set in config.ini: "  + str(allowed_options)
 
-    def get_db_name(self):
-        sentence_home = os.environ['SENTENCE_HOME']
-        LEVEL_DB_DIR = "leveldbs"
-
+    @staticmethod
+    def get_db_name_from_config(config):
         # create proper name for the database
-        return sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-               config.get('word_vector', 'vector_file') + \
+        return config.get('word_vector', 'vector_file') + \
                "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
                "_pos-"  + config.get('features', 'pos_tagging') + \
                "_qm-"   + config.get('features', 'use_question_mark') + \
@@ -130,12 +130,17 @@ class SbdConfig(object):
 
         configurations = list(itertools.product(*cartesian_settings))
         print "Creating " + str(len(configurations)) + " different config files."
+        shutil.rmtree(CONFIG_SETTINGS_DIR, True)
+        os.mkdir(CONFIG_SETTINGS_DIR)
         for c in configurations:
-            f = open("tmp", "w")
+            # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
+            # now add the static option settings
             c.append((('data', 'test_files'), 'ted/2011.xml'))
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
+            # sort and group by to output the options in correct *.ini order
+            f = open(CONFIG_SETTINGS_DIR + "/tmp", "w")
             c = sorted(c, key = lambda x: x[0][0])
             for group, options in itertools.groupby(c, key = lambda x: x[0][0]):
                 f.write("[" + str(group) + "]\n")
@@ -143,6 +148,12 @@ class SbdConfig(object):
                     f.write(o[0][1] + " = " + o[1] + "\n")
                 f.write("\n")
             f.close()
+
+            # create the appropriate name for the current config
+            current_config_parser = ConfigParser.ConfigParser()
+            current_config_parser.read(CONFIG_SETTINGS_DIR + "/tmp")
+            shutil.move(CONFIG_SETTINGS_DIR + "/tmp", CONFIG_SETTINGS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser))
+
 
 config = SbdConfig(None)
 config.generate_config_files()
