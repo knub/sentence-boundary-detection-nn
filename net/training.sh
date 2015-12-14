@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT="sentence"
-SOLVER="solver_xiaoyin.prototxt"
+SOLVER="solver.prototxt"
 
 # Check if called with name
 if [ $# -ne 1 ]; then
@@ -55,9 +55,6 @@ trap 'cleanup "Training interrupted"; exit 1' INT
 $CAFFE_ROOT/build/tools/caffe train \
     -solver ./experiments/$FOLDER_NAME/$SOLVER 2> $TRAINING_LOG_NAME
 
-# Resetting interrupt handling
-trap - INT
-
 # Check if Training successful
 if [ $? -ne 0 ]; then
     # Send Email Notification
@@ -65,8 +62,14 @@ if [ $? -ne 0 ]; then
     python "common/send_email.py" "training failed" "$FOLDER_NAME" "../net/$TRAINING_LOG_NAME"
     cd -
     echo "Training not successful. Exiting."
+    
+    # Resetting interrupt handling
+    trap - INT
     exit 2
 fi
+
+# Resetting interrupt handling
+trap - INT
 
 cleanup "Training finished"
 
