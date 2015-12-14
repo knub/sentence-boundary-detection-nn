@@ -26,13 +26,13 @@ do
     echo "#################### Running with $CONFIG ####################"
     echo "#################### Creating database         ####################"
     python sbd_leveldb/training_instance_generator.py $CONFIG_FILE
-    echo "#################### Configuring net           ####################"
-    python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$CONFIG
-    echo "#################### Starting training         ####################"
-    cd $SENTENCE_HOME/net/
-    ./training.sh $CONFIG
-    echo "#################### Removing net definition   ####################"
-    rm auto.prototxt
+    # echo "#################### Configuring net           ####################"
+    # python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$CONFIG
+    # echo "#################### Starting training         ####################"
+    # cd $SENTENCE_HOME/net/
+    # ./training.sh $CONFIG
+    # echo "#################### Removing net definition   ####################"
+    # rm auto.prototxt
     # echo "#################### Deleting database         ####################"
     # rm -r $SENTENCE_HOME/leveldbs/$CONFIG
 done
