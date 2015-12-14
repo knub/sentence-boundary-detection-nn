@@ -5,6 +5,7 @@ config.ini
 email.ini
 lineparsing
 configurations/
+auto.prototxt
 
 # Caffe files
 *.tlog
