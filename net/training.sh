@@ -12,7 +12,7 @@ PROJECT="sentence"
 SOLVER="solver.prototxt"
 # Find out net from the solver
 NET=$(grep --only-matching "\w\+\.prototxt" solver.prototxt)
-DATABASE=python $SENTENCE_HOME/python/tools/netconfig.py -p $NET
+DATABASE=$(python $SENTENCE_HOME/python/tools/netconfig.py -p $NET)
 
 echo "Using solver ${SOLVER} with net ${NET} and database ${DATABASE}"
 
