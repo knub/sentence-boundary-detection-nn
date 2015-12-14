@@ -1,16 +1,9 @@
 import numpy, caffe, argparse
-from common.sbd_config import config
+import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
 
-classes = ["NONE", "COMMA", "PERIOD"]
-
-WINDOW_SIZE = config.getint('windowing', 'window_size')
-PUNCTUATION_POS = config.getint('windowing', 'punctuation_position')
-POS_TAGGING = config.getboolean('features', 'pos_tagging')
-
-FEATURE_LENGTH = 300 if not POS_TAGGING else 300 + len(PosTag)
 
 class InputText(object):
 
@@ -27,6 +20,15 @@ class InputText(object):
 class Classifier(object):
 
     def __init__(self, net, word2vec, debug = False):
+        self.classes = ["NONE", "COMMA", "PERIOD"]
+
+        self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
+        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
+        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
+
+        self.FEATURE_LENGTH = 300 if not self.POS_TAGGING else 300 + len(PosTag)
+
+
         self.word2vec = word2vec
         self.net = net
         self.debug = debug
@@ -38,7 +40,7 @@ class Classifier(object):
         for token in input_text.tokens:
             if not token.is_punctuation():
                 if self.debug:
-                    token.word_vec = numpy.random.rand(FEATURE_LENGTH)
+                    token.word_vec = numpy.random.rand(self.FEATURE_LENGTH)
                 else:
                     token.word_vec = self.word2vec.get_vector(token.word.lower())
 
@@ -54,16 +56,16 @@ class Classifier(object):
         # build json
         for i, token in enumerate(input_text.tokens):
             token_json = {'type': 'word', 'token': token.word}
-            if POS_TAGGING:
+            if self.POS_TAGGING:
                 token_json['pos'] = token.pos_tags
             json_data.append(token_json)
 
             # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-            if i < PUNCTUATION_POS - 1 or i > len(input_text.tokens) - PUNCTUATION_POS - 1:
+            if i < self.PUNCTUATION_POS - 1 or i > len(input_text.tokens) - self.PUNCTUATION_POS - 1:
                 json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
             else:
-                current_punctuation = classes[numpy.argmax(punctuation_probs[i - PUNCTUATION_POS + 1])]
-                class_distribution = self._get_class_distribution(punctuation_probs[i - PUNCTUATION_POS + 1])
+                current_punctuation = self.classes[numpy.argmax(punctuation_probs[i - self.PUNCTUATION_POS + 1])]
+                class_distribution = self._get_class_distribution(punctuation_probs[i - self.PUNCTUATION_POS + 1])
                 json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
 
         return json_data
@@ -72,7 +74,7 @@ class Classifier(object):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         batchsize = 1
-        self.net.blobs['data'].reshape(batchsize, 1, 5, FEATURE_LENGTH)
+        self.net.blobs['data'].reshape(batchsize, 1, 5, self.FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
         self.net.blobs['data'].data[...] = reshaped_array
@@ -82,8 +84,8 @@ class Classifier(object):
 
     def _get_class_distribution(self, probs):
         json_data = {}
-        for i in range (0, len(classes)):
-            json_data[classes[i]] = str(probs[i])
+        for i in range (0, len(self.classes)):
+            json_data[self.classes[i]] = str(probs[i])
         return json_data
 
 
