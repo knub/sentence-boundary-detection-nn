@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-PROJECT="sentence"
-SOLVER="solver.prototxt"
-
 # Check if called with name
 if [ $# -ne 1 ]; then
     echo "Usage: $0 [experiment_name]"
@@ -11,10 +8,18 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
+PROJECT="sentence"
+SOLVER="solver.prototxt"
+# Find out net from the solver
+NET=$(grep --only-matching "\w\+\.prototxt" solver.prototxt)
+DATABASE=python $SENTENCE_HOME/python/tools/netconfig.py -p $NET
+
+echo "Using solver ${SOLVER} with net ${NET} and database ${DATABASE}"
+
 # Set Vars
 DATE=`date +%Y%m%d-%H%M%S`
 FOLDER_NAME="${DATE}_$1"
-TRAINING_LOG_NAME="${PROJECT}.tlog"
+TRAINING_LOG_NAME="${PROJECT}_${NET}.tlog"
 
 echo "Saving experiment in experiments/$FOLDER_NAME"
 mkdir experiments/$FOLDER_NAME
@@ -45,6 +50,8 @@ rm snapshots/* 2> /dev/null
 
 # Saving setup
 cp net.prototxt $SOLVER training.sh experiments/$FOLDER_NAME
+# Copy database configuration
+cp $DATABASE/*.ini experiments/$FOLDER_NAME
 
 # Setting interrupt trap
 trap 'cleanup "Training interrupted"; exit 1' INT
