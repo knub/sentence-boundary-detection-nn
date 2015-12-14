@@ -1,6 +1,8 @@
 [data]
 normalize_class_distribution = false
 use_wikipedia = true
+train_files = ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml
+test_files = ted/2011.xml
 
 [word_vector]
 # if set to 'avg' the average word vector is taken,

@@ -4,7 +4,9 @@ from sets import Set
 config_file_schema = {
     'data': {
         'normalize_class_distribution': ['true', 'false'],
-        'use_wikipedia': ['true', 'false']
+        'use_wikipedia': ['true', 'false'],
+        'train_files': None,
+        'test_files': None
     },
     'word_vector': {
         'key_error_vector': None,
@@ -12,7 +14,7 @@ config_file_schema = {
     },
     'windowing': {
         'window_size': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        'punctuation_position': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        'punctuation_position': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     },
     'features': {
         'use_question_mark': ['true', 'false'],
