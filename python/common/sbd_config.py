@@ -162,7 +162,7 @@ class SbdConfig(object):
             # create the appropriate name for the current config
             current_config_parser = ConfigParser.ConfigParser()
             current_config_parser.read(CONFIGURATIONS_DIR + "/tmp")
-            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser))
+            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser) + ".ini")
 
         print "Created " + str(len(configurations)) + " different config files in " + CONFIGURATIONS_DIR
 
