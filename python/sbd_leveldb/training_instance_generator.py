@@ -157,10 +157,14 @@ if __name__ == '__main__':
 
     # create proper name for the database
     database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') \
+        config.get('data', 'vector_file') + \
+        "balanced-" + config.get('data', 'normalize_class_distribution') + \
+        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
         "_pos-"  + config.get('features', 'pos_tagging') + \
         "_qm-"   + config.get('features', 'use_question_mark') + \
-        "_word-" + config.get('word_vector', 'key_error_vector')
+        "_nr-rep-"   + config.get('features', 'number_replacement') + \
+        "_word-" + config.get('word_vector', 'key_error_vector') + \
+        "_" + config.get('word_vector', 'key_error_vector')
 
     # check if database already exists
     if os.path.isdir(database):

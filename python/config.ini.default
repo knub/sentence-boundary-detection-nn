@@ -7,7 +7,6 @@ wikipedia = true
 # if set to 'avg' the average word vector is taken,
 # otherwise the given word is taken as key error vector.
 key_error_vector = this
-vector = google
 
 [windowing]
 window_size = 5
