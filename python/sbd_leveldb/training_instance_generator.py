@@ -1,16 +1,14 @@
 import operator, os, shutil, sys, time, argparse
 
 from common.argparse_util import *
-from parsing.line_parser import LineParser
-from parsing.plaintext_parser import PlaintextParser
-from parsing.xml_parser import XMLParser
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.tokens import Punctuation
 from preprocessing.word2vec_file import Word2VecFile
 from preprocessing.glove_file import GloveFile
-
+from parsing.get_parser import *
 from level_db_creator import LevelDBCreator
 import common.sbd_config as sbd
+
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
@@ -21,6 +19,10 @@ class TrainingInstanceGenerator(object):
     """reads the original data, process them and writes them to a level-db"""
 
     def __init__(self, word2vec):
+        self.CLASS_DISTRIBUTION_NORMALIZATION = sbd.config.getboolean('data', 'normalize_class_distribution')
+        self.CLASS_DISTRIBUTION_VARIATION = 0.05
+        self.USE_QUESTION_MARK = sbd.config.getboolean('features', 'use_question_mark')
+
         self.word2vec = word2vec
         self.test_talks = set()
 
@@ -34,7 +36,7 @@ class TrainingInstanceGenerator(object):
         nr_instances = 0
         nr_instances_used = 0
         label_nr = len(Punctuation)
-        if not USE_QUESTION_MARK:
+        if not self.USE_QUESTION_MARK:
             label_nr -= 1
         perfect_distribution = 1.0 / label_nr
 
@@ -80,7 +82,7 @@ class TrainingInstanceGenerator(object):
                     nr_instances += 1
                     class_variation = (class_distribution.get(training_instance.label, 0) / float(max(nr_instances_used, 1))) - perfect_distribution
 
-                    if is_test or (not CLASS_DISTRIBUTION_NORMALIZATION) or (class_variation <= CLASS_DISTRIBUTION_VARIATION):
+                    if is_test or (not self.CLASS_DISTRIBUTION_NORMALIZATION) or (class_variation <= self.CLASS_DISTRIBUTION_VARIATION):
                         # write instance to file
                         s = unicode(training_instance) + "\n"
                         s += "\n"
@@ -114,18 +116,6 @@ if __name__ == '__main__':
     # read config
     config_file = sbd.SbdConfig(args.config)
 
-    training_data = []
-    test_data = []
-    training_parsers = []
-    test_parsers = []
-    word2vec = None
-
-    CLASS_DISTRIBUTION_NORMALIZATION = sbd.config.getboolean('data', 'normalize_class_distribution')
-    CLASS_DISTRIBUTION_VARIATION = 0.05
-    USE_QUESTION_MARK = sbd.config.getboolean('features', 'use_question_mark')
-    WORD_VECTOR = sbd.config.get('word_vector', 'vector_file')
-    USE_WIKIPEDIA = sbd.config.getboolean('data', 'use_wikipedia')
-
     # create proper name for the database
     database = config_file.get_db_name()
 
@@ -142,37 +132,41 @@ if __name__ == '__main__':
     os.mkdir(database)
     shutil.copy(args.config, database)
 
-    if sbd.config.get('word_vector', 'vector_file') == "google":
+    # get word vector
+    word2vec = None
+    word_vector_file = sbd.config.get('word_vector', 'vector_file')
+    if word_vector_file == "google":
         word2vec = Word2VecFile(GOOGLE_VECTOR_FILE)
-        training_parsers = [
-            # PlaintextParser("/home/ms2015t3/data/wikipedia-plaintexts"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml")
-        ]
-        test_parsers = [
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
-        ]
-    elif sbd.config.get('word_vector', 'vector_file') == "glove":
+    elif word_vector_file == "glove":
         word2vec = GloveFile(GLOVE_VECTOR_FILE)
-        training_parsers = [
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/dev2010-w/IWSLT15.TED.dev2010.en-zh.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2010-w/IWSLT15.TED.tst2010.en-zh.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2012-w/IWSLT12.TED.MT.tst2012.en-fr.en.xml"),
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2013-w/IWSLT15.TED.tst2013.en-zh.en.xml")
-#            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/train200k")
-        ]
-        test_parsers = [
-#            LineParser("/home/fb10dl01/workspace/nlp-apps/hdf5/LREC/test2011")
-            XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")
-        ]
-    elif sbd.config.get('word_vector', 'vector_file') == "small":
+    elif word_vector_file == "small":
         word2vec = Word2VecFile(SMALL_VECTOR_FILE)
-        training_parsers = [XMLParser("/home/ms2015t3/data/train-talk.xml")]
-#        test_parsers = [XMLParser("/home/ms2015t3/data/test-talk.xml")]
-        test_parsers = [XMLParser("/home/fb10dl01/workspace/ms-2015-t3/Data/Dataset/tst2011/IWSLT12.TED.MT.tst2011.en-fr.en.xml")]
 
+    # get training and test data
+    training_data = sbd.config.get('data', 'train_files').split(",")
+    test_data = sbd.config.get('data', 'test_files').split(",")
+
+    # get training parsers
+    training_parsers = []
+    for f in training_data:
+        # TODO append to data path
+        parser = get_parser(f)
+        if parser is None:
+            print("WARNING: Could not find parser for file %s!" % f)
+        else:
+            training_parsers.append(parser)
+
+    # get test parsers
+    test_parsers = []
+    for f in training_data:
+        # TODO append to data path
+        parser = get_parser(f)
+        if parser is None:
+            print("WARNING: Could not find parser for file %s!" % f)
+        else:
+            test_parsers.append(parser)
+
+    # generate data
     generator = TrainingInstanceGenerator(word2vec)
     print("Generating test data .. ")
     start = time.time()
