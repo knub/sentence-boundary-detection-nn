@@ -15,7 +15,6 @@ from level_db_creator import LevelDBCreator
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
 SMALL_VECTOR_FILE = "/home/ms2015t3/vectors.bin"
 GLOVE_VECTOR_FILE = "/home/ms2015t3/glove.6B.50d.txt"
-LEVEL_DB_DIR = "leveldbs"
 CLASS_DISTRIBUTION_NORMALIZATION = config.getboolean('data', 'normalize_class_distribution')
 CLASS_DISTRIBUTION_VARIATION = 0.05
 USE_QUESTION_MARK = config.getboolean('features', 'use_question_mark')
@@ -113,8 +112,11 @@ class TrainingInstanceGenerator(object):
 
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
+    parser.add_argument("-c", "--config", help="path to config file")
+    args = parser.parse_args()
+
+    sbd_config = SbdConfig(args.config)
 
     training_data = []
     test_data = []
@@ -125,15 +127,7 @@ if __name__ == '__main__':
     sentence_home = os.environ['SENTENCE_HOME']
 
     # create proper name for the database
-    database = sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-        config.get('word_vector', 'vector_file') + \
-        "window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
-        "_pos-"  + config.get('features', 'pos_tagging') + \
-        "_qm-"   + config.get('features', 'use_question_mark') + \
-        "_balanced-" + config.get('data', 'normalize_class_distribution') + \
-        "_nr-rep-"   + config.get('features', 'number_replacement') + \
-        "_word-" + config.get('word_vector', 'key_error_vector') + \
-        "_" + config.get('word_vector', 'key_error_vector')
+    database = sbd_config.get_db_name()
 
     # check if database already exists
     if os.path.isdir(database):
