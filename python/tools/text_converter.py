@@ -7,12 +7,15 @@ from parsing.get_parser import *
 
 class TextConverter(object):
 
+    def __init__(self, data_folder):
+        self.data_folder = data_folder
+
     def convert(self, parsers):
         prev_progress = 0
 
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
-            file_name = text_parser.get_file_name
+            file_path = data_folder + "/" + text_parser.get_file_name
 
             for text in texts:
                 progress = int(text_parser.progress() * 100)
@@ -21,7 +24,7 @@ class TextConverter(object):
                     sys.stdout.flush()
                     prev_progress = progress
 
-                text.write_to_file(file_name, True)
+                text.write_to_file(file_path, True)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='converts files into line format.')
@@ -57,7 +60,7 @@ if __name__ == '__main__':
             test_parsers.append(parser)
 
     # convert data
-    converter = TextConverter()
+    converter = TextConverter(data_folder)
     print("Converting data .. ")
     start = time.time()
     converter.convert(test_parsers)
