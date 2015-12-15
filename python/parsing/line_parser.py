@@ -48,9 +48,15 @@ class LineParser(AbstractParser):
                 word = unicode(splitted_line[0])
                 if "?" in word and len(word) > 0:
                     word = word.replace("?", "")
-                period = unicode(splitted_line[1])
 
-                sentence.tokens.extend(self.__createToken(word,period))
+                if len(splitted_line) == 3:
+                    pos_tags = set(splitted_line[1].split(","))
+                    period = unicode(splitted_line[2])
+                else:
+                    pos_tags = set()
+                    period = unicode(splitted_line[1])
+
+                sentence.tokens.extend(self.__createToken(word, pos_tags, period))
                 if period == 'PERIOD':
                     if self.nlp_pipeline != None:
                         self.nlp_pipeline.pos_tag(sentence.tokens)
@@ -62,8 +68,10 @@ class LineParser(AbstractParser):
     def progress(self):
         return self._line_count_progress()
  
-    def __createToken(self, word, period):
+    def __createToken(self, word, pos_tags, period):
         wordToken = WordToken(word)
+        wordToken.set_pos_tags(pos_tags)
+        
         punctuationToken = None
         if period == 'PERIOD':
             punctuationToken = PunctuationToken(period, Punctuation.PERIOD)
