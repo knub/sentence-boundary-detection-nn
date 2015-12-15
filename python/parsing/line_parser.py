@@ -49,6 +49,9 @@ class LineParser(AbstractParser):
                 if "?" in word and len(word) > 0:
                     word = word.replace("?", "")
 
+                # TODO number replacement (check nlp pipeline)
+                # TODO pos tags look like 'PosTag.OTHER' or 'PosTag.VERB' (needs proper parsing)
+
                 if len(splitted_line) == 3:
                     pos_tags = set(splitted_line[1].split(","))
                     period = unicode(splitted_line[2])
