@@ -74,6 +74,8 @@ class Word2VecFile(object):
     def get_vector(self, word):
         try:
             if word in self.key_mapping:
+                # TODO: This only works for google vector, which does not have the words 'and', 'of' etc.
+                # If we use other word2vec vectors, this won't work
                 word = self.key_mapping[word]
             idx = self.word2index[word]
             self.nr_covered_words += 1

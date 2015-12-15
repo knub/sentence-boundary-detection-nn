@@ -1,13 +1,13 @@
 import operator, os, shutil, sys, time, argparse
 
 from common.argparse_util import *
+import common.sbd_config as sbd
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.tokens import Punctuation
 from preprocessing.word2vec_file import Word2VecFile
 from preprocessing.glove_file import GloveFile
 from parsing.get_parser import *
 from level_db_creator import LevelDBCreator
-import common.sbd_config as sbd
 
 
 GOOGLE_VECTOR_FILE = "/home/fb10dl01/workspace/ms-2015-t3/GoogleNews-vectors-negative300.bin"
@@ -110,14 +110,17 @@ class TrainingInstanceGenerator(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='create test and train datasets as a lmdb.')
-    parser.add_argument("-c", "--config", help="path to config file")
+    parser.add_argument('config_file', help="path to config file")
     args = parser.parse_args()
 
-    # read config
-    config_file = sbd.SbdConfig(args.config)
+    # initialize config
+    sbd.SbdConfig(args.config_file)
 
     # create proper name for the database
-    database = config_file.get_db_name()
+    SENTENCE_HOME = os.environ['SENTENCE_HOME']
+    LEVEL_DB_DIR = "leveldbs"
+
+    database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + sbd.SbdConfig.get_db_name_from_config(sbd.config)
 
     # check if database already exists
     if os.path.isdir(database):
@@ -130,7 +133,7 @@ if __name__ == '__main__':
 
     # create database folder and copy config file
     os.mkdir(database)
-    shutil.copy(args.config, database)
+    shutil.copy(args.config_file, database)
 
     # get word vector
     word2vec = None
@@ -149,20 +152,18 @@ if __name__ == '__main__':
     # get training parsers
     training_parsers = []
     for f in training_data:
-        # TODO append to data path
-        parser = get_parser(f)
+        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
         if parser is None:
-            print("WARNING: Could not find parser for file %s!" % f)
+            print("WARNING: Could not find training parser for file %s!" % f)
         else:
             training_parsers.append(parser)
 
     # get test parsers
     test_parsers = []
-    for f in training_data:
-        # TODO append to data path
-        parser = get_parser(f)
+    for f in test_data:
+        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
         if parser is None:
-            print("WARNING: Could not find parser for file %s!" % f)
+            print("WARNING: Could not find test parser for file %s!" % f)
         else:
             test_parsers.append(parser)
 
@@ -183,6 +184,6 @@ if __name__ == '__main__':
     print("Done in " + str(duration) + " min.")
     print("")
     uncovered = generator.get_not_covered_words()
-    print(sorted(uncovered.items(), key = operator.itemgetter(1)))
+    print sorted(uncovered.items(), key = operator.itemgetter(1), reverse = True)[:20]
     print("Nr covered tokens: " + str(generator.word2vec.nr_covered_words))
     print("Nr uncovered tokens: " + str(generator.word2vec.nr_uncovered_words))

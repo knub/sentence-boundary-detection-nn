@@ -1,12 +1,15 @@
 import ConfigParser, os
+import itertools
+import shutil
 
 # Set global config variable to be initialized in SbdConfig#init
 config = None
 
+CONFIGURATIONS_DIR = "configurations"
+
 config_file_schema = {
     'data': {
         'normalize_class_distribution': ['true', 'false'],
-        'use_wikipedia': ['true', 'false'],
         'train_files': None,
         'test_files': None
     },
@@ -73,16 +76,96 @@ class SbdConfig(object):
         assert len(allowed_sections) == 0, "Not all sections were set in config.ini: " + str(allowed_sections)
         assert len(allowed_options) == 0,  "Not all options were set in config.ini: "  + str(allowed_options)
 
-    def get_db_name(self):
-        sentence_home = os.environ['SENTENCE_HOME']
-        LEVEL_DB_DIR = "leveldbs"
-
+    @staticmethod
+    def get_db_name_from_config(config):
+        uses_ted  = '_ted'  if 'ted'  in config.get('data', 'train_files') else ''
+        uses_wiki = '_wiki' if 'wiki' in config.get('data', 'train_files') else ''
         # create proper name for the database
-        return sentence_home + "/" + LEVEL_DB_DIR + "/" + \
-               config.get('word_vector', 'vector_file') + \
+        return config.get('word_vector', 'vector_file') + uses_ted + uses_wiki + \
                "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
                "_pos-"  + config.get('features', 'pos_tagging') + \
                "_qm-"   + config.get('features', 'use_question_mark') + \
                "_balanced-" + config.get('data', 'normalize_class_distribution') + \
                "_nr-rep-"   + config.get('features', 'number_replacement') + \
                "_word-" + config.get('word_vector', 'key_error_vector')
+
+    @staticmethod
+    def generate_config_files():
+        option_settings = {
+            ('data', 'normalize_class_distribution'): ['true', 'false'],
+            ('data', 'train_files'): [
+                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml',
+                # 'wikipedia/wikipedia.txt',
+                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml,wikipedia/wikipedia.txt'
+            ],
+            ('word_vector', 'vector_file'): ['glove', 'google'],
+            ('features', 'pos_tagging'): ['true', 'false'],
+            ('features', 'number_replacement'): ['true', 'false'],
+        }
+        # Now transform the option list from the data structure above to the following_structure
+        # [
+        #     [ (('data', 'normalize_class_distribution'), 'true'), (('data', 'normalize_class_distribution'), 'false') ],
+        #     [ .. next option .. ],
+        #     ...
+        # ]
+        # We can then use the cartesian product on this list to get all possible configs.
+        cartesian_settings = []
+        for option, values in option_settings.iteritems():
+            options = [ [(option, value)] for value in values ]
+            cartesian_settings.append(options)
+
+
+        # Now add the possible settings for the punctuation
+        # [(window_size, punctuation_pos)]
+        punctuation_settings = [
+            (1, 0),
+            (1, 1),
+            (5, 0),
+            (5, 1),
+            (5, 2),
+            (5, 3),
+            (5, 4),
+            (5, 5),
+            (8, 0),
+            (8, 2),
+            (8, 4),
+            (8, 5),
+            (8, 6),
+            (8, 8)
+        ]
+        punctuation_settings = [
+            [(('windowing', 'window_size'), str(window_size)), (('windowing', 'punctuation_position'), str(punctuation_pos)) ]
+            for window_size, punctuation_pos in punctuation_settings
+        ]
+        cartesian_settings.append(punctuation_settings)
+
+        configurations = list(itertools.product(*cartesian_settings))
+        shutil.rmtree(CONFIGURATIONS_DIR, True)
+        os.mkdir(CONFIGURATIONS_DIR)
+        for c in configurations:
+            # the following operation performs a flatten on the current configuration
+            c = list(itertools.chain(*c))
+            # now add the static option settings
+            c.append((('data', 'test_files'), 'ted/2011.xml'))
+            c.append((('word_vector', 'key_error_vector'), 'this'))
+            c.append((('features', 'use_question_mark'), 'false'))
+            # sort and group by to output the options in correct *.ini order
+            f = open(CONFIGURATIONS_DIR + "/tmp", "w")
+            c = sorted(c, key = lambda x: x[0][0])
+            for group, options in itertools.groupby(c, key = lambda x: x[0][0]):
+                f.write("[" + str(group) + "]\n")
+                for o in options:
+                    f.write(o[0][1] + " = " + o[1] + "\n")
+                f.write("\n")
+            f.close()
+
+            # create the appropriate name for the current config
+            current_config_parser = ConfigParser.ConfigParser()
+            current_config_parser.read(CONFIGURATIONS_DIR + "/tmp")
+            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser) + ".ini")
+
+        print "Created " + str(len(configurations)) + " different config files in " + CONFIGURATIONS_DIR
+
+
+if __name__ == '__main__':
+    SbdConfig.generate_config_files()

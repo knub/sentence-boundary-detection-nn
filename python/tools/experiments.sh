@@ -13,12 +13,26 @@ if ! [[ -d $CONFIG_FOLDER ]]; then
     exit
 fi
 
-for config_file in "$CONFIG_FOLDER"/*
+# Abort on first error
+set -e
+
+source $SENTENCE_HOME/use_python p2
+
+for CONFIG_FILE in "$CONFIG_FOLDER"/*
 do
-    echo "$config_file"
-    # Copy?
-    # cp $config_file config.ini
-    # python sbd_leveldb/training_instance_generator.py
-    # Call script to adapt net.prototxt
-    # Call training.sh script
+    cd $SENTENCE_HOME/python/
+    CONFIG=$(basename ${CONFIG_FILE})
+    CONFIG="${CONFIG%.*}"
+    echo "#################### Running with $CONFIG ####################"
+    echo "#################### Creating database         ####################"
+    python sbd_leveldb/training_instance_generator.py $CONFIG_FILE
+    # echo "#################### Configuring net           ####################"
+    # python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$CONFIG
+    # echo "#################### Starting training         ####################"
+    # cd $SENTENCE_HOME/net/
+    # ./training.sh $CONFIG
+    # echo "#################### Removing net definition   ####################"
+    # rm auto.prototxt
+    # echo "#################### Deleting database         ####################"
+    # rm -r $SENTENCE_HOME/leveldbs/$CONFIG
 done

@@ -1,0 +1,6 @@
+[credentials]
+username=username@gmail.com
+password=password
+
+[adresses]
+to=other1@gmail.com,other2@gmail.com
