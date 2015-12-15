@@ -15,7 +15,7 @@ class TextConverter(object):
 
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
-            file_path = data_folder + "/" + text_parser.get_file_name() + ".line"
+            file_path = text_parser.get_file_name() + ".line"
 
             for text in texts:
                 progress = int(text_parser.progress() * 100)

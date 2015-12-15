@@ -16,7 +16,7 @@ class AbstractParser(object):
         return extension in self._wanted_file_endings()
 
     def get_file_name(self):
-        return os.path.basename(self.filename)
+        return self.filename
 
     def parse(self):
         """returns a list of talks, it is recommended to use the python generator for less memory usage"""
