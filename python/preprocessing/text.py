@@ -38,9 +38,9 @@ class Text(object):
                             punctuation_string = "O"
 
                     if self.POS_TAGGING:
-                        line_str = u"%s\t%s\t%s" % (token.word.lower(), " ".join(map(unicode, token.pos_tags)), punctuation_string)
+                        line_str = u"%s\t%s\t%s\n" % (token.word.lower(), " ".join(map(unicode, token.pos_tags)), punctuation_string)
                     else:
-                        line_str = u"%s\t%s" % (token.word.lower(), punctuation_string)
+                        line_str = u"%s\t%s\n" % (token.word.lower(), punctuation_string)
 
                     file.write(line_str)
 
