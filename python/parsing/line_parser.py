@@ -2,7 +2,7 @@ import sys, argparse, os
 
 from common.argparse_util import *
 from common.sbd_config import config
-from preprocessing.nlp_pipeline import NlpPipeline
+from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.text import Text, Sentence
 from preprocessing.tokens import WordToken, PunctuationToken, Punctuation
 
@@ -22,10 +22,9 @@ class LineParser(AbstractParser):
         self._init_line_count_progress()
         if config.getboolean('features', 'use_question_mark'):
             raise ValueError("Question marks not supported by LineParser")
-        if config.getboolean('features', 'pos_tagging'):
-            self.nlp_pipeline = NlpPipeline()
-        else:
-            self.nlp_pipeline = None
+
+        self.POS_TAGGING = config.getboolean('features', 'pos_tagging')
+        self.nlp_pipeline = NlpPipeline()
 
     def _wanted_file_endings(self):
         return (".line", )
@@ -43,49 +42,64 @@ class LineParser(AbstractParser):
                 line = unicode(line_unenc, errors='ignore')
                 line = line.rstrip()
 
-                # split line into word and type
-                splitted_line= line.split('\t')
-                word = unicode(splitted_line[0])
-                if "?" in word and len(word) > 0:
-                    word = word.replace("?", "")
+                # split line into word, pos_tags and type
+                line_parts = line.split('\t')
+                word = self._get_word(line_parts)
+                if word is None:
+                    continue
+                pos_tags = self._get_pos_tags(line_parts)
+                punctuation = self._get_punctuation(line_parts)
 
-                # TODO number replacement (check nlp pipeline)
-                # TODO pos tags look like 'PosTag.OTHER' or 'PosTag.VERB' (needs proper parsing)
+                sentence.tokens.extend(self._create_tokens(word, pos_tags, punctuation))
 
-                if len(splitted_line) == 3:
-                    pos_tags = set(splitted_line[1].split(","))
-                    period = unicode(splitted_line[2])
-                else:
-                    pos_tags = set()
-                    period = unicode(splitted_line[1])
-
-                sentence.tokens.extend(self.__createToken(word, pos_tags, period))
-                if period == 'PERIOD':
-                    if self.nlp_pipeline != None:
+                # we are at the end of a sentence
+                if punctuation == 'PERIOD':
+                    if self.POS_TAGGING and not pos_tags:
                         self.nlp_pipeline.pos_tag(sentence.tokens)
                     text.add_sentence(sentence)
                     sentence = Sentence()
                     sentence.tokens = []
+
         return [text]
+
+    def _get_word(self, line_parts):
+        word = unicode(line_parts[0])
+        word = self.nlp_pipeline.process_word()
+        # check if needed
+        # if "?" in word and len(word) > 0:
+        #     word = word.replace("?", "")
+        return word
+
+    def _get_punctuation(self, line_parts):
+        if len(line_parts) == 2:
+            return unicode(line_parts[2])
+        else:
+            return unicode(line_parts[2])
+
+    def _get_pos_tags(self, line_parts):
+        if len(line_parts) == 2:
+            return set()
+        else:
+            pos_tag_str = line_parts[1].split(",")
+            pos_tag_types = map(lambda x: x.split(".")[1], pos_tag_str)
+            return set(map(lambda x: PosTag[x], pos_tag_types))
 
     def progress(self):
         return self._line_count_progress()
  
-    def __createToken(self, word, pos_tags, period):
-        wordToken = WordToken(word)
-        wordToken.set_pos_tags(pos_tags)
+    def _create_tokens(self, word, pos_tags, punctuation):
+        word_token = WordToken(word)
+        word_token.set_pos_tags(pos_tags)
         
-        punctuationToken = None
-        if period == 'PERIOD':
-            punctuationToken = PunctuationToken(period, Punctuation.PERIOD)
-        elif period == 'COMMA':
-            punctuationToken = PunctuationToken(period, Punctuation.COMMA)
+        punctuation_token = None
+        if punctuation == 'PERIOD':
+            punctuation_token = PunctuationToken(punctuation, Punctuation.PERIOD)
+        elif punctuation == 'COMMA':
+            punctuation_token = PunctuationToken(punctuation, Punctuation.COMMA)
 
-        if punctuationToken != None:
-            return [wordToken, punctuationToken]
-        else:
-         return [wordToken]
-
+        if punctuation_token is not None:
+            return [word_token, punctuation_token]
+        return [word_token]
 
 
 

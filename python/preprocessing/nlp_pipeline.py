@@ -99,24 +99,28 @@ class NlpPipeline(object):
         raw_tokens = nltk.word_tokenize(text)
         tokens = []
 
-        for i in range(len(raw_tokens)):
-            raw_token = raw_tokens[i]
-
+        for raw_token in raw_tokens:
             if raw_token in self.punctuation_mapping:
                 punctuation_type = self.punctuation_mapping[raw_token]
                 tokens.append(PunctuationToken(raw_token, punctuation_type))
             else:
-                if re.match(self.punctuation_regex, raw_token):
+                word_token = self.process_word(raw_token)
+                if word_token is None:
                     continue
-                if self.NUMBER_REPLACEMENT:
-                    raw_token = self._replace_number(raw_token)
-                word_token = WordToken(raw_token)
+                word_token = WordToken(word_token)
                 tokens.append(word_token)
 
         if self.POS_TAGGING:
             self.pos_tag(tokens)
 
         return tokens
+
+    def process_word(self, raw_token):
+        if re.match(self.punctuation_regex, raw_token):
+            return None
+        if self.NUMBER_REPLACEMENT:
+            return self._replace_number(raw_token)
+
 
     def pos_tag(self, tokens):
         word_tokens = map(lambda x: x.word, tokens)
