@@ -3,8 +3,8 @@ import re
 import ConfigParser
 from sets import Set
 
-experiments_path = "/home/ms2015t3/sentence-boundary-detection-nn/net/experiments"
-result_file = '/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/testresults.csv'
+experiments_path = "./net/experiments"
+result_file = './net/experiments/experiments.csv'
 
 
 def read_test_results(logPath):
