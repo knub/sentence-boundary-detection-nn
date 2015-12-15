@@ -3,11 +3,9 @@ import re
 import ConfigParser
 from sets import Set
 
+experiments_path = "/home/ms2015t3/sentence-boundary-detection-nn/net/experiments"
+result_file = '/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/testresults.csv'
 
-
-# for all experiments in folder do this
-#fieldnames = ['recall_per_class_1', 'loss', 'recall_per_class_3', 'recall_per_class_2', 'precision_per_class_1', 'precision_per_class_3', 'precision_per_class_2', 'accuracy', 'use_question_mark', 'punctuation_position', 'window_size', 'wikipedia', 'number_replacement', 'normalize_class_distribution', 'pos_tagging', 'key_error_vector', 'vector_file']
-experiments_path = "/home/rice/Windows/uni/master4/paomr/experiments"
 
 def read_test_results(logPath):
     test_results = {}
@@ -32,6 +30,9 @@ def read_config(config_path):
             feature_map [f[0]] =  f[1]
 
     return feature_map
+
+
+
 
 all_values = []
 
@@ -60,7 +61,7 @@ for d in os.listdir(experiments_path):
 
         all_values.append(features)
 
-with open('testresults.csv', 'w') as csvfile:
+with open(result_file, 'w') as csvfile:
     fieldnames = Set()
     for e in all_values:
         fieldnames.update(e.keys())
