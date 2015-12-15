@@ -15,6 +15,9 @@ class AbstractParser(object):
         basepath, extension = os.path.splitext(self.filename)
         return extension in self._wanted_file_endings()
 
+    def get_file_name(self):
+        return os.path.basename(self.filename)
+
     def parse(self):
         """returns a list of talks, it is recommended to use the python generator for less memory usage"""
         raise NotImplementedError("to be implemented by subclass")
