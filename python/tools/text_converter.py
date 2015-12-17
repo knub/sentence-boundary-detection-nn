@@ -39,7 +39,7 @@ if __name__ == '__main__':
     test_data = sbd.config.get('data', 'test_files').split(",")
 
     SENTENCE_HOME = os.environ['SENTENCE_HOME']
-    data_folder = SENTENCE_HOME + "/../data/"
+    data_folder = "/mnt/naruto/sentence/data" #SENTENCE_HOME + "/../data/"
 
     # get training parsers
     training_parsers = []
