@@ -8,8 +8,6 @@ from parsing.get_parser import *
 class TextConverter(object):
 
     def convert(self, parsers):
-        prev_progress = 0
-
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
             file_path = text_parser.get_file_name() + ".line"
@@ -18,6 +16,8 @@ class TextConverter(object):
                 print("Deleting " + file_path + ".")
                 os.remove(file_path)
             print("Writing file %s ..." % file_path)
+
+            prev_progress = 0
 
             for text in texts:
                 progress = int(text_parser.progress() * 100)

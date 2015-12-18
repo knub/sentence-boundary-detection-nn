@@ -31,7 +31,6 @@ class TrainingInstanceGenerator(object):
         window_slider = SlidingWindow()
         # count how often each type (COMMA, PERIOD etc.) is in the instances
         class_distribution = dict()
-        prev_progress = 0
 
         nr_instances = 0
         nr_instances_used = 0
@@ -47,8 +46,10 @@ class TrainingInstanceGenerator(object):
 
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
+
             prev_progress = 0
             print("")
+            print("Processing file %s ..." % text_parser.get_file_name())
 
             foo = open("lineparsing", "w")
             for text in texts:
