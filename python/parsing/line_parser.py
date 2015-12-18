@@ -1,7 +1,7 @@
 import sys, argparse, os
 
 from common.argparse_util import *
-from common.sbd_config import config
+import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.text import Text, Sentence, END_OF_TEXT_MARKER
 from preprocessing.tokens import WordToken, PunctuationToken, Punctuation
@@ -20,10 +20,10 @@ class LineParser(AbstractParser):
             return
             
         self._init_line_count_progress()
-        if config.getboolean('features', 'use_question_mark'):
-            raise ValueError("Question marks not supported by LineParser")
+        # if sbd.config.getboolean('features', 'use_question_mark'):
+        #     raise ValueError("Question marks not supported by LineParser")
 
-        self.POS_TAGGING = config.getboolean('features', 'pos_tagging')
+        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
         self.nlp_pipeline = NlpPipeline()
 
     def _wanted_file_endings(self):
