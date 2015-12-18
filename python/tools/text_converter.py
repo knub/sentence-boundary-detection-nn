@@ -7,15 +7,14 @@ from parsing.get_parser import *
 
 class TextConverter(object):
 
-    def __init__(self, data_folder):
-        self.data_folder = data_folder
-
     def convert(self, parsers):
         prev_progress = 0
 
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
             file_path = text_parser.get_file_name() + ".line"
+
+            print("Writing file %s..." % file_path)
 
             for text in texts:
                 progress = int(text_parser.progress() * 100)
@@ -38,8 +37,7 @@ if __name__ == '__main__':
     training_data = sbd.config.get('data', 'train_files').split(",")
     test_data = sbd.config.get('data', 'test_files').split(",")
 
-    SENTENCE_HOME = os.environ['SENTENCE_HOME']
-    data_folder = "/mnt/naruto/sentence/data" #SENTENCE_HOME + "/../data/"
+    data_folder = "/mnt/naruto/sentence/data"
 
     # get training parsers
     training_parsers = []
@@ -60,7 +58,7 @@ if __name__ == '__main__':
             test_parsers.append(parser)
 
     # convert data
-    converter = TextConverter(data_folder)
+    converter = TextConverter()
     print("Converting data .. ")
     start = time.time()
     converter.convert(test_parsers)

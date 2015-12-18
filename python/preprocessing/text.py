@@ -1,5 +1,6 @@
 import common.sbd_config as sbd
 
+END_OF_TEXT_MARKER = "###END###"
 
 class Text(object):
 
@@ -44,6 +45,7 @@ class Text(object):
 
                     file.write(line_str)
 
+        file.write("%s\n" % END_OF_TEXT_MARKER)
         file.close()
 
     def __str__(self):

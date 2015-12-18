@@ -3,7 +3,7 @@ import sys, argparse, os
 from common.argparse_util import *
 from common.sbd_config import config
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
-from preprocessing.text import Text, Sentence
+from preprocessing.text import Text, Sentence, END_OF_TEXT_MARKER
 from preprocessing.tokens import WordToken, PunctuationToken, Punctuation
 
 from abstract_parser import AbstractParser, main, parse_command_line_arguments
@@ -36,6 +36,11 @@ class LineParser(AbstractParser):
             sentence.tokens = []
 
             for line_unenc in file_:
+                # end of a text reached
+                if line_unenc == END_OF_TEXT_MARKER:
+                    yield text
+                    text = Text()
+
                 self._progress += 1
 
                 # parse line
@@ -60,7 +65,10 @@ class LineParser(AbstractParser):
                     sentence = Sentence()
                     sentence.tokens = []
 
-        return [text]
+        # if we do not have any end-of-text-marker
+        # return everything as one text
+        if len(text.sentences) > 0:
+            yield text
 
     def _get_word(self, line_parts):
         word = unicode(line_parts[0])
