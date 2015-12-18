@@ -14,6 +14,9 @@ class TextConverter(object):
             texts = text_parser.parse()
             file_path = text_parser.get_file_name() + ".line"
 
+            if os.path.isfile(file_path):
+                print("Deleting " + file_path + ".")
+                shutil.rmtree(file_path)
             print("Writing file %s..." % file_path)
 
             for text in texts:
@@ -23,7 +26,7 @@ class TextConverter(object):
                     sys.stdout.flush()
                     prev_progress = progress
 
-                text.write_to_file(file_path, True)
+                text.write_to_file(file_path)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='converts files into line format.')
@@ -37,7 +40,7 @@ if __name__ == '__main__':
     training_data = sbd.config.get('data', 'train_files').split(",")
     test_data = sbd.config.get('data', 'test_files').split(",")
 
-    data_folder = "/mnt/naruto/sentence/data"
+    data_folder = "/mnt/naruto/sentence/data/"
 
     # get training parsers
     training_parsers = []

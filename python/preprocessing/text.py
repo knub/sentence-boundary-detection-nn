@@ -17,11 +17,11 @@ class Text(object):
             tokens.extend(sentence.tokens)
         return tokens
 
-    def write_to_file(self, filename, append = False):
+    def write_to_file(self, filename, append = True):
         if append:
-            file = open(filename, "a")
+            file = open(filename, "wa")
         else:
-            file = open(filename)
+            file = open(filename, "w")
 
         for sentence in self.sentences:
             tokens = sentence.get_tokens()
