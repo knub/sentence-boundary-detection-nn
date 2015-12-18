@@ -26,7 +26,7 @@ class TextConverter(object):
                     sys.stdout.flush()
                     prev_progress = progress
 
-                text.write_to_file(file_path)
+                text.append_to_file(file_path)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='converts files into line format.')
