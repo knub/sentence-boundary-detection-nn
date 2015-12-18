@@ -37,9 +37,10 @@ class LineParser(AbstractParser):
 
             for line_unenc in file_:
                 # end of a text reached
-                if line_unenc == END_OF_TEXT_MARKER:
+                if line_unenc.rstrip() == END_OF_TEXT_MARKER:
                     yield text
                     text = Text()
+                    continue
 
                 self._progress += 1
 
@@ -80,7 +81,7 @@ class LineParser(AbstractParser):
 
     def _get_punctuation(self, line_parts):
         if len(line_parts) == 2:
-            return unicode(line_parts[2])
+            return unicode(line_parts[1])
         else:
             return unicode(line_parts[2])
 
