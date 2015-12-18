@@ -72,7 +72,7 @@ class LineParser(AbstractParser):
 
     def _get_word(self, line_parts):
         word = unicode(line_parts[0])
-        word = self.nlp_pipeline.process_word()
+        word = self.nlp_pipeline.process_word(word)
         # check if needed
         # if "?" in word and len(word) > 0:
         #     word = word.replace("?", "")
