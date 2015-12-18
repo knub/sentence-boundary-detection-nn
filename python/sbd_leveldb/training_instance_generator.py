@@ -47,6 +47,8 @@ class TrainingInstanceGenerator(object):
 
         for i, text_parser in enumerate(parsers):
             texts = text_parser.parse()
+            prev_progress = 0
+            print("")
 
             foo = open("lineparsing", "w")
             for text in texts:
