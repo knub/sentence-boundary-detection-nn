@@ -16,8 +16,8 @@ class TextConverter(object):
 
             if os.path.isfile(file_path):
                 print("Deleting " + file_path + ".")
-                shutil.rmtree(file_path)
-            print("Writing file %s..." % file_path)
+                os.remove(file_path)
+            print("Writing file %s ..." % file_path)
 
             for text in texts:
                 progress = int(text_parser.progress() * 100)

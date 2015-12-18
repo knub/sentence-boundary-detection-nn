@@ -107,8 +107,7 @@ class NlpPipeline(object):
                 word_token = self.process_word(raw_token)
                 if word_token is None:
                     continue
-                word_token = WordToken(word_token)
-                tokens.append(word_token)
+                tokens.append(WordToken(word_token))
 
         if self.POS_TAGGING:
             self.pos_tag(tokens)
@@ -120,6 +119,7 @@ class NlpPipeline(object):
             return None
         if self.NUMBER_REPLACEMENT:
             return self._replace_number(raw_token)
+        return raw_token
 
 
     def pos_tag(self, tokens):

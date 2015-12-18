@@ -118,6 +118,7 @@ if __name__ == '__main__':
 
     # create proper name for the database
     SENTENCE_HOME = os.environ['SENTENCE_HOME']
+    data_folder = "/mnt/naruto/sentence/data/"
     LEVEL_DB_DIR = "leveldbs"
 
     database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + sbd.SbdConfig.get_db_name_from_config(sbd.config)
@@ -152,7 +153,7 @@ if __name__ == '__main__':
     # get training parsers
     training_parsers = []
     for f in training_data:
-        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
+        parser = get_parser(data_folder + f)
         if parser is None:
             print("WARNING: Could not find training parser for file %s!" % f)
         else:
@@ -161,7 +162,7 @@ if __name__ == '__main__':
     # get test parsers
     test_parsers = []
     for f in test_data:
-        parser = get_parser(SENTENCE_HOME + "/../data/" + f)
+        parser = get_parser(data_folder + f)
         if parser is None:
             print("WARNING: Could not find test parser for file %s!" % f)
         else:
