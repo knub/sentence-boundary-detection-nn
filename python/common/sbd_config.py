@@ -94,9 +94,9 @@ class SbdConfig(object):
         option_settings = {
             ('data', 'normalize_class_distribution'): ['true', 'false'],
             ('data', 'train_files'): [
-                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml',
+                # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
                 # 'wikipedia/wikipedia.txt',
-                'ted/2010-1.xml,ted/2010-2.xml,ted/2012.xml,ted/2013.xml,wikipedia/wikipedia.txt'
+                'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
             ],
             ('word_vector', 'vector_file'): ['glove', 'google'],
             ('features', 'pos_tagging'): ['true', 'false'],
@@ -146,7 +146,7 @@ class SbdConfig(object):
             # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
             # now add the static option settings
-            c.append((('data', 'test_files'), 'ted/2011.xml'))
+            c.append((('data', 'test_files'), 'ted/2011.xml.line'))
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
             # sort and group by to output the options in correct *.ini order
