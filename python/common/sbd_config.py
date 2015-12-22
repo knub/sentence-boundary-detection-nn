@@ -94,8 +94,8 @@ class SbdConfig(object):
         option_settings = {
             ('data', 'normalize_class_distribution'): ['true', 'false'],
             ('data', 'train_files'): [
-                # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
-                # 'wikipedia/wikipedia.txt',
+                'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
+                # 'wikipedia/wikipedia.txt.line',
                 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
             ],
             ('word_vector', 'vector_file'): ['glove', 'google'],
