@@ -92,15 +92,15 @@ class SbdConfig(object):
     @staticmethod
     def generate_config_files():
         option_settings = {
-            ('data', 'normalize_class_distribution'): ['true', 'false'],
+            ('data', 'normalize_class_distribution'): ['false'],
             ('data', 'train_files'): [
                 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
                 # 'wikipedia/wikipedia.txt.line',
                 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
             ],
-            ('word_vector', 'vector_file'): ['glove', 'google'],
+            ('word_vector', 'vector_file'): ['google'],
             ('features', 'pos_tagging'): ['true', 'false'],
-            ('features', 'number_replacement'): ['true', 'false'],
+            ('features', 'number_replacement'): ['true'],
         }
         # Now transform the option list from the data structure above to the following_structure
         # [
@@ -129,7 +129,6 @@ class SbdConfig(object):
             (8, 0),
             (8, 2),
             (8, 4),
-            (8, 5),
             (8, 6),
             (8, 8)
         ]
