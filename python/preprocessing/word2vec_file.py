@@ -3,10 +3,9 @@ import sys, argparse, struct, numpy
 from common.argparse_util import *
 import common.sbd_config as sbd
 
-
 class Word2VecFile(object):
     """reads a binary word vector file, returns vectors for single words"""
-    def __init__(self, filename, use_this_vector=True):
+    def __init__(self, filename):
         self.ENCODING = 'UTF-8'
         self.KEY_ERROR_VECTOR = sbd.config.get('word_vector', 'key_error_vector')
 
@@ -37,10 +36,10 @@ class Word2VecFile(object):
         self.words = int(first_line[0])
         self.vector_size = int(first_line[1])
         print('File has %d words with vectors of size %d. Parsing ..' % (self.words, self.vector_size))
-        self.vector_array = numpy.zeros((self.words, self.vector_size), float)
+
+        self.vector_array = numpy.zeros((self.words, self.vector_size), numpy.float32)
         self.word2index = {}
 
-        self.average_vector = numpy.zeros((self.vector_size,), float)
         progress_steps = self.words / 100
 
         chars = []
@@ -62,9 +61,8 @@ class Word2VecFile(object):
             for f_index in range(0, self.vector_size):
                 f_bytes = self.__file.read(4)
                 self.vector_array[w_index][f_index] = struct.unpack('f', f_bytes)[0]
-#            self.average_vector += self.vector_array[w_index]
         self.__file.close()
-#        self.average_vector /= self.words
+
         print('Parsing finished!')
 
     def __del__(self):
@@ -86,8 +84,7 @@ class Word2VecFile(object):
             if self.KEY_ERROR_VECTOR != 'avg':
                 idx = self.word2index[self.KEY_ERROR_VECTOR]
                 return self.vector_array[idx]
-            else:
-                return self.average_vector
+            raise Exception
 
 
 ################
