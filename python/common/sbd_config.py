@@ -141,6 +141,12 @@ class SbdConfig(object):
         configurations = list(itertools.product(*cartesian_settings))
         shutil.rmtree(CONFIGURATIONS_DIR, True)
         os.mkdir(CONFIGURATIONS_DIR)
+        os.mkdir(CONFIGURATIONS_DIR + "/1_open")
+        os.mkdir(CONFIGURATIONS_DIR + "/2_databased")
+        os.mkdir(CONFIGURATIONS_DIR + "/3_trained")
+        os.mkdir(CONFIGURATIONS_DIR + "/4_database_failed")
+        os.mkdir(CONFIGURATIONS_DIR + "/5_training_failed")
+
         for c in configurations:
             # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
@@ -161,9 +167,9 @@ class SbdConfig(object):
             # create the appropriate name for the current config
             current_config_parser = ConfigParser.ConfigParser()
             current_config_parser.read(CONFIGURATIONS_DIR + "/tmp")
-            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/" + SbdConfig.get_db_name_from_config(current_config_parser) + ".ini")
+            shutil.move(CONFIGURATIONS_DIR + "/tmp", CONFIGURATIONS_DIR + "/1_open/" + SbdConfig.get_db_name_from_config(current_config_parser) + ".ini")
 
-        print "Created " + str(len(configurations)) + " different config files in " + CONFIGURATIONS_DIR
+        print "Created " + str(len(configurations)) + " different config files in " + CONFIGURATIONS_DIR + "/1_open"
 
 
 if __name__ == '__main__':
