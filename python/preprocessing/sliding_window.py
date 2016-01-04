@@ -43,6 +43,13 @@ class SlidingWindow(object):
 
                 i += 1
 
+            # if punctuation pos is behind the last word, determine the instance label
+            if word_count == self.PUNCTUATION_POS and i < len(tokens):
+                current_token = tokens[i]
+                is_punctuation = current_token.is_punctuation()
+                if is_punctuation:
+                    instance_label = current_token.punctuation_type
+
             if len(window_tokens) == self.WINDOW_SIZE:
                 training_instances.append(TrainingInstance(window_tokens, instance_label))
             index += 1
