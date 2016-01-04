@@ -7,11 +7,14 @@ lineparsing
 configurations/
 auto.prototxt
 
+# Experiment files
+*.run
+
 # Caffe files
 *.tlog
 *.tstlog
 leveldbs
-net/experiments/
+net/experiments
 net/snapshots/
 
 # IDE files
