@@ -1,10 +1,5 @@
-import sys, os, csv
-import re
-import ConfigParser
-from sets import Set
+import sys, os, csv, re, argparse, ConfigParser
 
-experiments_path = "../net/experiments"
-result_file = '../net/experiments/experiments.csv'
 
 
 def read_test_results(logPath):
@@ -13,8 +8,9 @@ def read_test_results(logPath):
     for line in file(logPath):
         if "Test net output" in line:
             search_terms = re.search('Test net output #([0-9]): (.*?) = (-?(0|1)\\.?[0-9]*)', line)
-            key = str(search_terms.group(1)) + "_" + search_terms.group(2)
-            test_results[key] = search_terms.group(3)
+            if search_terms:
+                key = str(search_terms.group(2)) + "_" + search_terms.group(1)
+                test_results[key] = search_terms.group(3)
     return test_results
 
 ###config
@@ -25,49 +21,57 @@ def read_config(config_path):
     current_config.read(config_path)
     feature_map = {}
 
-    for section in sections: 
+    for section in sections:
         for f in current_config.items(section):
-            feature_map [f[0]] =  f[1]
-
+            feature_map ["_" + f[0]] = f[1]
     return feature_map
 
 
+def main(experiments_path, result_file):
+    all_values = []
 
+    for d in os.listdir(experiments_path):
+        full_d_path = os.path.join(experiments_path,d)
+        if os.path.isdir(full_d_path):
+            print full_d_path
+            logFile = None
+            configFile = None
 
-all_values = []
+            files = os.listdir(full_d_path)
+            for f in files:
+                if f.endswith(".tlog"):
+                    print f
+                    logFile = os.path.join(full_d_path , f)
+                elif f.endswith(".ini"):
+                    print f
+                    configFile = os.path.join(full_d_path, f)
 
-for d in os.listdir(experiments_path):
-    full_d_path = os.path.join(experiments_path,d)
-    if os.path.isdir(full_d_path):
-        print full_d_path
-        logFile = None
-        configFile = None
+            if logFile == None or configFile == None:
+                print "#Warning: Skipped %s, log or config file was not found!" % full_d_path
+                continue
+            features = read_config(configFile)
+            test_results = read_test_results(logFile)
+            features.update(test_results)
 
-        files = os.listdir(full_d_path)
-        for f in files:
-            if f.endswith(".tlog"):
-                print f
-                logFile = os.path.join(full_d_path , f)
-            elif f.endswith(".ini"):
-                print f
-                configFile = os.path.join(full_d_path, f)
+            all_values.append(features)
 
-        if logFile == None or configFile == None:
-            print "log or config file not found for experiment %s. So was skipped in result file!!!" % full_d_path
-            continue
-        features = read_config(configFile)
-        test_results = read_test_results(logFile)
-        features.update(test_results)
+    with open(result_file, 'w') as csvfile:
+        fieldnames = []
+        for row in all_values:
+            dict_keys = row.keys()
+            dict_keys.sort()
+            for key in dict_keys:
+                if not key in fieldnames:
+                    fieldnames.append(key)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
-        all_values.append(features)
+        for row in all_values:
+            writer.writerow(row)
 
-with open(result_file, 'w') as csvfile:
-    fieldnames = Set()
-    for e in all_values:
-        fieldnames.update(e.keys())
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
-
-    for e in all_values:
-        writer.writerow(e)
-
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Create overview csv file of training results.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('experimentfolder', help='path to experiment folder', default='../net/experiments', nargs='?')
+    parser.add_argument('output', help='path of result file', default='../net/experiments/experiments.csv', nargs='?')
+    args = parser.parse_args()
+    main(args.experimentfolder, args.output)
