@@ -129,6 +129,7 @@ if __name__ == '__main__':
     # check if database already exists
     if os.path.isdir(database):
         print("Deleting " + database + ". y/N?")
+        sys.stdout.flush()
         s = raw_input()
         if s != "Y" and s != "y":
             print("Not deleting. Exiting ..")
