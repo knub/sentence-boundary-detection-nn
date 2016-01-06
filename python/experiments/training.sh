@@ -15,7 +15,7 @@ fi
 
 source $SENTENCE_HOME/use_python p2
 
-for CONFIG_FILE in "$CONFIG_FOLDER"/*
+for CONFIG_FILE in "$CONFIG_FOLDER"/2_databased/*
 do
     cd $SENTENCE_HOME/python/
     CONFIG=$(basename ${CONFIG_FILE})
