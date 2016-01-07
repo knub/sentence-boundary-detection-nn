@@ -24,14 +24,17 @@ do
     echo "#################### Configuring net                ####################"
     python tools/netconfig.py ../net/net.prototxt -o ../net/auto.prototxt -t $SENTENCE_HOME/leveldbs/$CONFIG
     echo "#################### Starting training              ####################"
+    date
     cd $SENTENCE_HOME/net/
     ./training.sh $CONFIG
 
     if [ $? -eq 0 ]; then
         echo "#################### Moving to 3_trained            ####################"
+        cd $SENTENCE_HOME/python/
         mv $CONFIG_FOLDER/2_databased/$CONFIG.ini $CONFIG_FOLDER/3_trained
     else
         echo "#################### Moving to 5_training_failed    ####################"
+        cd $SENTENCE_HOME/python/
         mv $CONFIG_FOLDER/2_databased/$CONFIG.ini $CONFIG_FOLDER/5_training_failed
     fi
     echo "#################### Removing net definition   ####################"
