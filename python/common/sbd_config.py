@@ -159,6 +159,7 @@ class SbdConfig(object):
             c.append((('data', 'test_files'), 'ted/2011.xml.line')) # audio/tst2011_0.ctm, audio/tst2011_1.ctm, audio/tst2011_2.ctm, audio/tst2011_3.ctm
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
+            c.append((('model', 'lexical', 'true')))
             # sort and group by to output the options in correct *.ini order
             f = open(CONFIGURATIONS_DIR + "/tmp", "w")
             c = sorted(c, key = lambda x: x[0][0])

@@ -90,7 +90,7 @@ class CtmParser(AbstractParser):
             yield audio
 
     def _extract_group_name(self):
-        return self.filename.split("_")[0]
+        return self.filename.split("_")[0].split("/")[-1]
 
     def _prepare_audio(self, audio):
         # sort sentences by begin
