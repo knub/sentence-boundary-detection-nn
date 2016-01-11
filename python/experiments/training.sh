@@ -38,5 +38,6 @@ do
         mv $CONFIG_FOLDER/2_databased/$CONFIG.ini $CONFIG_FOLDER/5_training_failed
     fi
     echo "#################### Removing net definition   ####################"
+    cd $SENTENCE_HOME/net/
     rm auto.prototxt
 done
