@@ -8,6 +8,45 @@ class Punctuation(Enum):
     QUESTION = 3
 
 
+class AudioToken(object):
+    def __init__(self, word):
+        self.word = word
+        self.begin = 0
+        self.duration = 0
+        self.pause_before = 0
+        self.pause_after = 0
+        self.energy = 0
+        self.pitch = 0
+
+    def is_punctuation(self):
+        return False
+
+    def set_pause_before(self, pause_before):
+        self.pause_before = pause_before
+
+    def set_pause_after(self, pause_after):
+        self.pause_after = pause_after
+
+    def set_energy(self, energy):
+        self.energy = energy
+
+    def set_pitch(self, pitch):
+        self.pitch = pitch
+
+    def __str__(self):
+        return self.word
+
+    def __repr__(self):
+        return self.word
+
+    def __eq__(self, other):
+        if other.is_punctuation():
+            return False
+        return self.word == other.word
+
+    def __hash__(self):
+        return hash(self.word) ^ hash(self.is_punctuation())
+
 class WordToken(object):
     def __init__(self, word):
         self.word = word
