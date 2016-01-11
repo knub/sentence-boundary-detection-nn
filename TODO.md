@@ -1,3 +1,22 @@
+### Bug
+
+Fehler bei Pitch-Level Bestimmung von Tokens:
+
+Reading config: config.ini
+Deleting /home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-1-1. y/N?
+y
+Generating test data .. 
+
+Processing file /mnt/naruto/sentence/data/audio/tst2011_0.ctm ...
+23% 45% 
+[]
+(987.83 - 988.16) the
+1174
+tst2011
+
+Anscheinend handelt es sich um einen Satz der Länge 1 (siehe tst2011_0.ctm, Zeile 3069)
+Anscheinend klappt die Zuordnung des Satzes zum Talk noch nicht (letzter Satz in einem Talk)
+
 ### TODO
 
 1. Improve model for lexical features!
