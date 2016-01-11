@@ -1,0 +1,99 @@
+\documentclass[a4paper,12pt,pagesize,headsepline,bibliography=totoc,titlepage]{scrartcl}
+\usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage{amsmath,amsthm,amsfonts,graphicx,caption}
+\usepackage{hyperref}
+\usepackage{ae,aecompl}
+\usepackage{todonotes}
+\usepackage{subcaption}
+\usepackage{listings}
+
+\lstset {
+	backgroundcolor=\color{white},
+	breakatwhitespace=false,
+	breaklines=true,
+	numbers=left,
+	frame=single,
+	title=\lstname,
+	basicstyle=\footnotesize
+}
+
+% \pagestyle{headings}
+\headsep4mm % Abstand der Kopfzeile vom Text
+% \typearea[current]{current}
+
+\title{
+	\includegraphics*[width=0.4\textwidth]{img/hpi_logo.png}\\
+	\vspace{24pt}
+	Sentence Boundary Detection
+}
+\subtitle{
+	Seminar\\
+	Practical Applications of Multimedia Retrieval\\
+	Wintersemester 2015/2016
+}
+\author{
+	Tanja Bergmann, Joseph Bethge, Stefan Bunk, Ricarda Schüler\\[12pt]
+	Betreuer:\\
+    Xiaoyin Che\\
+	Dr. Haojin Yang\\
+	Prof. Dr. Christoph Meinel
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\label{sec:introduction}
+\input{chapters/introduction}
+
+\section{Approach}
+\label{sec:approach}
+\input{chapters/approach}
+
+\section{The Caffe Deep Learning Framework}
+\label{sec:caffe}
+\input{chapters/caffe}
+
+\section{Training Data}
+\label{sec:training_data}
+\input{chapters/data}
+
+\section{Training Parameters}
+\label{sec:training_parameters}
+\input{chapters/parameters}
+
+\section{Demo Tool}
+\label{sec:demo}
+\input{chapters/demo}
+
+\section{Evaluation}
+\label{sec:evaluation}
+\input{chapters/evaluation}
+
+\section{Future Work}
+\label{sec:future}
+\input{chapters/future}
+
+\bibliographystyle{plain}
+\bibliography{bibliography.bib}
+
+\newpage
+\appendix
+\section{Appendix}
+We appended the following files for reference:
+\begin{itemize}
+	\item solver.prototxt, The configuration of the solver
+\end{itemize}
+
+\subsection{solver.prototxt}
+\lstinputlisting[caption={solver.prototxt}, label={lst:solver.prototxt}]{appendix/solver.txt}
+%\newpage %for more appended files
+
+\end{document}

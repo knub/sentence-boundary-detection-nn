@@ -1,0 +1,24 @@
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.48\textwidth}
+    	\includegraphics[width=\textwidth]{img/topology}
+    	\caption{Overview of the network topology} 
+        \label{fig:topology_overview} \end{subfigure}
+	\begin{subfigure}[t]{0.48\textwidth}
+    	\includegraphics[width=\textwidth]{img/topology_convolution} 
+        \caption{Detailed view of the \texttt{convolution} an \texttt{pooling} layers} 		
+        \label{fig:topology_convolution} 
+	\end{subfigure}
+    \caption{Network topology}
+    \label{fig:topology}
+\end{figure}
+As illustrated by Figure~\ref{fig:topology} our network topology resembles the layout proposed by \cite{jaderberg_deep_2014}.
+The first three \texttt{convolution} layers are each succeeded by a \texttt{pooling} layer, while the last two \texttt{convolution} layers are not pooled. 
+Furthermore, a \texttt{ReLU} is added on top of each \texttt{convolution} layer.
+
+Convolution and pooling is followed by two \texttt{innerproduct} layers.
+The latter of these provides a vector of features, which is utilized by five further \texttt{innerproduct} layers to classify the characters.
+
+Accuracy and loss are computed on each of the five final \texttt{innerproduct} layers.
+There is no global loss layer.
+The labels required for this step are extracted from the input data and split to five individual character labels using a \texttt{slice} layer.

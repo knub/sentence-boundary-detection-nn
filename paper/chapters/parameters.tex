@@ -1,0 +1,26 @@
+% how did we find the best parameters?
+
+Evaluation of results:
+\begin{itemize}
+\item F-measure for each class is calculated.
+\item Harmonic mean for all F-measures is total score (higher is better).
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{img/parameter_eval.png}
+    \caption{Harmonic mean between all f1 scores for all classes. \emph{2/5} means window size of five and punctuation is tested at position two. If \emph{wi} is in the label, it uses wikipedia training data.}
+    \label{fig2}
+\end{figure}
+
+Comparison between experiments with and without POS tagging (other than that, they have the same configurations):
+\begin{itemize}
+\item With POS tagging: 0.305
+\item Without POS tagging: 0.275
+\end{itemize}
+
+Comparison between experiments with and without wikipedia data (other than that, they have the same configurations):
+\begin{itemize}
+\item Without wikipedia: 0.385
+\item With wikipedia data: 0.252
+\end{itemize}
