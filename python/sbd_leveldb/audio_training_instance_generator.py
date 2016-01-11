@@ -16,7 +16,7 @@ class TrainingInstanceGenerator(object):
     def __init__(self):
         self.test_talks = set()
 
-    def generate(self, parsers, database, pitch_level_folder, is_test):
+    def generate(self, parsers, database, is_test):
         level_db = LevelDBCreator(database)
         window_slider = SlidingWindow()
 
@@ -42,7 +42,7 @@ class TrainingInstanceGenerator(object):
                     prev_progress = progress
 
                 # get pitch feature values
-                pitch_level_file = pitch_level_folder + talk.group_name + "_talkid_" + talk.talk_id
+                pitch_level_file = talk_parser.get_file_name.replace(".ctm", ".pitch")
                 talk.parse_pith_feature(pitch_level_file)
 
                 # get the training instances
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + sbd.SbdConfig.get_db_name_from_config(sbd.config)
 
-    pitch_level_folder = "/mnt/naruto/sentence/data/audio/pitch_levels/"
+    pitch_level_folder = "/mnt/naruto/sentence/data/audio/"
 
     # check if database already exists
     if os.path.isdir(database):
