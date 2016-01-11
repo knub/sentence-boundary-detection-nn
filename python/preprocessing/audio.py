@@ -31,16 +31,21 @@ class Audio(object):
                 line = unicode(line_unenc, errors='ignore')
                 line = line.rstrip()
 
-                line_parts = line.split("\t")
-                second = line_parts[0]
-                pitch_level = line_parts[1]
+                line_parts = line.split(" ")
+                second = float(line_parts[0])
+                pitch_level = float(line_parts[1])
 
-                next(iter(self.pitch_interval[second])).data.append_pitch_level(pitch_level)
+                try:
+                    token = next(iter(self.pitch_interval[second])).data
+                    token.append_pitch_level(pitch_level)
+                except:
+                    continue
 
         for sentence in self.sentences:
             avg_pitch = sentence.get_avg_pitch_level()
             for token in sentence.get_tokens():
-                token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
+                if not token.is_punctuation():
+                    token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
@@ -50,12 +55,16 @@ class Audio(object):
 class AudioSentence(object):
 
     def __init__(self):
-        self.tokens = None
+        self.tokens = []
         self.begin = 0
         self.end = 0
 
     def get_avg_pitch_level(self):
-        l = [item for token in tokens for item in token.pitch_levels]
+        audio_tokens = []
+        for token in self.tokens:
+            if not token.is_punctuation():
+                audio_tokens.append(token)
+        l = [item for token in audio_tokens for item in token.pitch_levels]
         return reduce(lambda x, y: x + y, l) / len(l)
 
     def append_token(self, token):

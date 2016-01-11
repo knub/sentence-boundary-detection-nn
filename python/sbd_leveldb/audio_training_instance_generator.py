@@ -42,7 +42,7 @@ class TrainingInstanceGenerator(object):
                     prev_progress = progress
 
                 # get pitch feature values
-                pitch_level_file = talk_parser.get_file_name.replace(".ctm", ".pitch")
+                pitch_level_file = talk_parser.get_file_name().replace(".ctm", ".pitch")
                 talk.parse_pith_feature(pitch_level_file)
 
                 # get the training instances
@@ -76,8 +76,6 @@ if __name__ == '__main__':
     LEVEL_DB_DIR = "leveldbs"
 
     database = SENTENCE_HOME + "/" + LEVEL_DB_DIR + "/" + sbd.SbdConfig.get_db_name_from_config(sbd.config)
-
-    pitch_level_folder = "/mnt/naruto/sentence/data/audio/"
 
     # check if database already exists
     if os.path.isdir(database):
@@ -120,12 +118,12 @@ if __name__ == '__main__':
 
     print("Generating test data .. ")
     start = time.time()
-    generator.generate(test_parsers, database + "/test", pitch_level_folder, is_test = True)
+    generator.generate(test_parsers, database + "/test", is_test = True)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
 
     print("Generating training data .. ")
     start = time.time()
-    generator.generate(training_parsers, database + "/train", pitch_level_folder, is_test = False)
+    generator.generate(training_parsers, database + "/train", is_test = False)
     duration = int(time.time() - start) / 60
     print("Done in " + str(duration) + " min.")
