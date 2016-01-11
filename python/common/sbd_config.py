@@ -93,7 +93,7 @@ class SbdConfig(object):
                    "_nr-rep-"   + config.get('features', 'number_replacement') + \
                    "_word-" + config.get('word_vector', 'key_error_vector')
         else:
-            return "audio_" + "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position')
+            return "audio" + "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position')
 
     @staticmethod
     def generate_config_files():

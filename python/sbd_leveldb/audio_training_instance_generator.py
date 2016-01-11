@@ -27,22 +27,25 @@ class TrainingInstanceGenerator(object):
         else:
             plain_text_instances_file = open(database + "/../train_instances.txt", "w")
 
-        for i, text_parser in enumerate(parsers):
-            texts = text_parser.parse()
+        for i, talk_parser in enumerate(parsers):
+            talks = talk_parser.parse()
 
             prev_progress = 0
             print("")
-            print("Processing file %s ..." % text_parser.get_file_name())
+            print("Processing file %s ..." % talk_parser.get_file_name())
 
-            for text in texts:
-                progress = int(text_parser.progress() * 100)
+            for talk in talks:
+                progress = int(talk_parser.progress() * 100)
                 if progress > prev_progress:
                     sys.stdout.write(str(progress) + "% ")
                     sys.stdout.flush()
                     prev_progress = progress
 
+                # get pitch feature values
+                # talk.parse_pith_feature("pitch_file_name")
+
                 # get the training instances
-                training_instances = window_slider.list_windows(text)
+                training_instances = window_slider.list_windows(talk)
 
                 # write training instances to level db
                 for training_instance in training_instances:
