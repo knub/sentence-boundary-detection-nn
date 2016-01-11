@@ -17,3 +17,6 @@ punctuation_position = 3
 use_question_mark = true
 pos_tagging = false
 number_replacement = true
+
+[model]
+lexical = true

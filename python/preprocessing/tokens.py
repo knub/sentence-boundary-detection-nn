@@ -34,8 +34,7 @@ class AudioToken(object):
         self.pitch = pitch
 
     def __str__(self):
-        return "(%s) %s (%s)" % (str(self.pause_before), self.word, str(self.pause_after))
-        #return self.word
+        return "(%s) %s" % (str(self.pause_before), self.word)
 
     def __repr__(self):
         return self.word
@@ -47,6 +46,7 @@ class AudioToken(object):
 
     def __hash__(self):
         return hash(self.word) ^ hash(self.is_punctuation())
+
 
 class WordToken(object):
     def __init__(self, word):

@@ -11,6 +11,7 @@ class TrainingInstance(object):
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
         self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
         self.USE_QUESTION_MARK = sbd.config.getboolean('features', 'use_question_mark')
+        self.LEXICAL = sbd.config.getboolean('model', 'lexical')
 
         self.tokens = tokens
         self.label = label
@@ -19,10 +20,10 @@ class TrainingInstance(object):
         return "TOKENS: %s \nLABEL: %s \n" % (" ".join(map(unicode, self.tokens)), str(self.label))
 
     def get_array(self):
-        if isinstance(self.tokens[0], AudioToken):
-            return self.get_audio_array()
-        else:
+        if self.LEXICAL:
             return self.get_lexical_array()
+        else:
+            return self.get_audio_array()
 
     def get_lexical_array(self):
         word_vec_size = len(self.tokens[0].word_vec)

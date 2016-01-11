@@ -25,6 +25,9 @@ config_file_schema = {
         'use_question_mark': ['true', 'false'],
         'pos_tagging': ['true', 'false'],
         'number_replacement': ['true', 'false']
+    },
+    'model': {
+        'lexical': ['true', 'false']
     }
 }
 
@@ -78,16 +81,19 @@ class SbdConfig(object):
 
     @staticmethod
     def get_db_name_from_config(config):
-        uses_ted  = '_ted'  if 'ted'  in config.get('data', 'train_files') else ''
-        uses_wiki = '_wiki' if 'wiki' in config.get('data', 'train_files') else ''
-        # create proper name for the database
-        return config.get('word_vector', 'vector_file') + uses_ted + uses_wiki + \
-               "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
-               "_pos-"  + config.get('features', 'pos_tagging') + \
-               "_qm-"   + config.get('features', 'use_question_mark') + \
-               "_balanced-" + config.get('data', 'normalize_class_distribution') + \
-               "_nr-rep-"   + config.get('features', 'number_replacement') + \
-               "_word-" + config.get('word_vector', 'key_error_vector')
+        if (config.get('model', 'lexical')):
+            uses_ted  = '_ted'  if 'ted'  in config.get('data', 'train_files') else ''
+            uses_wiki = '_wiki' if 'wiki' in config.get('data', 'train_files') else ''
+            # create proper name for the database
+            return config.get('word_vector', 'vector_file') + uses_ted + uses_wiki + \
+                   "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position') + \
+                   "_pos-"  + config.get('features', 'pos_tagging') + \
+                   "_qm-"   + config.get('features', 'use_question_mark') + \
+                   "_balanced-" + config.get('data', 'normalize_class_distribution') + \
+                   "_nr-rep-"   + config.get('features', 'number_replacement') + \
+                   "_word-" + config.get('word_vector', 'key_error_vector')
+        else:
+            return "audio_" + "_window-" + config.get('windowing', 'window_size') + "-" + config.get('windowing', 'punctuation_position')
 
     @staticmethod
     def generate_config_files():
@@ -152,7 +158,7 @@ class SbdConfig(object):
             # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
             # now add the static option settings
-            c.append((('data', 'test_files'), 'ted/2011.xml.line'))
+            c.append((('data', 'test_files'), 'ted/2011.xml.line')) # audio/tst2011_0.ctm, audio/tst2011_1.ctm, audio/tst2011_2.ctm, audio/tst2011_3.ctm
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
             # sort and group by to output the options in correct *.ini order

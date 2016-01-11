@@ -1,5 +1,3 @@
-import common.sbd_config as sbd
-
 class Audio(object):
 
     def __init__(self):
