@@ -98,7 +98,7 @@ class SbdConfig(object):
     @staticmethod
     def generate_config_files():
         option_settings = {
-            ('data', 'normalize_class_distribution'): ['false'],
+            ('data', 'normalize_class_distribution'): ['true'],
             ('data', 'train_files'): [
                 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
                 # 'wikipedia/wikipedia.txt.line',
@@ -125,8 +125,6 @@ class SbdConfig(object):
         # Now add the possible settings for the punctuation
         # [(window_size, punctuation_pos)]
         punctuation_settings = [
-            (1, 0),
-            (1, 1),
             (5, 0),
             (5, 1),
             (5, 2),
