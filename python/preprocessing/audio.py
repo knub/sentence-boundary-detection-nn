@@ -5,6 +5,8 @@ class Audio(object):
     def __init__(self):
         self.sentences = []
         self.pitch_interval = IntervalTree()
+        self.talk_id = 0
+        self.group_name = None
 
     def get_tokens(self):
         tokens = []
@@ -18,7 +20,7 @@ class Audio(object):
     def _build_interval_tree(self):
         for token in self.get_tokens():
             if not token.is_punctutaion:
-                self.pitch_interval.addi(token.begin, token.begin + token.duration, [])
+                self.pitch_interval.addi(token.begin, token.begin + token.duration, token)
 
     def parse_pith_feature(self, filename):
         self._build_interval_tree()
@@ -33,7 +35,12 @@ class Audio(object):
                 second = line_parts[0]
                 pitch_level = line_parts[1]
 
-                next(iter(self.pitch_interval[second])).data.append(pitch_level)
+                next(iter(self.pitch_interval[second])).data.append_pitch_level(pitch_level)
+
+        for sentence in self.sentences:
+            avg_pitch = sentence.get_avg_pitch_level()
+            for token in sentence.get_tokens():
+                token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
@@ -46,6 +53,10 @@ class AudioSentence(object):
         self.tokens = None
         self.begin = 0
         self.end = 0
+
+    def get_avg_pitch_level(self):
+        l = [item for token in tokens for item in token.pitch_levels]
+        return reduce(lambda x, y: x + y, l) / len(l)
 
     def append_token(self, token):
         self.tokens.append(token)

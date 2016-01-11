@@ -17,9 +17,13 @@ class AudioToken(object):
         self.pause_after = 0.0
         self.energy = 0.0
         self.pitch = 0.0
+        self.pitch_levels = []
 
     def is_punctuation(self):
         return False
+
+    def append_pitch_level(self, pitch_level):
+        self.pitch_levels.append(pitch_level)
 
     def set_pause_before(self, pause_before):
         self.pause_before = pause_before

@@ -31,6 +31,8 @@ class CtmParser(AbstractParser):
         sentence = AudioSentence()
         sentence.tokens = []
 
+        group_name = self._extract_group_name(filename)
+
         with open(self.filename, "r") as file_:
             for line_unenc in file_:
                 self._progress += 1
@@ -46,6 +48,8 @@ class CtmParser(AbstractParser):
                     # end of talk reached
                     if talk_id != current_talk_id:
                         if token_count > 0:
+                            audio.talk_id = current_talk_id
+                            audio.group_name = group_name
                             audio = self._prepare_audio(audio)
                             yield audio
                             audio = Audio()
@@ -80,8 +84,13 @@ class CtmParser(AbstractParser):
                     sentence.append_token(token)
 
         if len(audio.sentences) > 0:
+            audio.talk_id = current_talk_id
+            audio.group_name = group_name
             audio = self._prepare_audio(audio)
             yield audio
+
+    def _extract_group_name(self, filename):
+        return filename.split("_")[0]
 
     def _prepare_audio(self, audio):
         # sort sentences by begin
