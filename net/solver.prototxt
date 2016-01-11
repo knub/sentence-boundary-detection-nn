@@ -1,7 +1,7 @@
 net: "auto.prototxt"
 
 # Test before training?
-test_initialization: true 
+test_initialization: true
 # Test every nth iteration
 test_interval: 5000
 # How many iterations per test
@@ -20,7 +20,7 @@ weight_decay: 0.0005
 # Display training loss every nth iteration
 display: 200
 # After how many iterations to stop
-max_iter: 1000000
+max_iter: 125000
 
 # Snapshot every nth iteration in the specified directory
 snapshot: 100000
