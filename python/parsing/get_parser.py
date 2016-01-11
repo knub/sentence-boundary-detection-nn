@@ -4,6 +4,7 @@ from common.argparse_util import *
 from line_parser import LineParser
 from plaintext_parser import PlaintextParser
 from xml_parser import XMLParser
+from ctm_parser import CtmParser
 
 
 def get_parser(filename):
@@ -14,6 +15,7 @@ def get_parser(filename):
     except ValueError:
         pass
     parsers.append(XMLParser(filename))
+    parsers.append(CtmParser(filename))
 
     for parser in parsers:
         if parser.wants_this_file():
