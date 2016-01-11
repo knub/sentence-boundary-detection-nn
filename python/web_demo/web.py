@@ -38,7 +38,6 @@ def settings(folder, vector):
     print config_folder + caffeeproto_name, config_folder + caffemodel_name, caffe.TEST
     net = caffe.Net(config_folder + caffeeproto_name, config_folder + caffemodel_name, caffe.TEST)
 
-
     classifier = Classifier(net, vector, False)
 
     return classifier

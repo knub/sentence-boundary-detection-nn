@@ -27,4 +27,19 @@ $(document).ready(function() {
             console.error(data);
         });
 	});
+
+    $("#selection-config").on('change', function() {
+        console.log("dkdjslkd")
+ 
+        var setting = {
+            folder: $("#selection-config").val()
+        };
+
+        $.post("/settings", setting, function(response, textStatus) {
+            })
+        .fail(function(data) {
+            console.error(data);
+        });
+    });
+
 });
