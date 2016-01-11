@@ -26,6 +26,7 @@ class CtmParser(AbstractParser):
         return (".ctm",)
 
     def parse(self):
+        current_talk_id = 0
         audio = Audio()
         sentence = AudioSentence()
         sentence.tokens = []
@@ -34,21 +35,38 @@ class CtmParser(AbstractParser):
             for line_unenc in file_:
                 self._progress += 1
 
-                if line_unenc.rstrip().startswith("#"):
-                    # save old sentence
-                    if len(sentence.tokens) > 0:
-                        sentence.begin = sentence.tokens[0].begin
-                        sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
-                        sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
-                        audio.add_sentence(sentence)
-                    # new sentence is starting
-                    sentence = AudioSentence()
-                    sentence.tokens = []
+                # parse line
+                line = unicode(line_unenc, errors='ignore')
+                line = line.rstrip()
+
+                if line.startswith("#"):
+                    talk_id = self._extract_talk_id(line)
+                    token_count = len(sentence.tokens)
+
+                    # end of talk reached
+                    if talk_id != current_talk_id:
+                        if token_count > 0:
+                            audio = self._prepare_audio(audio)
+                            yield audio
+                            audio = Audio()
+                            current_talk_id = talk_id
+                            continue
+                        else:
+                            current_talk_id = talk_id
+
+                    # we are still in the same talk, a new sentence is starting
+                    else:
+                        # save old sentence
+                        if token_count > 0:
+                            sentence.begin = sentence.tokens[0].begin
+                            sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
+                            sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
+                            audio.add_sentence(sentence)
+                        sentence = AudioSentence()
+                        sentence.tokens = []
+
                 else:
                     # parse line
-                    line = unicode(line_unenc, errors='ignore')
-                    line = line.rstrip()
-
                     line_parts = re.split(" +", line)
                     begin = float(line_parts[2])
                     duration = float(line_parts[3])
@@ -61,14 +79,17 @@ class CtmParser(AbstractParser):
 
                     sentence.append_token(token)
 
+        if len(audio.sentences) > 0:
+            audio = self._prepare_audio(audio)
+            yield audio
+
+    def _prepare_audio(self, audio):
         # sort sentences by begin
         sorted_sentences = sorted(audio.sentences, key=lambda x: x.begin)
         audio.sentences = sorted_sentences
 
         # calculate pause before and pause after
-        self._calculate_pause(audio)
-
-        return [audio]
+        return self._calculate_pause(audio)
 
     def _calculate_pause(self, audio):
         last_end = 0.0
@@ -78,7 +99,10 @@ class CtmParser(AbstractParser):
             if token.is_punctuation():
                 continue
 
-            pause = token.begin - last_end
+            pause = float(format(token.begin - last_end, '.4f'))
+
+            if pause < 0.0 or pause == -0.0:
+                pause = 0.0
 
             token.set_pause_before(pause)
             if last_token is not None:
@@ -86,6 +110,16 @@ class CtmParser(AbstractParser):
 
             last_end = token.begin + token.duration
             last_token = token
+
+        return audio
+
+    def _extract_talk_id(self, line):
+        line = line[2:]
+        line_parts = line.split("_")
+        for p in line_parts:
+            if p.startswith("talkid"):
+                return p[6:]
+        return 0
 
     def progress(self):
         return self._line_count_progress()
