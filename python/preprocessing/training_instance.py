@@ -53,8 +53,8 @@ class TrainingInstance(object):
         for i in range(0, self.WINDOW_SIZE):
             arr[0][i][0] = self.tokens[i].pause_before
             arr[0][i][1] = self.tokens[i].pause_after
-            arr[0][i][2] = self.tokens[i].pause_energy
-            arr[0][i][3] = self.tokens[i].pause_pitch
+            arr[0][i][2] = self.tokens[i].energy
+            arr[0][i][3] = self.tokens[i].pitch
 
         return arr
 

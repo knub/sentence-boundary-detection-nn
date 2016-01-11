@@ -81,7 +81,7 @@ class SbdConfig(object):
 
     @staticmethod
     def get_db_name_from_config(config):
-        if config.getBoolean('model', 'lexical'):
+        if config.getboolean('model', 'lexical'):
             uses_ted  = '_ted'  if 'ted'  in config.get('data', 'train_files') else ''
             uses_wiki = '_wiki' if 'wiki' in config.get('data', 'train_files') else ''
             # create proper name for the database
