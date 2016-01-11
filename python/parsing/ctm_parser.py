@@ -31,7 +31,7 @@ class CtmParser(AbstractParser):
         sentence = AudioSentence()
         sentence.tokens = []
 
-        group_name = self._extract_group_name(filename)
+        group_name = self._extract_group_name()
 
         with open(self.filename, "r") as file_:
             for line_unenc in file_:
@@ -89,8 +89,8 @@ class CtmParser(AbstractParser):
             audio = self._prepare_audio(audio)
             yield audio
 
-    def _extract_group_name(self, filename):
-        return filename.split("_")[0]
+    def _extract_group_name(self):
+        return self.filename.split("_")[0]
 
     def _prepare_audio(self, audio):
         # sort sentences by begin

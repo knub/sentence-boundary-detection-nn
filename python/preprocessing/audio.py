@@ -19,7 +19,7 @@ class Audio(object):
 
     def _build_interval_tree(self):
         for token in self.get_tokens():
-            if not token.is_punctutaion:
+            if not token.is_punctuation():
                 self.pitch_interval.addi(token.begin, token.begin + token.duration, token)
 
     def parse_pith_feature(self, filename):
