@@ -11,12 +11,12 @@ class Punctuation(Enum):
 class AudioToken(object):
     def __init__(self, word):
         self.word = word
-        self.begin = 0
-        self.duration = 0
-        self.pause_before = 0
-        self.pause_after = 0
-        self.energy = 0
-        self.pitch = 0
+        self.begin = 0.0
+        self.duration = 0.0
+        self.pause_before = 0.0
+        self.pause_after = 0.0
+        self.energy = 0.0
+        self.pitch = 0.0
 
     def is_punctuation(self):
         return False
@@ -34,7 +34,7 @@ class AudioToken(object):
         self.pitch = pitch
 
     def __str__(self):
-        return self.word
+        return "(%s) %s (%s)" % (str(self.pause_before), self.word, str(self.pause_after))
 
     def __repr__(self):
         return self.word

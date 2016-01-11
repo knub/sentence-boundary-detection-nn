@@ -71,7 +71,21 @@ class CtmParser(AbstractParser):
         return [audio]
 
     def _calculate_pause(self, audio):
-        pass
+        last_end = 0.0
+        last_token = None
+
+        for token in audio.get_tokens():
+            if token.is_punctuation():
+                continue
+
+            pause = token.begin - last_end
+
+            token.set_pause_before(pause)
+            if last_token is not None:
+                last_token.set_pause_after(pause)
+
+            last_end = token.begin + token.duration
+            last_token = token
 
     def progress(self):
         return self._line_count_progress()
