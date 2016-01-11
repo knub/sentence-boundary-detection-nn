@@ -30,3 +30,7 @@ p2/
 
 # Database file
 hdf5/
+
+# LaTeX
+.output/
+*.pdf
