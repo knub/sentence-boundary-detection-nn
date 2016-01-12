@@ -3,8 +3,10 @@ import json, caffe, argparse
 from preprocessing.word2vec_file import Word2VecFile
 from classification import Classifier
 import common.sbd_config as sbd
+from os import walk
 
 app = Flask(__name__)
+route_folder = 'models/'
 
 DEBUG = True
 
@@ -19,6 +21,15 @@ def classify():
     data = classifier.predict_text(text)
     return json.dumps(data)
 
+@app.route("/settings", methods = ['GET'])
+def getSettinOptions():
+    assert request.method == 'GET'
+    f = []
+    for (dirpath, dirnames, filenames) in walk(route_folder):
+        f.extend(dirnames)
+        break
+    return json.dumps(f)
+
 @app.route("/settings", methods = ['POST'])
 def changeSettings():
     assert request.method == 'POST'
@@ -28,7 +39,6 @@ def changeSettings():
 
 def settings(folder, vector):
     print 'loading config folder: ' + folder
-    route_folder = 'models/'
     config_file_name = 'config.ini'
     caffeeproto_name = 'deploy.prototxt'
     caffemodel_name = 'model.caffemodel'
@@ -61,6 +71,7 @@ if __name__ == "__main__":
         classifier = settings('testsettings', vector)
         app.run(debug = True, use_reloader = False)
     else:
+        net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
         vector = None
         classifier = Classifier(net, None, True)
         app.run(debug = True)

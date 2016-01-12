@@ -29,17 +29,32 @@ $(document).ready(function() {
 	});
 
     $("#selection-config").on('change', function() {
-        console.log("dkdjslkd")
- 
         var setting = {
             folder: $("#selection-config").val()
         };
 
-        $.post("/settings", setting, function(response, textStatus) {
-            })
+        $.post("/settings", setting, function(response) {})
         .fail(function(data) {
             console.error(data);
         });
     });
+
+    function loadConfigOptions() {
+        $.get("/settings", function(response) {
+            console.log(response);
+            response.forEach(function(option){
+
+                $('#selection-config').append($('<option>', {
+                     value: option,
+                     text: option
+                }));
+            });
+        }, "json")
+        .fail(function(data) {
+            console.error(data);
+        });
+    };
+
+    loadConfigOptions();
 
 });
