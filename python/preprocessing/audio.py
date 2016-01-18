@@ -48,7 +48,11 @@ class Audio(object):
             avg_pitch = sentence.get_avg_pitch_level()
             for token in sentence.get_tokens():
                 if not token.is_punctuation():
-                    token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
+                    try:
+                        token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
+                    except:
+                        print("Token has no pitch levels. Setting pitch to avg_pitch.")
+                        token.pitch = avg_pitch
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
@@ -68,7 +72,11 @@ class AudioSentence(object):
             if not token.is_punctuation():
                 audio_tokens.append(token)
         l = [item for token in audio_tokens for item in token.pitch_levels]
-        return reduce(lambda x, y: x + y, l) / len(l)
+        try:
+            return reduce(lambda x, y: x + y, l) / len(l)
+        except:
+            print("Sentence has no pitch levels. Setting avg_pitch to 0.0.")
+            return 0.0
 
     def append_token(self, token):
         self.tokens.append(token)
