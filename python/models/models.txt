@@ -1,0 +1,4 @@
+20160108-025006_google_ted_wiki_window-5-4_pos-false_qm-false_balanced-false_nr-rep-true_word-this
+20160108-032648_google_ted_wiki_window-5-4_pos-true_qm-false_balanced-false_nr-rep-true_word-this
+20160108-072841_google_ted_wiki_window-8-4_pos-false_qm-false_balanced-false_nr-rep-true_word-this
+20160108-081712_google_ted_wiki_window-8-4_pos-true_qm-false_balanced-false_nr-rep-true_word-this

@@ -14,6 +14,7 @@ config_file = None
 caffeeproto_name = ''
 caffemodel_file = None
 folder = ''
+config_options = []
 
 DEBUG = True
 
@@ -31,11 +32,11 @@ def classify():
 @app.route("/settings", methods = ['GET'])
 def getSettingOptions():
     assert request.method == 'GET'
-    f = []
+    result = []
     for (dirpath, dirnames, filenames) in walk(route_folder):
-        f.extend(dirnames)
+        result.extend(dirnames)
         break
-    response = {"selected": folder, "options":f}
+    response = {"selected": folder, "options": result}
     return json.dumps(response)
 
 @app.route("/settings", methods = ['POST'])
@@ -73,6 +74,9 @@ def settings(folder, vector):
     return classifier
 
 def get_filenames(folder):
+    config_file = ""
+    caffemodel_file = ""
+    net_proto = ""
     for file_ in listdir(folder):
         if file_.endswith(".ini"):
             config_file = folder + "/" + file_
@@ -84,25 +88,27 @@ def get_filenames(folder):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo')
-    parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='models/', nargs='?')
-    parser.add_argument('standardConfig', help='the subdirectory of routes folder containing the standart model', default='testsettings', nargs='?') 
-    parser.add_argument('caffeproto', help='the deploy prototxt template name of your trained model', default='deploy.prototxt', nargs='?')
-    parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
+    parser.add_argument('-r', '--rootfolder', help='the main directory containing all possible configurations', default='models/', nargs='?')
+    parser.add_argument('-s', '--standard_model', help='the subdirectory of routes folder containing the default model', default="20160108-025006_google_ted_wiki_window-5-4_pos-false_qm-false_balanced-false_nr-rep-true_word-this", nargs='?')
+    parser.add_argument('-v', '--vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
-    route_folder = args.routefolder
-    folder = args.standardConfig
-    caffeeproto_name = args.caffeproto
+    route_folder = args.rootfolder
+    folder = args.standard_model
+
+    config_options = []
+    for (dirpath, dirnames, filenames) in walk(route_folder):
+        config_options.extend(dirnames)
+        break
+    if not folder in config_options:
+        folder = config_options[0]
 
     config_file, caffemodel_file, net_proto = get_filenames(route_folder + folder)
-
     config_file = sbd.SbdConfig(config_file)
 
-   # net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
-       # classifier = Classifier(net, vector, False)
         classifier = settings(folder, vector)
         app.run(debug = True, use_reloader = False)
     else:
