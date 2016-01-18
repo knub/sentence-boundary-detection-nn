@@ -52,6 +52,10 @@ class SbdConfig(object):
         config = ConfigParser.ConfigParser()
         print("Reading config: %s" % config_path)
         config.read(config_path)
+        if not config.has_section('model'):
+            print ("#WARNING: Section 'model' missing, added default value 'model.lexical=true'.")
+            config.add_section('model')
+            config.set('model', 'lexical', 'true')
 
     def _validate(self):
         allowed_sections = config_file_schema.keys()
