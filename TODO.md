@@ -1,22 +1,3 @@
-### Bug
-
-Fehler bei Pitch-Level Bestimmung von Tokens:
-
-Reading config: config.ini
-Deleting /home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-1-1. y/N?
-y
-Generating test data .. 
-
-Processing file /mnt/naruto/sentence/data/audio/tst2011_0.ctm ...
-23% 45% 
-[]
-(987.83 - 988.16) the
-1174
-tst2011
-
-Anscheinend handelt es sich um einen Satz der Länge 1 (siehe tst2011_0.ctm, Zeile 3069)
-Anscheinend klappt die Zuordnung des Satzes zum Talk noch nicht (letzter Satz in einem Talk)
-
 ### TODO
 
 1. Improve model for lexical features!
@@ -43,6 +24,9 @@ Anscheinend klappt die Zuordnung des Satzes zum Talk noch nicht (letzter Satz in
   * Just add the pos tags 1-of-V-encoded after the word vector. Use rather broad pos tags (maybe put a few similar pos tags in the same group)
   * Use second data channel .. might be good for convolution. However, how to encode the POS tags then? Is it possible to use the word2vec approach somehow for pos tags?
   * Use a fusion approach as Joseph proposed .. e.g. first transform the word vectors to the same size as the pos tags
+
+
+* Pitch Level: Extract pitch levels from autio file. Subtract the avg of the sentence. Using all pitch levels lead to noisy results. Adding a pitch filter helps to clean the result. Woman speak normally up to a pitch level of 250. Ignoring all pitch values above 400 leads to a results where you can recognize by hand, that the voice goes down at the end of a sentence.
 
 ### Answered Questions
 * Do you know any open source ASR software we can use? No.
