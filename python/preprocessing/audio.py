@@ -68,10 +68,13 @@ class Audio(object):
         with open(filename, "r") as file_:
             i = -1
             for line_unenc in file_:
-                i += 1
-
                 # parse line
                 line = unicode(line_unenc, errors='ignore')
+
+                if line.startswith("%"):
+                    continue
+
+                i += 1
                 energy_level = line.rstrip()
 
                 try:
