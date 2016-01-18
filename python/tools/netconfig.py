@@ -31,47 +31,59 @@ def replace_loss_with_softmax(net):
     losslayer.top.append("softmax")
     return losslayer
 
-def main(args):
-    # read template net
-    net = caffe_pb2.NetParameter()
-    text_format.Merge(args.prototxt.read(), net)
+class NetConfig(object):
+    def __init__(self, prototxt):
+        self.net = caffe_pb2.NetParameter()
+        text_format.Merge(prototxt.read(), self.net)
 
-    # make deploy version of net
-    if args.deploy:
+    def transform_deploy(self, dimensions = [1, 1, 5, 300]):
+        # make deploy version of net
         # remove data layers
-        net.layer.remove(get_train_data_layer(net))
-        net.layer.remove(get_test_data_layer(net))
+        self.net.layer.remove(get_train_data_layer(self.net))
+        self.net.layer.remove(get_test_data_layer(self.net))
 
         # remove accuracy layer
-        net.layer.remove(get_layer_by_name(net, "accuracy"))
+        self.net.layer.remove(get_layer_by_name(self.net, "accuracy"))
 
         # add input
-        net.input.append("data")
-        net.input_dim.append(1)
-        net.input_dim.append(1)
-        net.input_dim.append(5)
-        net.input_dim.append(300)
+        self.net.input.append("data")
+        for d in dimensions:
+            self.net.input_dim.append(d)
 
         # use softmax instead of loss layer
-        replace_loss_with_softmax(net)
+        replace_loss_with_softmax(self.net)
 
-    if args.train:
+    def transform_data_paths(self, db_pair_dir):
         db_pair_dir = args.train
 
         # modify path to leveldb for test and train data layer
-        test_data_layer = get_test_data_layer(net)
+        test_data_layer = get_test_data_layer(self.net)
         test_data_layer.data_param.source = db_pair_dir + "/test"
 
-        train_data_layer = get_train_data_layer(net)
+        train_data_layer = get_train_data_layer(self.net)
         train_data_layer.data_param.source = db_pair_dir + "/train"
 
-    if args.print_database:
+    def get_database(self):
         test_data_layer = get_test_data_layer(net)
-        print test_data_layer.data_param.source.replace("/test", "")
+        return test_data_layer.data_param.source.replace("/test", "")
+
+    def write_to(self, outstream):
+        outstream.write(str(self.net))
+
+def main(args):
+    nc = NetConfig(args.prototxt)
+
+    if args.deploy:
+        nc.transform_deploy()
+
+    if args.train:
+        nc.transform_data_paths(args.train)
+
+    if args.print_database:
+        print nc.get_database()
         return
 
-    # write changed net to output
-    args.output.write(str(net))
+    nc.write_to(args.output)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Configure your net')

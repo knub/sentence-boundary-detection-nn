@@ -34,3 +34,6 @@ hdf5/
 # LaTeX
 .output/
 *.pdf
+
+# Lock files
+.~lock.*#
