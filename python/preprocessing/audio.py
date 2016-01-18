@@ -102,26 +102,26 @@ class Audio(object):
 
         i = 0
         for token in self.get_tokens():
-            if not token.is_punctuation:
+            if not token.is_punctuation():
                 all_pauses[i] = token.pause_before
                 all_pitches[i] = token.pitch
                 all_energies[i] = token.energy
                 i += 1
 
-        pause_mean = np.mean(all_pitches)
+        pause_mean = np.mean(all_pauses)
         pitch_mean = np.mean(all_pitches)
         energy_mean = np.mean(all_energies)
 
-        pause_std = np.std(all_pitches)
+        pause_std = np.std(all_pauses)
         pitch_std = np.std(all_pitches)
         energy_std = np.std(all_energies)
 
         for token in self.get_tokens():
-            if not token.is_punctuation:
-                token.pause_before = (token.pause_before - pause_mean) / pause_std
-                token.pause_after = (token.pause_after - pause_mean) / pause_std
-                token.pitch = (token.pitch - pitch_mean) / pitch_std
-                token.energy = (token.energy - energy_mean) / energy_std
+            if not token.is_punctuation():
+                token.set_pause_before((token.pause_before - pause_mean) / pause_std)
+                token.set_pause_after((token.pause_after - pause_mean) / pause_std)
+                token.set_pitch((token.pitch - pitch_mean) / pitch_std)
+                token.set_energy((token.energy - energy_mean) / energy_std)
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
