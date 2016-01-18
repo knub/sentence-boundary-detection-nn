@@ -66,14 +66,13 @@ class Audio(object):
         intervall = self.YAAFE_STEP_SIZE / self.TED_AUDIO_SAMPLE_RATE
 
         with open(filename, "r") as file_:
+            i = -1
             for line_unenc in file_:
+                i += 1
+
                 # parse line
                 line = unicode(line_unenc, errors='ignore')
-                line = line.rstrip()
-
-                line_parts = line.split(" ")
-                i = float(line_parts[0])
-                energy_level = float(line_parts[1])
+                energy_level = line.rstrip()
 
                 try:
                     token = next(iter(self.pitch_interval[i * intervall])).data
