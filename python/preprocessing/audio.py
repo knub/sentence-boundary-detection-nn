@@ -44,15 +44,20 @@ class Audio(object):
                     except:
                         continue
 
+        token_without_pitch = 0
+        total_token = 0
         for sentence in self.sentences:
             avg_pitch = sentence.get_avg_pitch_level()
             for token in sentence.get_tokens():
                 if not token.is_punctuation():
+                    total_token += 1
                     try:
                         token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
                     except:
-                        print("Token has no pitch levels. Setting pitch to avg_pitch.")
+                        token_without_pitch += 1
                         token.pitch = avg_pitch
+
+        print("%s percent of tokens had no pitch level." % (token_without_pitch / total_token))
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
