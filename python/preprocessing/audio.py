@@ -44,8 +44,8 @@ class Audio(object):
                     except:
                         continue
 
-        token_without_pitch = 0
-        total_token = 0
+        token_without_pitch = 0.0
+        total_token = 0.0
         for sentence in self.sentences:
             avg_pitch = sentence.get_avg_pitch_level()
             for token in sentence.get_tokens():
@@ -55,9 +55,9 @@ class Audio(object):
                         token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
                     except:
                         token_without_pitch += 1
-                        token.pitch = avg_pitch
+                        token.pitch = 0.0
 
-        print("%s percent of tokens had no pitch level." % (token_without_pitch / total_token))
+        print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / total_token * 100))
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
