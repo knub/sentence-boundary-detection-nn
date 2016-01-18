@@ -8,6 +8,8 @@ class Audio(object):
         self.talk_id = 0
         self.group_name = None
 
+        self.PITCH_FILTER = 700.0
+
     def get_tokens(self):
         tokens = []
         for sentence in self.sentences:
@@ -35,11 +37,12 @@ class Audio(object):
                 second = float(line_parts[0])
                 pitch_level = float(line_parts[1])
 
-                try:
-                    token = next(iter(self.pitch_interval[second])).data
-                    token.append_pitch_level(pitch_level)
-                except:
-                    continue
+                if pitch_level < self.PITCH_FILTER:
+                    try:
+                        token = next(iter(self.pitch_interval[second])).data
+                        token.append_pitch_level(pitch_level)
+                    except:
+                        continue
 
         for sentence in self.sentences:
             avg_pitch = sentence.get_avg_pitch_level()
