@@ -45,9 +45,17 @@ class CtmParser(AbstractParser):
                     talk_id = self._extract_talk_id(line)
                     token_count = len(sentence.tokens)
 
+                    # end of sentence reached
+                    if token_count > 0:
+                        sentence.begin = sentence.tokens[0].begin
+                        sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
+                        sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
+                        audio.add_sentence(sentence)
+
                     # end of talk reached
                     if talk_id != current_talk_id:
                         if token_count > 0:
+                            # save audio talk
                             audio.talk_id = current_talk_id
                             audio.group_name = group_name
                             audio = self._prepare_audio(audio)
@@ -58,16 +66,9 @@ class CtmParser(AbstractParser):
                         else:
                             current_talk_id = talk_id
 
-                    # we are still in the same talk, a new sentence is starting
-                    else:
-                        # save old sentence
-                        if token_count > 0:
-                            sentence.begin = sentence.tokens[0].begin
-                            sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
-                            sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
-                            audio.add_sentence(sentence)
-                        sentence = AudioSentence()
-                        sentence.tokens = []
+                    # begin a new sentence
+                    sentence = AudioSentence()
+                    sentence.tokens = []
 
                 else:
                     # parse line
