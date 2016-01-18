@@ -28,7 +28,6 @@ class Classifier(object):
 
         self.FEATURE_LENGTH = 300 if not self.POS_TAGGING else 300 + len(PosTag)
 
-
         self.word2vec = word2vec
         self.net = net
         self.debug = debug
@@ -74,7 +73,7 @@ class Classifier(object):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         batchsize = 1
-        self.net.blobs['data'].reshape(batchsize, 1, 5, self.FEATURE_LENGTH)
+        self.net.blobs['data'].reshape(batchsize, 1, self.WINDOW_SIZE, self.FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
         self.net.blobs['data'].data[...] = reshaped_array

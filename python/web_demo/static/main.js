@@ -42,12 +42,21 @@ $(document).ready(function() {
     function loadConfigOptions() {
         $.get("/settings", function(response) {
             console.log(response);
-            response.forEach(function(option){
+            response.options.forEach(function(option){
 
-                $('#selection-config').append($('<option>', {
-                     value: option,
-                     text: option
-                }));
+                if (response.selected === option){
+                    $('#selection-config').append($('<option>', {
+                         value: option,
+                         text: option,
+                         selected:"selected"
+                    }));
+                }
+                else{
+                    $('#selection-config').append($('<option>', {
+                         value: option,
+                         text: option
+                    })); 
+                }
             });
         }, "json")
         .fail(function(data) {
