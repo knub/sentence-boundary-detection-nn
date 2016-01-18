@@ -120,7 +120,7 @@ class Audio(object):
                 token.set_pause_before((token.pause_before - pause_mean) / pause_std)
                 token.set_pause_after((token.pause_after - pause_mean) / pause_std)
                 token.set_pitch((token.pitch - pitch_mean) / pitch_std)
-                # token.set_energy((token.energy - energy_mean) / energy_std)
+                token.set_energy((token.energy - energy_mean) / energy_std)
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
