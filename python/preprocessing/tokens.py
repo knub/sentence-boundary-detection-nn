@@ -38,7 +38,7 @@ class AudioToken(object):
         self.pitch = pitch
 
     def __str__(self):
-        return "(%s) %s" % (str(self.pause_before), self.word)
+        return "(pause: %s, pitch: %s) %s" % (str(self.pause_before), str(self.pitch), self.word)
 
     def __repr__(self):
         return self.word

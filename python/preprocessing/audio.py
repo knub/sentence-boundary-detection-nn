@@ -8,7 +8,7 @@ class Audio(object):
         self.talk_id = 0
         self.group_name = None
 
-        self.PITCH_FILTER = 700.0
+        self.PITCH_FILTER = 300.0
 
     def get_tokens(self):
         tokens = []
@@ -57,7 +57,7 @@ class Audio(object):
                         token_without_pitch += 1
                         token.pitch = 0.0
 
-        print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / total_token * 100))
+        # print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / total_token * 100))
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
@@ -80,7 +80,7 @@ class AudioSentence(object):
         try:
             return reduce(lambda x, y: x + y, l) / len(l)
         except:
-            print("Sentence has no pitch levels. Setting avg_pitch to 0.0.")
+            # print("Sentence has no pitch levels. Setting avg_pitch to 0.0.")
             return 0.0
 
     def append_token(self, token):
