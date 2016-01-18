@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request
-import json, caffe, argparse
-from preprocessing.word2vec_file import Word2VecFile
-from classification import Classifier
 import common.sbd_config as sbd
+import json, caffe, argparse
+from classification import Classifier
+from flask import Flask, render_template, request
 from os import walk, listdir
+from preprocessing.word2vec_file import Word2VecFile
+from tools.netconfig import NetConfig
+from preprocessing.nlp_pipeline import PosTag
 
 app = Flask(__name__)
 
@@ -47,11 +49,21 @@ def changeSettings():
 def settings(folder, vector):
     print 'Loading config folder: ' + folder
 
-    config_folder = route_folder + folder + "/"
-    config_file, caffemodel_file = getFilenames(folder)
+    config_file, caffemodel_file, net_proto = get_filenames(route_folder + folder)
 
-    config_file = sbd.SbdConfig(config_folder + config_file)
-    net = caffe.Net(config_folder + caffeeproto_name, config_folder + caffemodel_file, caffe.TEST)
+    config_file = sbd.SbdConfig(config_file)
+    WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
+    POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
+    FEATURE_LENGTH = 300 if not POS_TAGGING else 300 + len(PosTag)
+
+    with file(net_proto, "r") as input_:
+        nc = NetConfig(input_)
+    nc.transform_deploy([1, 1, WINDOW_SIZE, FEATURE_LENGTH])
+    temp_proto = "%s/%s/temp_deploy.prototxt" % (route_folder, folder)
+    with file(temp_proto, "w") as output:
+        nc.write_to(output)
+
+    net = caffe.Net(temp_proto, caffemodel_file, caffe.TEST)
 
     if vector:
         classifier = Classifier(net, vector, False)
@@ -60,14 +72,15 @@ def settings(folder, vector):
 
     return classifier
 
-def getFilenames(folder):
-
-    for file_ in listdir(route_folder + folder):
+def get_filenames(folder):
+    for file_ in listdir(folder):
         if file_.endswith(".ini"):
-            config_file = file_
+            config_file = folder + "/" + file_
         elif file_.endswith(".caffemodel"):
-            caffemodel_file = file_
-    return config_file, caffemodel_file
+            caffemodel_file = folder + "/" + file_
+        elif file_ == "net.prototxt":
+            net_proto = folder + "/" + file_
+    return config_file, caffemodel_file, net_proto
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo')
@@ -82,9 +95,9 @@ if __name__ == "__main__":
     folder = args.standardConfig
     caffeeproto_name = args.caffeproto
 
-    config_file, caffemodel_file = getFilenames(folder)
+    config_file, caffemodel_file, net_proto = get_filenames(route_folder + folder)
 
-    config_file = sbd.SbdConfig(route_folder + folder + '/' + config_file)
+    config_file = sbd.SbdConfig(config_file)
 
    # net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
     if not args.debug:

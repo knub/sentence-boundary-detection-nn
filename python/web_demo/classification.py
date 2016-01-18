@@ -39,7 +39,7 @@ class Classifier(object):
         for token in input_text.tokens:
             if not token.is_punctuation():
                 if self.debug:
-                    token.word_vec = numpy.random.rand(self.FEATURE_LENGTH)
+                    token.word_vec = numpy.random.rand(300)
                 else:
                     token.word_vec = self.word2vec.get_vector(token.word.lower())
 
@@ -56,24 +56,25 @@ class Classifier(object):
         for i, token in enumerate(input_text.tokens):
             token_json = {'type': 'word', 'token': token.word}
             if self.POS_TAGGING:
-                token_json['pos'] = token.pos_tags
+                token_json['pos'] = [str(tag).replace("PosTag.", "") for tag in token.pos_tags]
             json_data.append(token_json)
 
             # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-            if i < self.PUNCTUATION_POS - 1 or i > len(input_text.tokens) - self.PUNCTUATION_POS - 1:
-                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
-            else:
-                current_punctuation = self.classes[numpy.argmax(punctuation_probs[i - self.PUNCTUATION_POS + 1])]
-                class_distribution = self._get_class_distribution(punctuation_probs[i - self.PUNCTUATION_POS + 1])
+            current_prediction_position = i - self.PUNCTUATION_POS + 1
+            if 0 <= current_prediction_position and current_prediction_position < len(punctuation_probs):
+                current_punctuation = self.classes[numpy.argmax(punctuation_probs[current_prediction_position])]
+                class_distribution = self._get_class_distribution(punctuation_probs[current_prediction_position])
                 json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
+            else:
+                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
 
         return json_data
 
     def predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
-        batchsize = 1
-        self.net.blobs['data'].reshape(batchsize, 1, self.WINDOW_SIZE, self.FEATURE_LENGTH)
+        # batchsize = 1
+        # self.net.blobs['data'].reshape(batchsize, 1, self.WINDOW_SIZE, self.FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
 
         self.net.blobs['data'].data[...] = reshaped_array

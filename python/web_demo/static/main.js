@@ -5,7 +5,11 @@ $(document).ready(function() {
         $resultDiv.empty("");
         tokens.forEach(function(token) {
             if (token.type == "word") {
-                $resultDiv.append("<span class='token token-" + token.type + "'>" + token.token + "</span>");
+                var tag_str = "";
+                for (var key in token.pos) {
+                    tag_str += token.pos[key] + "&#013;"
+                };
+                $resultDiv.append("<span title='" + tag_str + "' class='token token-" + token.type + "'>" + token.token + "</span>");
             } else if (token.type == "punctuation") {
                 var probs_str = "";
                 for (var key in token.probs) {
@@ -41,7 +45,6 @@ $(document).ready(function() {
 
     function loadConfigOptions() {
         $.get("/settings", function(response) {
-            console.log(response);
             response.options.forEach(function(option){
 
                 if (response.selected === option){
