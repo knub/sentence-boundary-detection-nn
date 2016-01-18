@@ -12,8 +12,8 @@ class Audio(object):
         self.token_count = None
 
         self.PITCH_FILTER = 300.0
-        self.YAAFE_STEP_SIZE = 512
-        self.TED_AUDIO_SAMPLE_RATE = 16000
+        self.YAAFE_STEP_SIZE = 512.0
+        self.TED_AUDIO_SAMPLE_RATE = 16000.0
 
     def get_tokens(self):
         tokens = []
@@ -75,7 +75,7 @@ class Audio(object):
                     continue
 
                 i += 1
-                energy_level = line.rstrip()
+                energy_level = float(line.rstrip())
 
                 try:
                     token = next(iter(self.pitch_interval[i * intervall])).data
