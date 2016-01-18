@@ -9,6 +9,8 @@ class Audio(object):
         self.group_name = None
 
         self.PITCH_FILTER = 300.0
+        self.YAAFE_STEP_SIZE = 512
+        self.TED_AUDIO_SAMPLE_RATE = 16000
 
     def get_tokens(self):
         tokens = []
@@ -19,14 +21,12 @@ class Audio(object):
     def add_sentence(self, sentence):
         self.sentences.append(sentence)
 
-    def _build_interval_tree(self):
+    def build_interval_tree(self):
         for token in self.get_tokens():
             if not token.is_punctuation():
                 self.pitch_interval.addi(token.begin, token.begin + token.duration, token)
 
     def parse_pith_feature(self, filename):
-        self._build_interval_tree()
-
         with open(filename, "r") as file_:
             for line_unenc in file_:
                 # parse line
@@ -59,6 +59,44 @@ class Audio(object):
 
         # print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / total_token * 100))
 
+    def parse_energy_feature(self, filename):
+        intervall = self.YAAFE_STEP_SIZE / self.TED_AUDIO_SAMPLE_RATE
+
+        with open(filename, "r") as file_:
+            for line_unenc in file_:
+                # parse line
+                line = unicode(line_unenc, errors='ignore')
+                line = line.rstrip()
+
+                line_parts = line.split(" ")
+                i = float(line_parts[0])
+                energy_level = float(line_parts[1])
+
+                try:
+                    token = next(iter(self.pitch_interval[i * intervall])).data
+                    token.append_energy_level(energy_level)
+                except:
+                    continue
+
+        token_without_energy = 0.0
+        total_token = 0.0
+        for sentence in self.sentences:
+            avg_energy = sentence.get_avg_energy_level()
+            for token in sentence.get_tokens():
+                if not token.is_punctuation():
+                    total_token += 1
+                    try:
+                        token.energy = (reduce(lambda x, y: x + y, token.energy_levels) / len(token.energy_levels)) - avg_energy
+                    except:
+                        token_without_energy += 1
+                        token.energy = 0.0
+
+        # print("%2.2f %% of tokens had no energy level." % (token_without_energy / total_token * 100))
+
+
+    def normalize(self):
+        pass
+
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
         return sentences_str
@@ -81,6 +119,18 @@ class AudioSentence(object):
             return reduce(lambda x, y: x + y, l) / len(l)
         except:
             # print("Sentence has no pitch levels. Setting avg_pitch to 0.0.")
+            return 0.0
+
+    def get_avg_energy_level(self):
+        audio_tokens = []
+        for token in self.tokens:
+            if not token.is_punctuation():
+                audio_tokens.append(token)
+        l = [item for token in audio_tokens for item in token.energy_levels]
+        try:
+            return reduce(lambda x, y: x + y, l) / len(l)
+        except:
+            # print("Sentence has no energy levels. Setting avg_energy to 0.0.")
             return 0.0
 
     def append_token(self, token):

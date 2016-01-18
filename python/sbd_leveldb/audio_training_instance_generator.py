@@ -41,10 +41,16 @@ class TrainingInstanceGenerator(object):
                     sys.stdout.flush()
                     prev_progress = progress
 
-                # get pitch feature values
+                talk.build_interval_tree()
                 base_dir = os.path.dirname(talk_parser.get_file_name())
+
+                # get pitch feature values
                 pitch_level_file = base_dir + "/" + talk.group_name + "_talkid" + talk.talk_id + ".pitch"
                 talk.parse_pith_feature(pitch_level_file)
+
+                # get energy feature values
+                # energy_level_file = base_dir + "/" + talk.group_name + "_talkid" + talk.talk_id + ".energy"
+                # talk.parse_energy_feature(energy_level_file)
 
                 # get the training instances
                 training_instances = window_slider.list_windows(talk)
