@@ -52,6 +52,9 @@ class TrainingInstanceGenerator(object):
                 # energy_level_file = base_dir + "/" + talk.group_name + "_talkid" + talk.talk_id + ".energy"
                 # talk.parse_energy_feature(energy_level_file)
 
+                # normalize features
+                talk.normalize()
+
                 # get the training instances
                 training_instances = window_slider.list_windows(talk)
 

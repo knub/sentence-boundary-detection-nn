@@ -1,4 +1,5 @@
 from intervaltree import IntervalTree
+import numpy as np
 
 class Audio(object):
 
@@ -7,6 +8,8 @@ class Audio(object):
         self.pitch_interval = IntervalTree()
         self.talk_id = 0
         self.group_name = None
+
+        self.token_count = None
 
         self.PITCH_FILTER = 300.0
         self.YAAFE_STEP_SIZE = 512
@@ -22,8 +25,10 @@ class Audio(object):
         self.sentences.append(sentence)
 
     def build_interval_tree(self):
+        self.token_count = 0
         for token in self.get_tokens():
             if not token.is_punctuation():
+                self.token_count += 1
                 self.pitch_interval.addi(token.begin, token.begin + token.duration, token)
 
     def parse_pith_feature(self, filename):
@@ -45,19 +50,17 @@ class Audio(object):
                         continue
 
         token_without_pitch = 0.0
-        total_token = 0.0
         for sentence in self.sentences:
             avg_pitch = sentence.get_avg_pitch_level()
             for token in sentence.get_tokens():
                 if not token.is_punctuation():
-                    total_token += 1
                     try:
                         token.pitch = (reduce(lambda x, y: x + y, token.pitch_levels) / len(token.pitch_levels)) - avg_pitch
                     except:
                         token_without_pitch += 1
                         token.pitch = 0.0
 
-        # print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / total_token * 100))
+        # print("%2.2f %% of tokens had no pitch level." % (token_without_pitch / self.token_count * 100))
 
     def parse_energy_feature(self, filename):
         intervall = self.YAAFE_STEP_SIZE / self.TED_AUDIO_SAMPLE_RATE
@@ -79,23 +82,46 @@ class Audio(object):
                     continue
 
         token_without_energy = 0.0
-        total_token = 0.0
         for sentence in self.sentences:
             avg_energy = sentence.get_avg_energy_level()
             for token in sentence.get_tokens():
                 if not token.is_punctuation():
-                    total_token += 1
                     try:
                         token.energy = (reduce(lambda x, y: x + y, token.energy_levels) / len(token.energy_levels)) - avg_energy
                     except:
                         token_without_energy += 1
                         token.energy = 0.0
 
-        # print("%2.2f %% of tokens had no energy level." % (token_without_energy / total_token * 100))
+        # print("%2.2f %% of tokens had no energy level." % (token_without_energy / self.token_count * 100))
 
 
     def normalize(self):
-        pass
+        all_pauses = np.zeros(self.token_count, dtype = np.float32)
+        all_pitches = np.zeros(self.token_count, dtype = np.float32)
+        all_energies = np.zeros(self.token_count, dtype = np.float32)
+
+        i = 0
+        for token in self.get_tokens():
+            if not token.is_punctuation:
+                all_pauses[i] = token.pause_before
+                all_pitches[i] = token.pitch
+                all_energies[i] = token.energy
+                i += 1
+
+        pause_mean = np.mean(all_pitches)
+        pitch_mean = np.mean(all_pitches)
+        energy_mean = np.mean(all_energies)
+
+        pause_std = np.std(all_pitches)
+        pitch_std = np.std(all_pitches)
+        energy_std = np.std(all_energies)
+
+        for token in self.get_tokens():
+            if not token.is_punctuation:
+                token.pause_before = (token.pause_before - pause_mean) / pause_std
+                token.pause_after = (token.pause_after - pause_mean) / pause_std
+                token.pitch = (token.pitch - pitch_mean) / pitch_std
+                token.energy = (token.energy - energy_mean) / energy_std
 
     def __str__(self):
         sentences_str = ''.join(map(str, self.sentences))
