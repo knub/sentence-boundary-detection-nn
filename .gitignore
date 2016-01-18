@@ -16,6 +16,8 @@ auto.prototxt
 leveldbs
 net/experiments
 net/snapshots/
+net-audio/experiments
+net-audio/snapshots/
 
 # IDE files
 .idea/
