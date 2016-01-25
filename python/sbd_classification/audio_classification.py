@@ -8,10 +8,10 @@ from preprocessing.word2vec_file import Word2VecFile
 class InputAudio(object):
 
     def __init__(self, audio_tokens):
-        self.audio_tokens = audio_tokens
+        self.tokens = audio_tokens
 
     def get_tokens(self):
-        return self.audio_tokens
+        return self.tokens
 
 
 class AudioClassifier(object):
