@@ -5,48 +5,31 @@ from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
 
 
-class InputText(object):
+class InputAudio(object):
 
-    def __init__(self, text):
-        self.text = text
-
-        self.nlp_pipeline = NlpPipeline()
-        self.tokens = self.nlp_pipeline.parse_text(self.text)
+    def __init__(self, audio_tokens):
+        self.audio_tokens = audio_tokens
 
     def get_tokens(self):
-        return self.tokens
+        return self.audio_tokens
 
 
-class LexicalClassifier(object):
+class AudioClassifier(object):
 
-    def __init__(self, net, word2vec):
-        self.classes = ["NONE", "COMMA", "PERIOD"]
+    def __init__(self, net, debug = False):
+        self.classes = ["NONE", "PERIOD"]
 
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
         self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
-        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
 
-        self.FEATURE_LENGTH = 300 if not self.POS_TAGGING else 300 + len(PosTag)
-
-        self.word2vec = word2vec
         self.net = net
+        self.debug = debug
 
-    def predict_text_with_audio(self, audio_parser):
-        self.predict_text(audio_parser.get_text())
-
-    def predict_text(self, text):
-        input_text = InputText(text)
-        json_data = []
-
-        for token in input_text.tokens:
-            if not token.is_punctuation():
-                if not self.word2vec:
-                    token.word_vec = numpy.random.rand(300)
-                else:
-                    token.word_vec = self.word2vec.get_vector(token.word.lower())
+    def predict_audio(self, audio_parser):
+        audio = audio_parser.get_input_audio()
 
         sliding_window = SlidingWindow()
-        instances = sliding_window.list_windows(input_text)
+        instances = sliding_window.list_windows(audio)
 
         # get caffe predictions
         punctuation_probs = []
@@ -98,7 +81,7 @@ class LexicalClassifier(object):
 
 def main(caffeproto, caffemodel):
     net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
-    classifier = LexicalClassifier(net, None, True)
+    classifier = AudioClassifier(net, None, True)
 
     text = "This is a very long text This text has two sentences"
     data = classifier.predict_text(text)
