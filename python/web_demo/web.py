@@ -83,7 +83,7 @@ def classifyAudioLexical():
     (lex_tokens, lex_punctuations_probs) = lexical_classifier.predict_text_with_audio(parser)
 
     # AUDIO config active
-    load_config(AUDIO_EXAMPLE_FOLDER, request.form['audio_folder'])
+    load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
     fusion.read_audio_config()
     (au_tokens, au_punctuations_probs) = audio_classifier.predict_text(parser)
 
