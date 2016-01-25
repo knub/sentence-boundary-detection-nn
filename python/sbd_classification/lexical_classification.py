@@ -17,7 +17,7 @@ class InputText(object):
         return self.tokens
 
 
-class Classifier(object):
+class LexicalClassifier(object):
 
     def __init__(self, net, word2vec, debug = False):
         self.classes = ["NONE", "COMMA", "PERIOD"]
@@ -96,7 +96,7 @@ class Classifier(object):
 
 def main(caffeproto, caffemodel):
     net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
-    classifier = Classifier(net, None, True)
+    classifier = LexicalClassifier(net, None, True)
 
     text = "This is a very long text This text has two sentences"
     data = classifier.predict_text(text)
