@@ -1,4 +1,4 @@
-net: "auto.prototxt"
+net: "net.prototxt"
 
 # Test before training?
 test_initialization: true
