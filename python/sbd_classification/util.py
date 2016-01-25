@@ -1,5 +1,5 @@
 import common.sbd_config as sbd
-import caffe
+import caffe, os
 from tools.netconfig import NetConfig
 from os import listdir
 from sbd_classification.lexical_classification import LexicalClassifier
@@ -67,10 +67,10 @@ def get_audio_files(folder):
 
     for file_ in listdir(folder):
         if file_.endswith(".ctm"):
-            ctm_file = file_
+            ctm_file = os.path.join(folder, file_)
         elif file_.endswith(".pitch"):
-            pitch_file = file_
+            pitch_file = os.path.join(folder, file_)
         elif file_.endswith(".energy"):
-            energy_file = file_
+            energy_file = os.path.join(folder, file_)
 
     return ctm_file, pitch_file, energy_file
