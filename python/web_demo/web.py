@@ -3,6 +3,7 @@ import json, caffe, argparse
 from sbd_classification.util import *
 from sbd_classification.lexical_classification import LexicalClassifier
 from json_converter import JsonConverter
+from file_io import ResultWriter
 from flask import Flask, render_template, request
 from os import walk, listdir
 from preprocessing.word2vec_file import Word2VecFile
@@ -43,6 +44,10 @@ def classify():
     (tokens, punctuations_probs) = classifier.predict_text(text)
     jsonConverter = JsonConverter()
     data = jsonConverter.convert_lexical(tokens, punctuations_probs)
+
+    resultWriter = ResultWriter()
+    resultWriter.writeToFile(route_folder + "result.txt", tokens, punctuations_probs)
+
     return json.dumps(data)
 
 @app.route("/files", methods = ['GET'])
