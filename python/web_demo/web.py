@@ -27,6 +27,11 @@ def get_options(route_folder, sub_folder):
         break
     return f
 
+def load_config(model_folder, model):
+    default_model = os.path.join(route_folder, model_folder, model)
+    config_file, caffemodel_file, net_proto = get_filenames(default_model)
+    sbd.SbdConfig(config_file)
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -47,6 +52,7 @@ def classifyLexical():
         inputTextReader = InputTextReader()
         text = inputTextReader.readFile(file_name)
 
+    load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     (tokens, punctuations_probs) = lexical_classifier.predict_text(text)
     jsonConverter = JsonConverter()
     data = jsonConverter.convert_lexical(tokens, punctuations_probs)
@@ -67,7 +73,9 @@ def classifyAudioLexical():
     parser = AudioParser(ctm_file, pitch_file, energy_file)
     parser.parse()
 
+    load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     (lex_tokens, lex_punctuations_probs) = lexical_classifier.predict_text_with_audio(parser)
+    load_config(AUDIO_EXAMPLE_FOLDER, request.form['audio_folder'])
     (au_tokens, au_punctuations_probs) = audio_classifier.predict_text(parser)
 
     jsonConverter = JsonConverter()

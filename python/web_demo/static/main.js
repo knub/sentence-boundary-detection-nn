@@ -23,7 +23,8 @@ $(document).ready(function() {
     $("#punctuate-lexical").click(function() {
         var text = {
             text: $('#textarea-input').val(),
-            textfile: $('#selection-text-file').val()
+            textfile: $('#selection-text-file').val(),
+            lexical_folder: $("#selection-lexical-models").val()
         };
         $.post("/classify_lexical", text, function(response, textStatus) {
                 displayResult(response);
@@ -35,7 +36,9 @@ $(document).ready(function() {
 
     $("#punctuate-audio-lexical").click(function() {
         var setting = {
-            example: $('#selection-audio-examples').val()
+            example: $('#selection-audio-examples').val(),
+            lexical_folder: $("#selection-lexical-models").val(),
+            audio_folder: $("#selection-audio-models").val()
         };
         $.post("/classify_audio_lexical", setting, function(response, textStatus) {
             displayResult(response);
