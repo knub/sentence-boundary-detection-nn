@@ -92,9 +92,8 @@ def getAudioExamples():
     f = []
     example_root_folder = os.path.join(route_folder, AUDIO_EXAMPLE_FOLDER)
     for (dirpath, dirnames, filenames) in walk(example_root_folder):
-        for filename in filenames:
-            if not (filename.endswith(".result") or filename.startswith(".")):
-                f.append(filename)
+        for dir in dirnames:
+            f.append(dir)
     return json.dumps(f)
 
 @app.route("/audio_models", methods = ['GET'])

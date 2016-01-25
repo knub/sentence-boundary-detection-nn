@@ -15,9 +15,6 @@ class AudioParser(object):
         parser = get_parser(self.ctm_file)
         talks = parser.parse()
 
-        if len(talks) > 1:
-            print("WARNING: More than one talk in CTM file. Take only the first one.")
-
         for i, talk in enumerate(talks):
             if i >= 1:
                 break
