@@ -13,7 +13,7 @@ class JsonConverter(object):
         json_data = []
 
         # TODO:
-        # Die Window-Size und Punctuation-Position vom Audio Model berücksichtigen
+        # Die Window-Size und Punctuation-Position vom Audio Model beruecksichtigen
 
         # build json
         for i, token in enumerate(tokens):

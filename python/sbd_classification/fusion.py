@@ -17,7 +17,7 @@ class Fusion(object):
 
     def fuse(self, tokens, lexical_probs, audio_probs):
         # TODO:
-        # Die Window-Size und Punctuation-Position vom Audio Model berücksichtigen
+        # Die Window-Size und Punctuation-Position vom Audio Model beruecksichtigen
         # Bessere Fusion einbauen!
 
         assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - self.LEXICAL_PUNCTUATION_POS + 1 == len(audio_probs))
