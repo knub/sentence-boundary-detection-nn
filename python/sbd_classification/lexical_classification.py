@@ -19,7 +19,7 @@ class InputText(object):
 
 class LexicalClassifier(object):
 
-    def __init__(self, net, word2vec, debug = False):
+    def __init__(self, net, word2vec):
         self.classes = ["NONE", "COMMA", "PERIOD"]
 
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
@@ -30,7 +30,6 @@ class LexicalClassifier(object):
 
         self.word2vec = word2vec
         self.net = net
-        self.debug = debug
 
     def predict_text(self, text):
         input_text = InputText(text)
@@ -38,7 +37,7 @@ class LexicalClassifier(object):
 
         for token in input_text.tokens:
             if not token.is_punctuation():
-                if self.debug:
+                if not self.word2vec:
                     token.word_vec = numpy.random.rand(300)
                 else:
                     token.word_vec = self.word2vec.get_vector(token.word.lower())

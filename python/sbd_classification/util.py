@@ -25,9 +25,9 @@ def settings(route_folder, folder, vector):
     net = caffe.Net(temp_proto, caffemodel_file, caffe.TEST)
 
     if vector:
-        classifier = LexicalClassifier(net, vector, False)
+        classifier = LexicalClassifier(net, vector)
     else:
-        classifier = LexicalClassifier(net, vector, True)
+        classifier = LexicalClassifier(net, vector)
 
     return classifier
 
