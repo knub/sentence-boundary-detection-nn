@@ -30,12 +30,19 @@ class AudioParser(object):
 
             self.talk = talk
 
+    def get_text(self):
+        text = ""
+        for token in self.talk.get_tokens():
+            if not token.is_punctuation():
+                text += token.word + " "
+        return text
+
     def get_input_text(self):
         text = ""
         for token in self.talk.get_tokens():
             if not token.is_punctuation():
                 text += token.word + " "
-        return InputText(text)
+        return InputText(str(text))
 
     def get_input_audio(self):
         tokens = []

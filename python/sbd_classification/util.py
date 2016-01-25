@@ -16,9 +16,22 @@ def get_filenames(folder):
             net_proto = folder + "/" + file_
     return config_file, caffemodel_file, net_proto
 
-def make_temp_deploy(folder, prototxt, temp_file_name = "temp_deploy.prototxt"):
+def make_lexical_temp_deploy(folder, prototxt, temp_file_name = "temp_deploy.prototxt"):
     WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
     FEATURE_LENGTH = 300 if not sbd.config.getboolean('features', 'pos_tagging') else 300 + len(PosTag)
+
+    with file(prototxt, "r") as input_:
+        nc = NetConfig(input_)
+    nc.transform_deploy([1, 1, WINDOW_SIZE, FEATURE_LENGTH])
+    temp_proto = "%s/%s" % (folder, temp_file_name)
+    with file(temp_proto, "w") as output:
+        nc.write_to(output)
+
+    return temp_proto
+
+def make_audio_temp_deploy(folder, prototxt, temp_file_name = "temp_deploy.prototxt"):
+    WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
+    FEATURE_LENGTH = 4
 
     with file(prototxt, "r") as input_:
         nc = NetConfig(input_)
@@ -35,7 +48,7 @@ def load_lexical_classifier(folder, vector):
     config_file, caffemodel_file, net_proto = get_filenames(folder)
 
     sbd.SbdConfig(config_file)
-    temp_proto = make_temp_deploy(folder, net_proto)
+    temp_proto = make_lexical_temp_deploy(folder, net_proto)
 
     net = caffe.Net(temp_proto, caffemodel_file, caffe.TEST)
 
@@ -52,7 +65,7 @@ def load_audio_classifier(folder):
     config_file, caffemodel_file, net_proto = get_filenames(folder)
 
     sbd.SbdConfig(config_file)
-    temp_proto = make_temp_deploy(folder, net_proto)
+    temp_proto = make_audio_temp_deploy(folder, net_proto)
 
     net = caffe.Net(temp_proto, caffemodel_file, caffe.TEST)
 

@@ -135,23 +135,40 @@ if __name__ == "__main__":
 
     route_folder = args.routefolder
 
-    # load lexical model
+    #### load lexical model ####
+
     lexical_models = get_options(route_folder, LEXICAL_MODEL_FOLDER)
-    default_model = os.path.join(route_folder, LEXICAL_MODEL_FOLDER, lexical_models[0])
+    default_lexical_model = os.path.join(route_folder, LEXICAL_MODEL_FOLDER, lexical_models[0])
 
     # get the caffe files
-    config_file, caffemodel_file, net_proto = get_filenames(default_model)
+    config_file, caffemodel_file, net_proto = get_filenames(default_lexical_model)
 
     # read the config file
     config_file = sbd.SbdConfig(config_file)
 
-    # net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
-       # classifier = Classifier(net, vector, False)
-        lexical_classifier = load_lexical_classifier(default_model, vector)
-        app.run(debug = True, use_reloader = False)
+        lexical_classifier = load_lexical_classifier(default_lexical_model, vector)
     else:
         vector = None
-        lexical_classifier = load_lexical_classifier(default_model, vector)
+        lexical_classifier = load_lexical_classifier(default_lexical_model, vector)
+
+    #### load lexical model ####
+
+    audio_models = get_options(route_folder, AUDIO_MODEL_FOLDER)
+    default_audio_model = os.path.join(route_folder, AUDIO_MODEL_FOLDER, audio_models[0])
+
+    # get the caffe files
+    config_file, caffemodel_file, net_proto = get_filenames(default_audio_model)
+
+    # read the config file
+    config_file = sbd.SbdConfig(config_file)
+
+    audio_classifier = load_audio_classifier(default_audio_model)
+
+    #### start app ####
+
+    if not args.debug:
+        app.run(debug = True, use_reloader = False)
+    else:
         app.run(debug = True)

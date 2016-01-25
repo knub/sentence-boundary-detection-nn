@@ -30,7 +30,7 @@ class LexicalClassifier(object):
         self.net = net
 
     def predict_text_with_audio(self, audio_parser):
-        self.predict_text(audio_parser.get_input_text())
+        self.predict_text(audio_parser.get_text())
 
     def predict_text(self, text):
         input_text = InputText(text)
