@@ -70,7 +70,7 @@ def changeSettings():
     return ('', 200)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='run the web demo')
+    parser = argparse.ArgumentParser(description='run the web demo', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='demo_data/lexical_models/', nargs='?')
     parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_data/text_data/', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
