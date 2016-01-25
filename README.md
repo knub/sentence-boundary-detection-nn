@@ -4,7 +4,7 @@ We try to detect sentence boundaries using deep learning.
 Created as part of the "Practical Applications of Multimedia Retrieval" seminar at the Hasso-Plattner-Institute, Potsdam, Germany.
 
 ### Setup Demo
-We build a python-based demo.
+We build a python-based demo using caffe.
 
 ####Prerequirements:
 1. Install python 2.7 including the following packages:
@@ -54,11 +54,11 @@ We build a python-based demo.
 
 ####Start up
 
-Change into the repository directory and then execute
+Change into the repository directory and execute
 ```
 python python/web_demo
 ```
-Optionally you can specify the location of the word vector, the demo data.
+Optionaly you can specify the location of the word vector and the demo data. Ohterwise default values are used.
 For further information execute:
 ```
 python python/web_demo -h
