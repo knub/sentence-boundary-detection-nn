@@ -5,6 +5,7 @@ config.ini
 email.ini
 lineparsing
 configurations/
+audio_configurations/
 auto.prototxt
 
 # Experiment files

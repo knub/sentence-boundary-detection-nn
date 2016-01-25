@@ -5,7 +5,7 @@ import shutil
 # Set global config variable to be initialized in SbdConfig#init
 config = None
 
-CONFIGURATIONS_DIR = "configurations"
+CONFIGURATIONS_DIR = "audio_configurations"
 
 config_file_schema = {
     'data': {
@@ -104,13 +104,12 @@ class SbdConfig(object):
         option_settings = {
             ('data', 'normalize_class_distribution'): ['true'],
             ('data', 'train_files'): [
-                'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
-                # 'wikipedia/wikipedia.txt.line',
-                'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
-                # audio/dev2010_talkid129.ctm, audio/dev2010_talkid453.ctm, audio/dev2010_talkid531.ctm, audio/dev2010_talkid69.ctm, audio/dev2012_talkid1270.ctm, audio/dev2012_talkid1286.ctm, audio/dev2012_talkid1289.ctm, audio/dev2012_talkid1309.ctm, audio/dev2012_talkid1322.ctm, audio/dev2010_talkid227.ctm, audio/dev2010_talkid457.ctm, audio/dev2010_talkid535.ctm, audio/dev2010_talkid93.ctm, audio/dev2012_talkid1280.ctm, audio/dev2012_talkid1288.ctm, audio/dev2012_talkid1297.ctm, audio/dev2012_talkid1312.ctm, audio/dev2012_talkid1327.ctm, audio/tst2012_0.ctm, audio/tst2012_1.ctm, audio/tst2012_2.ctm, audio/tst2012_3.ctm
+                # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
+                # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
+                'audio/dev2010_talkid129.ctm,audio/dev2010_talkid457.ctm,audio/dev2010_talkid69.ctm,audio/dev2012_talkid1280.ctm,audio/dev2012_talkid1289.ctm,audio/dev2012_talkid1312.c    tm,audio/dev2010_talkid227.ctm,audio/dev2010_talkid531.ctm,audio/dev2010_talkid93.ctm,audio/dev2012_talkid1286.ctm,audio/dev2012_talkid1297.ctm,audio/dev2012_talkid1322.ctm,audio/de    v2010_talkid453.ctm,audio/dev2010_talkid535.ctm,audio/dev2012_talkid1270.ctm,audio/dev2012_talkid1288.ctm,audio/dev2012_talkid1309.ctm,audio/dev2012_talkid1327.ctm,audio/tst2010_0.c    tm,audio/tst2013_0.ctm,audio/tst2014_0.ctm'
             ],
             ('word_vector', 'vector_file'): ['google'],
-            ('features', 'pos_tagging'): ['true', 'false'],
+            ('features', 'pos_tagging'): ['false'],
             ('features', 'number_replacement'): ['true'],
         }
         # Now transform the option list from the data structure above to the following_structure
@@ -129,17 +128,16 @@ class SbdConfig(object):
         # Now add the possible settings for the punctuation
         # [(window_size, punctuation_pos)]
         punctuation_settings = [
-            (5, 0),
             (5, 1),
             (5, 2),
             (5, 3),
             (5, 4),
             (5, 5),
-            (8, 0),
             (8, 2),
+            (8, 3),
             (8, 4),
-            (8, 6),
-            (8, 8)
+            (8, 5),
+            (8, 6)
         ]
         punctuation_settings = [
             [(('windowing', 'window_size'), str(window_size)), (('windowing', 'punctuation_position'), str(punctuation_pos)) ]
@@ -160,10 +158,10 @@ class SbdConfig(object):
             # the following operation performs a flatten on the current configuration
             c = list(itertools.chain(*c))
             # now add the static option settings
-            c.append((('data', 'test_files'), 'ted/2011.xml.line')) # audio/tst2011_0.ctm, audio/tst2011_1.ctm, audio/tst2011_2.ctm, audio/tst2011_3.ctm
+            c.append((('data', 'test_files'), 'audio/tst2011_0.ctm')) # audio/tst2011_0.ctm, audio/tst2011_1.ctm, audio/tst2011_2.ctm, audio/tst2011_3.ctm
             c.append((('word_vector', 'key_error_vector'), 'this'))
             c.append((('features', 'use_question_mark'), 'false'))
-            c.append((('model', 'lexical', 'true')))
+            c.append((('model', 'lexical'), 'false'))
             # sort and group by to output the options in correct *.ini order
             f = open(CONFIGURATIONS_DIR + "/tmp", "w")
             c = sorted(c, key = lambda x: x[0][0])
