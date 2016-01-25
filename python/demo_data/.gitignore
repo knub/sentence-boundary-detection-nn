@@ -1,4 +1,6 @@
 *.*
 !*.gitignore
+!download_all.sh
 !download_models.sh
+!folders.txt
 !models.txt
