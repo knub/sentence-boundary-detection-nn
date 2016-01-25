@@ -3,12 +3,12 @@ net: "net.prototxt"
 # Test before training?
 test_initialization: true
 # Test every nth iteration
-test_interval: 5000
+test_interval: 200
 # How many iterations per test
 test_iter: 1
 
 # Base learning rate
-base_lr: 0.01
+base_lr: 0.0001
 # Policy for changing the learning rate - multiply by gamma every stepsize iterations
 lr_policy: "step"
 gamma: 0.1
