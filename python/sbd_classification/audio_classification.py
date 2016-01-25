@@ -3,8 +3,6 @@ import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
-from audio_parser import AudioParser
-from util import *
 
 
 class InputAudio(object):
