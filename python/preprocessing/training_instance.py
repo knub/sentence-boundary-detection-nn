@@ -59,6 +59,18 @@ class TrainingInstance(object):
         return arr
 
     def get_label(self):
+        if self.LEXICAL:
+            return self.get_lexical_label()
+        else:
+            return self.get_audio_label()
+
+    def get_audio_label(self):
+        if self.label == Punctuation.PERIOD:
+            return 1
+        else:
+            return self.label.value
+
+    def get_lexical_label(self):
         if not self.USE_QUESTION_MARK and self.label == Punctuation.QUESTION:
             return Punctuation.PERIOD.value
         return self.label.value
