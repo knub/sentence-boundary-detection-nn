@@ -1,0 +1,36 @@
+
+Show *.pitch *.energy
+How we (filter > 400, take average on sentence level, normalization with mean 0 and variance 1
+Training instances
+Training not successful so far
+Not very much data for audio
+
+Joseph: Analysis
+
+Rice: Demo
+
+File as input/run the backend the file
+one line one word
+
+Test on the server
+
+Postprocessing Beginning thing and end thing
+Kombinieren von zwei Models, eins predict the beginning of sentence, one predicts the end of sentence. add the probabilities
+Special cases: 8/4 0/8 and so on
+
+Add in final report: Wikipedia test
+experiments/20160118-151745_20160118-151440_google_ted_wiki_window-8-4_pos-true_qm-false_balanced-false_nr-rep-true_word-this_wiki-test/sentence_net.prototxt.tlog
+
+
+Idea: Try only pause: 0.20 0.36 --> Accuracy 35 %
+Add to lexical model --> 3 to 6 % up
+Postprocessing!
+
+find potential segment position with pause selection
+
+
+beginning of february 4th
+test different networks on best data set
+sentence beginning/end thing
+acoustic best we can get
+setup notes/deployment
