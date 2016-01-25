@@ -32,6 +32,7 @@ p2/
 
 # Database file
 hdf5/
+infogain_loss_matrix/*.h5
 
 # LaTeX
 .output/
@@ -39,3 +40,4 @@ hdf5/
 
 # Lock files
 .~lock.*#
+

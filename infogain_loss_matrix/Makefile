@@ -1,5 +1,6 @@
 
 hdf5:
+	rm infogain_loss_matrix.h5
 	h5import data -c config -o infogain_loss_matrix.h5
 
 scp:
