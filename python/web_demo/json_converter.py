@@ -3,10 +3,10 @@ import numpy
 
 class JsonConverter(object):
 
-    def __init__(self):
+    def __init__(self, punctuation_pos = None, pos_tagging = None):
         self.classes = ["NONE", "COMMA", "PERIOD"]
-        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
-        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
+        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position') if punctuation_pos == None else punctuation_pos
+        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging') if pos_tagging == None else pos_tagging
 
     def convert_lexical(self, tokens, punctuation_probs):
         json_data = []

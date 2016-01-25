@@ -1,6 +1,7 @@
 import common.sbd_config as sbd
 import json, caffe, argparse, os
 from sbd_classification.util import *
+from sbd_classification.fusion import FusionClassifier
 from sbd_classification.audio_parser import AudioParser
 from json_converter import JsonConverter
 from file_io import ResultWriter, InputTextReader
@@ -73,12 +74,21 @@ def classifyAudioLexical():
     parser = AudioParser(ctm_file, pitch_file, energy_file)
     parser.parse()
 
+    fusion = FusionClassifier()
+
+    # LEXICAL config active
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
+    jsonConverter = JsonConverter()
+    fusion.read_lexical_config()
     (lex_tokens, lex_punctuations_probs) = lexical_classifier.predict_text_with_audio(parser)
+
+    # AUDIO config active
     load_config(AUDIO_EXAMPLE_FOLDER, request.form['audio_folder'])
+    fusion.read_audio_config()
     (au_tokens, au_punctuations_probs) = audio_classifier.predict_text(parser)
 
-    jsonConverter = JsonConverter()
+    fusion.fuse(lex_tokens, lex_punctuations_probs, au_tokens, au_punctuations_probs)
+
     data = jsonConverter.convert_lexical(lex_tokens, lex_punctuations_probs)
 
     return json.dumps(data)
