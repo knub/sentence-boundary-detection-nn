@@ -106,7 +106,7 @@ class SbdConfig(object):
             ('data', 'train_files'): [
                 # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line',
                 # 'ted/2010-1.xml.line,ted/2010-2.xml.line,ted/2012.xml.line,ted/2013.xml.line,wikipedia/wikipedia.txt.line'
-                'audio/dev2010_talkid129.ctm,audio/dev2010_talkid457.ctm,audio/dev2010_talkid69.ctm,audio/dev2012_talkid1280.ctm,audio/dev2012_talkid1289.ctm,audio/dev2012_talkid1312.c    tm,audio/dev2010_talkid227.ctm,audio/dev2010_talkid531.ctm,audio/dev2010_talkid93.ctm,audio/dev2012_talkid1286.ctm,audio/dev2012_talkid1297.ctm,audio/dev2012_talkid1322.ctm,audio/de    v2010_talkid453.ctm,audio/dev2010_talkid535.ctm,audio/dev2012_talkid1270.ctm,audio/dev2012_talkid1288.ctm,audio/dev2012_talkid1309.ctm,audio/dev2012_talkid1327.ctm,audio/tst2010_0.c    tm,audio/tst2013_0.ctm,audio/tst2014_0.ctm'
+                'audio/dev2010_talkid129.ctm,audio/dev2010_talkid457.ctm,audio/dev2010_talkid69.ctm,audio/dev2012_talkid1280.ctm,audio/dev2012_talkid1289.ctm,audio/dev2012_talkid1312.ctm,audio/dev2010_talkid227.ctm,audio/dev2010_talkid531.ctm,audio/dev2010_talkid93.ctm,audio/dev2012_talkid1286.ctm,audio/dev2012_talkid1297.ctm,audio/dev2012_talkid1322.ctm,audio/dev2010_talkid453.ctm,audio/dev2010_talkid535.ctm,audio/dev2012_talkid1270.ctm,audio/dev2012_talkid1288.ctm,audio/dev2012_talkid1309.ctm,audio/dev2012_talkid1327.ctm,audio/tst2010_0.ctm,audio/tst2013_0.ctm,audio/tst2014_0.ctm'
             ],
             ('word_vector', 'vector_file'): ['google'],
             ('features', 'pos_tagging'): ['false'],
