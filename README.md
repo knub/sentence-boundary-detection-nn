@@ -6,7 +6,7 @@ Created as part of the "Practical Applications of Multimedia Retrieval" seminar 
 ### Setup Demo
 We build a python-based demo using caffe.
 
-####Prerequirements:
+#####Prerequirements:
 1. Install python 2.7 including the following packages:
   * Flask==0.10.1
   * Jinja2==2.8
@@ -52,7 +52,7 @@ We build a python-based demo using caffe.
   * audio_models: containing all pretrainied audio models, each in a seperate directory. Each needs the same files as described for lexical models
   * audio_examples: containing all audio files, which should be available during the demo. Each one in a seperate directory containing the ctm, energy and pitch files.
 
-####Start up
+#####Start up
 
 Change into the repository directory and execute
 ```
