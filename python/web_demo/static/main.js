@@ -33,33 +33,44 @@ $(document).ready(function() {
         });
 	});
 
-    $("#selection-config").on('change', function() {
+    $("#selection-lexical-models").on('change', function() {
         var setting = {
-            folder: $("#selection-config").val()
+            folder: $("#selection-lexical-models").val()
         };
 
-        $.post("/settings", setting, function(response) {})
+        $.post("/lexical_models", setting, function(response) {})
         .fail(function(data) {
             console.error(data);
         });
     });
 
-    function loadConfigOptions() {
-        $.get("/settings", function(response) {
+    $("#selection-audio-models").on('change', function() {
+        var setting = {
+            folder: $("#selection-audio-models").val()
+        };
+
+        $.post("/audio_models", setting, function(response) {})
+            .fail(function(data) {
+                      console.error(data);
+                  });
+    });
+
+    function loadLexicalModels() {
+        $.get("/lexical_models", function(response) {
             response.options.forEach(function(option){
 
                 if (response.selected === option){
-                    $('#selection-config').append($('<option>', {
+                    $('#selection-lexical-models').append($('<option>', {
                          value: option,
                          text: option,
                          selected:"selected"
                     }));
                 }
                 else{
-                    $('#selection-config').append($('<option>', {
+                    $('#selection-lexical-models').append($('<option>', {
                          value: option,
                          text: option
-                    })); 
+                    }));
                 }
             });
         }, "json")
@@ -68,7 +79,7 @@ $(document).ready(function() {
         });
     };
 
-    function loadTextFileOptions() {
+    function loadTextFiles() {
         $.get("/files", function(response) {
             response.forEach(function(option){
                 $('#selection-text-file').append($('<option>', {
@@ -82,8 +93,33 @@ $(document).ready(function() {
         });
     };
 
+    function loadAudioModels() {
+        $.get("/audio_models", function(response) {
+            response.options.forEach(function(option){
 
-    loadTextFileOptions();
-    loadConfigOptions();
+                if (response.selected === option){
+                    $('#selection-audio-models').append($('<option>', {
+                        value: option,
+                        text: option,
+                        selected:"selected"
+                    }));
+                }
+                else{
+                    $('#selection-audio-models').append($('<option>', {
+                        value: option,
+                        text: option
+                    }));
+                }
+            });
+        }, "json")
+            .fail(function(data) {
+                      console.error(data);
+                  });
+    };
+
+
+    loadTextFiles();
+    loadLexicalModels();
+    loadAudioModels();
 
 });

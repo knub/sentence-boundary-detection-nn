@@ -1,5 +1,5 @@
 import common.sbd_config as sbd
-import json, caffe, argparse
+import json, caffe, argparse, os
 from sbd_classification.util import *
 from sbd_classification.lexical_classification import LexicalClassifier
 from json_converter import JsonConverter
@@ -13,14 +13,19 @@ app = Flask(__name__)
 
 route_folder = ''
 config_file = None
-folder = ''
 text_folder = ''
+
+LEXICAL_MODEL_FOLDER = "lexical_models"
+AUDIO_MODEL_FOLDER = "audio_models"
+AUDIO_EXAMPLE_FOLDER = "audio_examples"
+TEXT_DATA = "text_data"
 
 DEBUG = True
 
-def get_options(route_folder):
+def get_options(route_folder, sub_folder):
+    dir = os.path.join(route_folder, sub_folder)
     f = []
-    for (dirpath, dirnames, filenames) in walk(route_folder):
+    for (dirpath, dirnames, filenames) in walk(dir):
         f.extend(dirnames)
         break
     return f
@@ -28,6 +33,10 @@ def get_options(route_folder):
 @app.route("/")
 def index():
     return render_template('index.html')
+
+@app.route("/audio_lexical")
+def audio_lexical():
+    return render_template('audio_lexical.html')
 
 @app.route("/classify", methods = ['POST'])
 def classify():
@@ -60,44 +69,63 @@ def getTextFiles():
                 f.append(filename)
     return json.dumps(f)
 
-@app.route("/settings", methods = ['GET'])
-def getSettingOptions():
+@app.route("/audio_models", methods = ['GET'])
+def getAudioModels():
     assert request.method == 'GET'
-    f = get_options(route_folder)
+    f = get_options(route_folder, AUDIO_MODEL_FOLDER)
     response = {"selected": f[0], "options":f}
     return json.dumps(response)
 
-@app.route("/settings", methods = ['POST'])
-def changeSettings():
+@app.route("/audio_models", methods = ['POST'])
+def changeAudioModel():
     global classifier
     assert request.method == 'POST'
-    classifier = load_lexical_classifier(route_folder + str(request.form['folder']), vector)
+    pass
+
+@app.route("/lexical_models", methods = ['GET'])
+def getLexicalModels():
+    assert request.method == 'GET'
+    f = get_options(route_folder, LEXICAL_MODEL_FOLDER)
+    response = {"selected": f[0], "options":f}
+    return json.dumps(response)
+
+@app.route("/lexical_models", methods = ['POST'])
+def changeLexicalModel():
+    global classifier
+    assert request.method == 'POST'
+    model_file = os.path.join(route_folder, LEXICAL_MODEL_FOLDER, str(request.form['folder']))
+    classifier = load_lexical_classifier(model_file , vector)
     return ('', 200)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='demo_data/lexical_models/', nargs='?')
-    parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_data/text_data/', nargs='?')
+    parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='demo_data/', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
-    route_folder = args.routefolder + "/"
-    option_list = get_options(route_folder)
-    folder = option_list[0]
-    text_folder = args.textfolder
+    route_folder = args.routefolder
 
-    config_file, caffemodel_file, net_proto = get_filenames(route_folder + folder)
+    # get text folder
+    text_folder = os.path.join(route_folder, TEXT_DATA)
 
+    # load lexial models
+    lexical_models = get_options(route_folder, LEXICAL_MODEL_FOLDER)
+    default_model = os.path.join(route_folder, LEXICAL_MODEL_FOLDER, lexical_models[0])
+
+    # get the caffe files
+    config_file, caffemodel_file, net_proto = get_filenames(default_model)
+
+    # read the config file
     config_file = sbd.SbdConfig(config_file)
 
-   # net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
+    # net = caffe.Net(args.caffeproto, args.caffemodel, caffe.TEST)
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
        # classifier = Classifier(net, vector, False)
-        classifier = load_lexical_classifier(route_folder + folder, vector)
+        classifier = load_lexical_classifier(default_model, vector)
         app.run(debug = True, use_reloader = False)
     else:
         vector = None
-        classifier = load_lexical_classifier(route_folder + folder, vector)
+        classifier = load_lexical_classifier(default_model, vector)
         app.run(debug = True)

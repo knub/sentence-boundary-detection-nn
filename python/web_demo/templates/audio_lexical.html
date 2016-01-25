@@ -22,27 +22,23 @@
         <div class="col-md-8">
             <h1>Sentence Boundary Detection</h1>
             <ul class="nav nav-tabs">
-                <li class="active"><a href="/">Lexical</a></li>
-                <li><a href="/audio_lexical">Lexical + Audio</a></li>
+                <li><a href="/">Lexical</a></li>
+                <li class="active"><a href="/audio_lexical">Lexical + Audio</a></li>
             </ul>
 
-            <h4 style="margin-top: 30px">Net configuration</h4>
+            <h4 style="margin-top: 30px">Choose an Example</h4>
+            <select id="selection-audio-examples" type="selection" class="form-control"></select>
+
+
+            <h4 style="margin-top: 30px">Choose an Audio Model</h4>
+            <select id="selection-audio-models" type="selection" class="form-control"></select>
+
+            <h4 style="margin-top: 10px">Choose an Lexical Model</h4>
             <select id="selection-lexical-models" type="selection" class="form-control"></select>
 
-            <div class="clearfix"></div>
-            <form>
-                <h4 style="margin-top: 30px">Choose text file</h4>
-                <select id="selection-text-file" type="selection" class="form-control">
-                    <option value=None> Custom Text </option>
-                </select>
-
-                <textarea id="textarea-input" class="form-control" rows="5" placeholder="Enter unpunctuated text">The sun is shining let's go outside</textarea>
-                <div class="pull-right">
-                    <button id="button-punctuate" class="btn btn-success btn-lg" type="button">Punctuate!</button>
-                </div>
-                <div class="clearfix"></div>
-            </form>
-            <div id="punctuation" class="clearfix"></div>
+            <div class="pull-right" style="margin-top: 30px">
+                <button id="button-punctuate" class="btn btn-success btn-lg" type="button">Punctuate!</button>
+            </div>
         </div>
         <div class="col-md-2"></div>
     </div>
