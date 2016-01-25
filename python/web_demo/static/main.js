@@ -22,7 +22,8 @@ $(document).ready(function() {
 
     $("#button-punctuate").click(function() {
         var text = {
-            text: $('#textarea-input').val()
+            text: $('#textarea-input').val(),
+            textfile: $('#selection-text-file').val()
         };
         $.post("/classify", text, function(response, textStatus) {
                 displayResult(response);
@@ -67,6 +68,22 @@ $(document).ready(function() {
         });
     };
 
+    function loadTextFileOptions() {
+        $.get("/files", function(response) {
+            response.forEach(function(option){
+                $('#selection-text-file').append($('<option>', {
+                     value: option,
+                     text: option,
+                }));
+            });
+        }, "json")
+        .fail(function(data) {
+            console.error(data);
+        });
+    };
+
+
+    loadTextFileOptions();
     loadConfigOptions();
 
 });

@@ -25,7 +25,16 @@
                     Net configuration:
                     <select id="selection-config" type="selection"> </select>
 
+                    <div class="clearfix"></div>
+
+
+
                     <form>
+                        Use text file:
+                        <select id="selection-text-file" type="selection" class="form-control"> 
+                            <option value=None> Custom Text </option>
+                        </select>
+
                         <textarea id="textarea-input" class="form-control" rows="5" placeholder="Enter unpunctuated text">The sun is shining let's go outside</textarea>
                         <div class="pull-right">
                             <button id="button-punctuate" class="btn btn-success btn-lg" type="button">Punctuate!</button>

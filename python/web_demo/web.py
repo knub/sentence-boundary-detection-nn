@@ -11,9 +11,8 @@ app = Flask(__name__)
 
 route_folder = ''
 config_file = None
-caffeeproto_name = ''
-caffemodel_file = None
 folder = ''
+text_folder = ''
 
 DEBUG = True
 
@@ -24,9 +23,29 @@ def index():
 @app.route("/classify", methods = ['POST'])
 def classify():
     assert request.method == 'POST'
-    text = request.form['text']
+    text_file = request.form['textfile']
+    print text_file
+    text = ""
+    if text_file == 'None':
+        text = request.form['text']
+    else:
+        file_name = text_folder + text_file
+        with open(file_name) as f:
+            text = f.read()
+
     data = classifier.predict_text(text)
     return json.dumps(data)
+
+
+@app.route("/files", methods = ['GET'])
+def getTextFiles():
+    assert request.method == 'GET'
+    f = []
+    for (dirpath, dirnames, filenames) in walk(text_folder):
+        f.extend(filenames)
+        break
+    return json.dumps(f)
+
 
 @app.route("/settings", methods = ['GET'])
 def getSettingOptions():
@@ -86,14 +105,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo')
     parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='models/', nargs='?')
     parser.add_argument('standardConfig', help='the subdirectory of routes folder containing the standart model', default='testsettings', nargs='?') 
-    parser.add_argument('caffeproto', help='the deploy prototxt template name of your trained model', default='deploy.prototxt', nargs='?')
+    parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_text/', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
     route_folder = args.routefolder
     folder = args.standardConfig
-    caffeeproto_name = args.caffeproto
+    text_folder = args.textfolder
 
     config_file, caffemodel_file, net_proto = get_filenames(route_folder + folder)
 
