@@ -49,7 +49,7 @@ def getTextFiles():
     f = []
     for (dirpath, dirnames, filenames) in walk(text_folder):
         for filename in filenames:
-            if not filename.endswith(".result"):
+            if not (filename.endswith(".result") or filename.startswith(".")):
                 f.append(filename)
     return json.dumps(f)
 
@@ -70,7 +70,7 @@ def changeSettings():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run the web demo')
     parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='demo_data/lexical_models/', nargs='?')
-    parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_text/', nargs='?')
+    parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_data/text_data/', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
