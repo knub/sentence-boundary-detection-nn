@@ -5,10 +5,17 @@
     min-height: 100px;
     background: #EEE;
 }
+.punctuation_div {
+    padding: 15px;
+    margin: 15px;
+    max-width: 100%;
+    min-height: 100px;
+    background: #EEE;
+}
 #textarea-input {
-    border: 1px solid black;
-    font-size: 1.5em;
-    margin: 30px 2px;
+    border: 0.5px solid black;
+    font-size: 1em;
+    margin: 10px 2px;
 }
 .token {
     background: #CCC;

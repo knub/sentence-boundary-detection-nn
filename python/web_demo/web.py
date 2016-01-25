@@ -2,7 +2,7 @@ import common.sbd_config as sbd
 import json, caffe, argparse, os
 from sbd_classification.util import *
 from sbd_classification.audio_parser import AudioParser
-from sbd_classification.fusion import FusionClassifier
+from sbd_classification.fusion import Fusion
 from json_converter import JsonConverter
 from file_io import ResultWriter, InputTextReader
 from flask import Flask, render_template, request
@@ -74,23 +74,24 @@ def classifyAudioLexical():
     parser = AudioParser(ctm_file, pitch_file, energy_file)
     parser.parse()
 
-    fusion = FusionClassifier()
+    fusion = Fusion()
 
     # LEXICAL config active
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     jsonConverter = JsonConverter()
     fusion.read_lexical_config()
-    (lex_tokens, lex_punctuations_probs) = lexical_classifier.predict_text_with_audio(parser)
+    (lexical_tokens, lexical_probs) = lexical_classifier.predict_text_with_audio(parser)
 
     # AUDIO config active
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
     fusion.read_audio_config()
-    (au_tokens, au_punctuations_probs) = audio_classifier.predict_audio(parser)
+    (audio_tokens, audio_probs) = audio_classifier.predict_audio(parser)
 
-    fusion.fuse(lex_tokens, lex_punctuations_probs, au_punctuations_probs)
+    # fuse the outputs
+    (tokens, fusion_probs) = fusion.fuse(lexical_tokens, lexical_probs, audio_probs)
 
-    data = jsonConverter.convert_lexical(lex_tokens, lex_punctuations_probs)
-
+    # convert it into json
+    data = jsonConverter.convert_fusion(tokens, fusion_probs, lexical_probs, audio_probs)
     return json.dumps(data)
 
 @app.route("/files", methods = ['GET'])

@@ -41,7 +41,49 @@
                     <button id="punctuate-audio-lexical" class="btn btn-success btn-lg" type="button">Punctuate!</button>
                 </div>
             </form>
-            <div id="punctuation" class="clearfix" style="margin-top: 100px"></div>
+
+            <h3 style="margin-top: 100px">Results</h3>
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                Lexical & Audio</a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div id="punctuation_lexical_audio" class="punctuation_div clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                Lexical</a>
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div id="punctuation_lexical" class="punctuation_div clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                                Audio</a>
+                        </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div id="punctuation_audio" class="punctuation_div clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-2"></div>
     </div>

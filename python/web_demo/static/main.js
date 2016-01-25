@@ -1,6 +1,52 @@
 $(document).ready(function() {
 
-    function displayResult(tokens) {
+    function displayLexicalAudioResult(tokens) {
+        var $resultDivLexicalAudio = $("#punctuation_lexical_audio");
+        var $resultDivLexical = $("#punctuation_lexical");
+        var $resultDivAudio = $("#punctuation_audio");
+
+        $resultDivLexicalAudio.empty("");
+        $resultDivLexical.empty("");
+        $resultDivAudio.empty("");
+
+        tokens.forEach(function(token) {
+            if (token.type == "word") {
+                var tag_str = "";
+                for (var key in token.pos) {
+                    tag_str += token.pos[key] + "&#013;"
+                };
+                var s = "<span title='" + tag_str + "' class='token token-" + token.type + "'>" + token.token + "</span>";
+                $resultDivLexicalAudio.append(s);
+                $resultDivLexical.append(s);
+                $resultDivAudio.append(s);
+            } else if (token.type == "punctuation") {
+                // FUSION
+                var probs_str = "";
+                for (var key in token.fusion.probs) {
+                    probs_str += key + ": " + (token.fusion.probs[key] * 100 ).toFixed(2) + "% &#013;"
+                };
+                $resultDivLexicalAudio.append("<span title='" + probs_str + "' class='token token-"
+                                  + token.fusion.punctuation + "'>" + token.fusion.punctuation + "</span>");
+                // LEXICAL
+                var probs_str = "";
+                for (var key in token.lexical.probs) {
+                    probs_str += key + ": " + (token.lexical.probs[key] * 100 ).toFixed(2) + "% &#013;"
+                };
+                $resultDivLexical.append("<span title='" + probs_str + "' class='token token-"
+                                              + token.lexical.punctuation + "'>" + token.lexical.punctuation + "</span>");
+                // AUDIO
+                var probs_str = "";
+                for (var key in token.audio.probs) {
+                    probs_str += key + ": " + (token.audio.probs[key] * 100 ).toFixed(2) + "% &#013;"
+                };
+                $resultDivAudio.append("<span title='" + probs_str + "' class='token token-"
+                                              + token.audio.punctuation + "'>" + token.audio.punctuation + "</span>");
+
+            }
+        });
+    };
+
+    function displayLexicalResult(tokens) {
         var $resultDiv = $("#punctuation");
         $resultDiv.empty("");
         tokens.forEach(function(token) {
@@ -27,7 +73,7 @@ $(document).ready(function() {
             lexical_folder: $("#selection-lexical-models").val()
         };
         $.post("/classify_lexical", text, function(response, textStatus) {
-                displayResult(response);
+                displayLexicalResult(response);
             }, "json")
         .fail(function(data) {
             console.error(data);
@@ -41,7 +87,7 @@ $(document).ready(function() {
             audio_folder: $("#selection-audio-models").val()
         };
         $.post("/classify_audio_lexical", setting, function(response, textStatus) {
-            displayResult(response);
+            displayLexicalAudioResult(response);
         }, "json")
             .fail(function(data) {
                       console.error(data);

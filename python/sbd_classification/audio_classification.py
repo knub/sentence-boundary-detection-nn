@@ -45,7 +45,6 @@ class AudioClassifier(object):
         # batchsize = 1
         # self.net.blobs['data'].reshape(batchsize, 1, self.WINDOW_SIZE, self.FEATURE_LENGTH)
         reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
-
         self.net.blobs['data'].data[...] = reshaped_array
 
         out = self.net.forward()
