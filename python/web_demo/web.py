@@ -66,7 +66,7 @@ def getSettingOptions():
 def changeSettings():
     global classifier
     assert request.method == 'POST'
-    classifier = settings(route_folder + str(request.form['folder']), vector)
+    classifier = load_lexical_classifier(route_folder + str(request.form['folder']), vector)
     return ('', 200)
 
 if __name__ == "__main__":
@@ -90,9 +90,9 @@ if __name__ == "__main__":
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
        # classifier = Classifier(net, vector, False)
-        classifier = settings(route_folder + folder, vector)
+        classifier = load_lexical_classifier(route_folder + folder, vector)
         app.run(debug = True, use_reloader = False)
     else:
         vector = None
-        classifier = settings(route_folder + folder, vector)
+        classifier = load_lexical_classifier(route_folder + folder, vector)
         app.run(debug = True)
