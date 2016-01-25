@@ -28,7 +28,7 @@ def make_temp_deploy(folder, prototxt, temp_file_name = "temp_deploy.prototxt"):
 
     return temp_proto
 
-def settings(folder, vector):
+def load_lexical_classifier(folder, vector):
     print 'Loading config folder: ' + folder
 
     config_file, caffemodel_file, net_proto = get_filenames(folder)

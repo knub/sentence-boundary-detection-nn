@@ -71,11 +71,11 @@ def getSettingOptions():
 def changeSettings():
     global classifier
     assert request.method == 'POST'
-    classifier = settings(route_folder + str(request.form['folder']), vector)
+    classifier = load_lexical_classifier(route_folder + str(request.form['folder']), vector)
     return ('', 200)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='run the web demo')
+    parser = argparse.ArgumentParser(description='run the web demo', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('routefolder', help='the main directory containing all possible configurations', default='demo_data/lexical_models/', nargs='?')
     parser.add_argument('textfolder', help='the main directory containing all text files to test', default='demo_data/text_data/', nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='models/GoogleNews-vectors-negative300.bin', nargs='?')
@@ -95,9 +95,9 @@ if __name__ == "__main__":
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
        # classifier = Classifier(net, vector, False)
-        classifier = settings(route_folder + folder, vector)
+        classifier = load_lexical_classifier(route_folder + folder, vector)
         app.run(debug = True, use_reloader = False)
     else:
         vector = None
-        classifier = settings(route_folder + folder, vector)
+        classifier = load_lexical_classifier(route_folder + folder, vector)
         app.run(debug = True)
