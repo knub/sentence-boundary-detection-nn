@@ -66,7 +66,7 @@ def getSettingOptions():
 def changeSettings():
     global classifier
     assert request.method == 'POST'
-    classifier = settings(route_folder, str(request.form['folder']), vector)
+    classifier = settings(route_folder + str(request.form['folder']), vector)
     return ('', 200)
 
 if __name__ == "__main__":
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     parser.add_argument('-nd','--no-debug', help='do not use debug mode, google vector is read', action='store_false', dest='debug', default=DEBUG)
     args = parser.parse_args()
 
-    route_folder = args.routefolder
+    route_folder = args.routefolder + "/"
     option_list = get_options(route_folder)
     folder = option_list[0]
     text_folder = args.textfolder
@@ -90,9 +90,9 @@ if __name__ == "__main__":
     if not args.debug:
         vector = Word2VecFile(args.vectorfile)
        # classifier = Classifier(net, vector, False)
-        classifier = settings(route_folder, folder, vector)
+        classifier = settings(route_folder + folder, vector)
         app.run(debug = True, use_reloader = False)
     else:
         vector = None
-        classifier = settings(route_folder, folder, vector)
+        classifier = settings(route_folder + folder, vector)
         app.run(debug = True)

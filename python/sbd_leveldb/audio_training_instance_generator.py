@@ -45,11 +45,11 @@ class TrainingInstanceGenerator(object):
                 base_dir = os.path.dirname(talk_parser.get_file_name())
 
                 # get pitch feature values
-                pitch_level_file = base_dir + "/" + talk.group_name + "_talkid" + talk.talk_id + ".pitch"
+                pitch_level_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".pitch"
                 talk.parse_pith_feature(pitch_level_file)
 
                 # get energy feature values
-                energy_level_file = base_dir + "/" + talk.group_name + "_talkid" + talk.talk_id + ".energy"
+                energy_level_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".energy"
                 talk.parse_energy_feature(energy_level_file)
 
                 # normalize features

@@ -1,7 +1,16 @@
-from web_demo.classification import Classifier
-from os import listdir
+from sbd_classification.lexical_classification import LexicalClassifier
+from sbd_classification.util import *
 
+class FusionClassifier(object):
+    def __init__(self, lexical_model_folder, audio_model_folder):
+        self.__init_lexical_classifier(lexical_model_folder)
+        self.__init_audio_classifier(audio_model_folder)
 
+    def __init_lexical_classifier(self, folder):
+        self.lexical_classifier = folder
+
+    def __init_audio_classifier(self, folder):
+        self.audio_classifier = folder
 
 
 ################

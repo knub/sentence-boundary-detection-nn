@@ -19,7 +19,7 @@ class InputText(object):
 
 class LexicalClassifier(object):
 
-    def __init__(self, net, word2vec, debug = False):
+    def __init__(self, net, word2vec):
 
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
         self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
@@ -28,14 +28,16 @@ class LexicalClassifier(object):
 
         self.word2vec = word2vec
         self.net = net
-        self.debug = debug
+
+    def predict_text_with_audio(self, audio_parser):
+        self.predict_text(audio_parser.get_text())
 
     def predict_text(self, text):
         input_text = InputText(text)
 
         for token in input_text.tokens:
             if not token.is_punctuation():
-                if self.debug:
+                if not self.word2vec:
                     token.word_vec = numpy.random.rand(300)
                 else:
                     token.word_vec = self.word2vec.get_vector(token.word.lower())
