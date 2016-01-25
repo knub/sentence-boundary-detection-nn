@@ -29,23 +29,22 @@ def classify():
     if text_file == 'None':
         text = request.form['text']
     else:
-        file_name = text_folder + text_file
+        file_name = "%s/%s" % (text_folder, text_file)
         with open(file_name) as f:
             text = f.read()
 
     data = classifier.predict_text(text)
     return json.dumps(data)
 
-
 @app.route("/files", methods = ['GET'])
 def getTextFiles():
     assert request.method == 'GET'
     f = []
     for (dirpath, dirnames, filenames) in walk(text_folder):
-        f.extend(filenames)
-        break
+        for filename in filenames:
+            if not filename.endswith(".result"):
+                f.append(filename)
     return json.dumps(f)
-
 
 @app.route("/settings", methods = ['GET'])
 def getSettingOptions():
