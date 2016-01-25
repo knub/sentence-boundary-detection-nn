@@ -125,11 +125,17 @@ class CtmParser(AbstractParser):
 
     def _extract_talk_id(self, line):
         line = line[2:]
-        line_parts = line.split("_")
-        for p in line_parts:
-            if p.startswith("talkid"):
-                return p[6:]
-        return 0
+        line_parts = line.split("talkid")
+        relevant = line_parts[1]
+
+        talkid = "0"
+        for i in range(0, len(relevant)):
+            if relevant[i].isdigit():
+                talkid += relevant[i]
+            else:
+                break
+
+        return int(talkid)
 
     def progress(self):
         return self._line_count_progress()

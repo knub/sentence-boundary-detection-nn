@@ -64,7 +64,7 @@ class NetConfig(object):
         train_data_layer.data_param.source = db_pair_dir + "/train"
 
     def get_database(self):
-        test_data_layer = get_test_data_layer(net)
+        test_data_layer = get_test_data_layer(self.net)
         return test_data_layer.data_param.source.replace("/test", "")
 
     def write_to(self, outstream):
