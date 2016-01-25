@@ -2,6 +2,7 @@ import common.sbd_config as sbd
 import json, caffe, argparse
 from sbd_classification.util import *
 from sbd_classification.lexical_classification import LexicalClassifier
+from json_converter import JsonConverter
 from flask import Flask, render_template, request
 from os import walk, listdir
 from preprocessing.word2vec_file import Word2VecFile
@@ -31,7 +32,6 @@ def index():
 def classify():
     assert request.method == 'POST'
     text_file = request.form['textfile']
-    print text_file
     text = ""
     if text_file == 'None':
         text = request.form['text']
@@ -40,7 +40,9 @@ def classify():
         with open(file_name) as f:
             text = f.read()
 
-    data = classifier.predict_text(text)
+    (tokens, punctuations_probs) = classifier.predict_text(text)
+    jsonConverter = JsonConverter()
+    data = jsonConverter.convert_lexical(tokens, punctuations_probs)
     return json.dumps(data)
 
 @app.route("/files", methods = ['GET'])
@@ -77,7 +79,6 @@ if __name__ == "__main__":
 
     route_folder = args.routefolder
     option_list = get_options(route_folder)
-    print option_list
     folder = option_list[0]
     text_folder = args.textfolder
 

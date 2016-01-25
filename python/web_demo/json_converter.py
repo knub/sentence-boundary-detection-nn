@@ -1,12 +1,17 @@
+import common.sbd_config as sbd
+import numpy
 
 class JsonConverter(object):
 
-    def ___init__(self):
-        pass
+    def __init__(self):
+        self.classes = ["NONE", "COMMA", "PERIOD"]
+        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
+        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
 
-    def convert_lexical(self):
+    def convert_lexical(self, tokens, punctuation_probs):
+        json_data = []
         # build json
-        for i, token in enumerate(input_text.tokens):
+        for i, token in enumerate(tokens):
             token_json = {'type': 'word', 'token': token.word}
             if self.POS_TAGGING:
                 token_json['pos'] = [str(tag).replace("PosTag.", "") for tag in token.pos_tags]
@@ -22,4 +27,12 @@ class JsonConverter(object):
                 json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
 
         return json_data
+
+    def _get_class_distribution(self, probs):
+        json_data = {}
+        for i in range (0, len(self.classes)):
+            json_data[self.classes[i]] = str(probs[i])
+        return json_data
+
+
 

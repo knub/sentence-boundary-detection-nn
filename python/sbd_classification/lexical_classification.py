@@ -20,10 +20,8 @@ class InputText(object):
 class LexicalClassifier(object):
 
     def __init__(self, net, word2vec, debug = False):
-        self.classes = ["NONE", "COMMA", "PERIOD"]
 
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
-        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
         self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
 
         self.FEATURE_LENGTH = 300 if not self.POS_TAGGING else 300 + len(PosTag)
@@ -34,7 +32,6 @@ class LexicalClassifier(object):
 
     def predict_text(self, text):
         input_text = InputText(text)
-        json_data = []
 
         for token in input_text.tokens:
             if not token.is_punctuation():
@@ -52,23 +49,7 @@ class LexicalClassifier(object):
             probs = self.predict_caffe(instance)
             punctuation_probs.extend(numpy.copy(probs))
 
-        # build json
-        for i, token in enumerate(input_text.tokens):
-            token_json = {'type': 'word', 'token': token.word}
-            if self.POS_TAGGING:
-                token_json['pos'] = [str(tag).replace("PosTag.", "") for tag in token.pos_tags]
-            json_data.append(token_json)
-
-            # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-            current_prediction_position = i - self.PUNCTUATION_POS + 1
-            if 0 <= current_prediction_position and current_prediction_position < len(punctuation_probs):
-                current_punctuation = self.classes[numpy.argmax(punctuation_probs[current_prediction_position])]
-                class_distribution = self._get_class_distribution(punctuation_probs[current_prediction_position])
-                json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
-            else:
-                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
-
-        return json_data
+        return (input_text.tokens, punctuation_probs)
 
     def predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
@@ -81,12 +62,6 @@ class LexicalClassifier(object):
 
         out = self.net.forward()
         return out['softmax']
-
-    def _get_class_distribution(self, probs):
-        json_data = {}
-        for i in range (0, len(self.classes)):
-            json_data[self.classes[i]] = str(probs[i])
-        return json_data
 
 
 
