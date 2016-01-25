@@ -5,9 +5,9 @@ from sbd_classification.audio_classification import InputAudio
 
 class AudioParser(object):
 
-    def __init__(self, ctm_file, pith_file, energy_file):
+    def __init__(self, ctm_file, pitch_file, energy_file):
         self.ctm_file = ctm_file
-        self.pitch_file = pith_file
+        self.pitch_file = pitch_file
         self.energy_file = energy_file
         self.talk = None
 
@@ -22,7 +22,7 @@ class AudioParser(object):
             talk.build_interval_tree()
 
             # get pitch feature values
-            talk.parse_pith_feature(self.pitch_file)
+            talk.parse_pitch_feature(self.pitch_file)
             # get energy feature values
             talk.parse_energy_feature(self.energy_file)
             # normalize features

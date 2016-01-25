@@ -31,7 +31,7 @@ class Audio(object):
                 self.token_count += 1
                 self.pitch_interval.addi(token.begin, token.begin + token.duration, token)
 
-    def parse_pith_feature(self, filename):
+    def parse_pitch_feature(self, filename):
         with open(filename, "r") as file_:
             for line_unenc in file_:
                 # parse line
@@ -105,6 +105,10 @@ class Audio(object):
         i = 0
         for token in self.get_tokens():
             if not token.is_punctuation():
+                # restrict pause length to 2 seconds at most
+                token.pause_before = min(token.pause_before, 2)
+                token.pause_after = min(token.pause_after, 2)
+
                 all_pauses[i] = token.pause_before
                 all_pitches[i] = token.pitch
                 all_energies[i] = token.energy

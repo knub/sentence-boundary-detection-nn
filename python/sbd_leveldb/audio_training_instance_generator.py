@@ -46,7 +46,7 @@ class TrainingInstanceGenerator(object):
 
                 # get pitch feature values
                 pitch_level_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".pitch"
-                talk.parse_pith_feature(pitch_level_file)
+                talk.parse_pitch_feature(pitch_level_file)
 
                 # get energy feature values
                 energy_level_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".energy"
