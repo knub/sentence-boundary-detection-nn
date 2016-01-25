@@ -85,9 +85,9 @@ def classifyAudioLexical():
     # AUDIO config active
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
     fusion.read_audio_config()
-    (au_tokens, au_punctuations_probs) = audio_classifier.predict_text(parser)
+    (au_tokens, au_punctuations_probs) = audio_classifier.predict_audio(parser)
 
-    fusion.fuse(lex_tokens, lex_punctuations_probs, au_tokens, au_punctuations_probs)
+    fusion.fuse(lex_tokens, lex_punctuations_probs, au_punctuations_probs)
 
     data = jsonConverter.convert_lexical(lex_tokens, lex_punctuations_probs)
 

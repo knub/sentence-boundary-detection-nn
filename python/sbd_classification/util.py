@@ -7,7 +7,6 @@ from sbd_classification.audio_classification import AudioClassifier
 from preprocessing.nlp_pipeline import PosTag
 
 def get_filenames(folder):
-    print(folder)
     for file_ in listdir(folder):
         if file_.endswith(".ini"):
             config_file = folder + "/" + file_
