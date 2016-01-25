@@ -19,8 +19,8 @@ class Fusion(object):
         # TODO:
         # Die Window-Size und Punctuation-Position vom Audio Model beruecksichtigen
         # Bessere Fusion einbauen!
-
-        assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - self.LEXICAL_PUNCTUATION_POS + 1 == len(audio_probs))
+        # Assertion is not correct!
+        # assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - self.LEXICAL_PUNCTUATION_POS + 1 == len(audio_probs))
 
         fusion_probs = []
         for i in range(len(lexical_probs)):

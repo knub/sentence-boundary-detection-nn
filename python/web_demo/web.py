@@ -45,8 +45,8 @@ def audio_lexical():
 def classifyLexical():
     assert request.method == 'POST'
     text_file = request.form['textfile']
-    text = ""
-    if text_file == 'None':
+
+    if not text_file:
         text = request.form['text']
     else:
         file_name = os.path.join(route_folder, TEXT_DATA, text_file)
