@@ -39,10 +39,11 @@ We build a python-based demo.
 2. Setup caffe, like described [here](http://caffe.berkeleyvision.org/installation.html)
 3. Clone this repository
 4. Add path to the repository to your python path: 
-```
-export PYTHONPATH=/path/to/sentence-boundary-detection-nn:$PYTHONPATH
-```
-5. Create a folder with your demo data including the following directories:
+  ```
+  export PYTHONPATH=/path/to/sentence-boundary-detection-nn:$PYTHONPATH
+  ```
+5. Download Google Word Vector (GoogleNews-vectors-negative300.bin.gz) from [here](https://code.google.com/p/word2vec/)  or use directly this [url](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing)
+6. Create a folder with your demo data including the following directories:
   * lexical_models : containing all pretrained models you want to use in a seperate directory. Each models needs a 
     * .ini
     * .caffemodel
@@ -51,5 +52,14 @@ export PYTHONPATH=/path/to/sentence-boundary-detection-nn:$PYTHONPATH
   * audio_models: containing all pretrainied audio models, each in a seperate directory. Each needs the same files as described for lexical models
   * audio_examples: containing all audio files, which should be available during the demo. Each one in a seperate directory containing the ctm, energy and pitch files.
 
-
 ####Start up
+
+Change into the repository directory and then execute
+```
+python python/web_demo
+```
+Optionally you can specify the location of the word vector, the demo data.
+For further information execute:
+```
+python python/web_demo -h
+```
