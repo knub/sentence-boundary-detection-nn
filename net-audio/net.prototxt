@@ -11,7 +11,7 @@ layer {
     phase: TRAIN
   }
   data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-1-1/train"
+    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-5-3/train"
     batch_size: 1024
     backend: LEVELDB
   }
@@ -25,9 +25,18 @@ layer {
     phase: TEST
   }
   data_param {
-    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-1-1/test"
-    batch_size: 3000
+    source: "/home/ms2015t3/sentence-boundary-detection-nn/leveldbs/audio_window-5-3/test"
+    batch_size: 12000
     backend: LEVELDB
+  }
+}
+layer {
+  name: "infogain_loss_matrix"
+  type: "HDF5Data"
+  top: "dataset0"
+  hdf5_data_param {
+    source: "/mnt/naruto/sentence/hdf5s/infogain_loss_matrix.txt"
+    batch_size: 1
   }
 }
 #
@@ -96,6 +105,7 @@ layer {
     dropout_ratio: 0.5
   }
 }
+
 #
 # Fully Connected Layer 3
 #
@@ -153,10 +163,17 @@ layer {
 # Loss, Accuracy
 #
 layer {
-  name: "loss"
-  type: "SoftmaxWithLoss"
+  name: "softmax"
+  type: "Softmax"
   bottom: "fc_final"
+  top: "softmax"
+}
+layer {
+  name: "loss"
+  type: "InfogainLoss"
+  bottom: "softmax"
   bottom: "label"
+  bottom: "dataset0"
   top: "loss"
 }
 layer {
