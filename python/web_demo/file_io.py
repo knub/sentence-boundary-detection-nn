@@ -23,3 +23,18 @@ class ResultWriter (object):
                     content = "%s%s%s%s%s%s%s\n" % (token, self.separator, 1.0, self.separator, 0.0, self.separator, 0.0)
 
                 f.write(content)
+
+
+class InputTextReader (object):
+
+    def __init__(self):
+        pass
+
+    def readFile(self, file_name):
+        text = ""
+        with open(file_name, "r") as f:
+            for line in f.readlines():
+                word = line.split("\t")[0]
+                text += " " + word
+
+        return text

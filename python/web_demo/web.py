@@ -3,7 +3,7 @@ import json, caffe, argparse, os
 from sbd_classification.util import *
 from sbd_classification.audio_parser import AudioParser
 from json_converter import JsonConverter
-from file_io import ResultWriter
+from file_io import ResultWriter, InputTextReader
 from flask import Flask, render_template, request
 from os import walk
 from preprocessing.word2vec_file import Word2VecFile
@@ -44,8 +44,8 @@ def classifyLexical():
         text = request.form['text']
     else:
         file_name = os.path.join(route_folder, TEXT_DATA, text_file)
-        with open(file_name) as f:
-            text = f.read()
+        inputTextReader = InputTextReader()
+        text = inputTextReader.readFile(file_name)
 
     (tokens, punctuations_probs) = lexical_classifier.predict_text(text)
     jsonConverter = JsonConverter()
