@@ -3,6 +3,8 @@ import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
+from audio_parser import AudioParser
+from util import *
 
 
 class InputAudio(object):
@@ -26,10 +28,10 @@ class AudioClassifier(object):
         self.debug = debug
 
     def predict_audio(self, audio_parser):
-        audio = audio_parser.get_input_audio()
+        input_audio = audio_parser.get_input_audio()
 
         sliding_window = SlidingWindow()
-        instances = sliding_window.list_windows(audio)
+        instances = sliding_window.list_windows(input_audio)
 
         # get caffe predictions
         punctuation_probs = []
@@ -37,23 +39,7 @@ class AudioClassifier(object):
             probs = self.predict_caffe(instance)
             punctuation_probs.extend(numpy.copy(probs))
 
-        # build json
-        for i, token in enumerate(input_text.tokens):
-            token_json = {'type': 'word', 'token': token.word}
-            if self.POS_TAGGING:
-                token_json['pos'] = [str(tag).replace("PosTag.", "") for tag in token.pos_tags]
-            json_data.append(token_json)
-
-            # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-            current_prediction_position = i - self.PUNCTUATION_POS + 1
-            if 0 <= current_prediction_position and current_prediction_position < len(punctuation_probs):
-                current_punctuation = self.classes[numpy.argmax(punctuation_probs[current_prediction_position])]
-                class_distribution = self._get_class_distribution(punctuation_probs[current_prediction_position])
-                json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
-            else:
-                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
-
-        return json_data
+        return (input_audio.tokens, punctuation_probs)
 
     def predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
@@ -67,30 +53,28 @@ class AudioClassifier(object):
         out = self.net.forward()
         return out['softmax']
 
-    def _get_class_distribution(self, probs):
-        json_data = {}
-        for i in range (0, len(self.classes)):
-            json_data[self.classes[i]] = str(probs[i])
-        return json_data
-
-
-
 ################
 # Example call #
 ################
 
-def main(caffeproto, caffemodel):
-    net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
-    classifier = AudioClassifier(net, None, True)
+def main(model_folder, example_folder):
+    config_file, caffemodel_file, net_proto = get_filenames(model_folder)
+    sbd.SbdConfig(config_file)
+    ctm_file, pitch_file, energy_file = get_audio_files(example_folder)
 
-    text = "This is a very long text This text has two sentences"
-    data = classifier.predict_text(text)
+    # parse ctm_file, pitch_file and energy_file
+    parser = AudioParser(ctm_file, pitch_file, energy_file)
+    parser.parse()
+
+    classifier = load_audio_classifier(model_folder)
+
+    data = classifier.predict_audio(parser)
     print(data)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run the web demo')
-    parser.add_argument('caffeproto', help='the deploy prototxt of your trained model', default='models/deploy.prototxt', nargs='?')
-    parser.add_argument('caffemodel', help='the trained caffemodel', default='models/model.caffemodel', nargs='?')
+    parser.add_argument('model_folder', help='the trained caffemodel', default='demo_data/audio_models/audio_window-1-1/', nargs='?')
+    parser.add_argument('example_folder', help='folder containing the ctm, pitch and energy files', default='demo_data/audio_examples/tst2011_talkid1169/', nargs='?')
     args = parser.parse_args()
 
-    main(args.caffeproto, args.caffemodel)
+    main(args.model_folder, args.example_folder)
