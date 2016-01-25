@@ -20,18 +20,30 @@ $(document).ready(function() {
         });
     };
 
-    $("#button-punctuate").click(function() {
+    $("#punctuate-lexical").click(function() {
         var text = {
             text: $('#textarea-input').val(),
             textfile: $('#selection-text-file').val()
         };
-        $.post("/classify", text, function(response, textStatus) {
+        $.post("/classify_lexical", text, function(response, textStatus) {
                 displayResult(response);
             }, "json")
         .fail(function(data) {
             console.error(data);
         });
 	});
+
+    $("#punctuate-audio-lexical").click(function() {
+        var setting = {
+            example: $('#selection-audio-examples').val()
+        };
+        $.post("/classify_audio_lexical", setting, function(response, textStatus) {
+            displayResult(response);
+        }, "json")
+            .fail(function(data) {
+                      console.error(data);
+                  });
+    });
 
     $("#selection-lexical-models").on('change', function() {
         var setting = {
@@ -93,6 +105,20 @@ $(document).ready(function() {
         });
     };
 
+    function loadAudioExamples() {
+        $.get("/examples", function(response) {
+            response.forEach(function(option){
+                $('#selection-audio-examples').append($('<option>', {
+                    value: option,
+                    text: option,
+                }));
+            });
+        }, "json")
+            .fail(function(data) {
+                      console.error(data);
+                  });
+    };
+
     function loadAudioModels() {
         $.get("/audio_models", function(response) {
             response.options.forEach(function(option){
@@ -119,6 +145,7 @@ $(document).ready(function() {
 
 
     loadTextFiles();
+    loadAudioExamples();
     loadLexicalModels();
     loadAudioModels();
 

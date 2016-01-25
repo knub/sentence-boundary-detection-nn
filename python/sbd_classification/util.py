@@ -3,6 +3,7 @@ import caffe
 from tools.netconfig import NetConfig
 from os import listdir
 from sbd_classification.lexical_classification import LexicalClassifier
+from sbd_classification.audio_classification import AudioClassifier
 from preprocessing.nlp_pipeline import PosTag
 
 def get_filenames(folder):
@@ -29,7 +30,7 @@ def make_temp_deploy(folder, prototxt, temp_file_name = "temp_deploy.prototxt"):
     return temp_proto
 
 def load_lexical_classifier(folder, vector):
-    print 'Loading config folder: ' + folder
+    print('Loading config folder: ' + folder)
 
     config_file, caffemodel_file, net_proto = get_filenames(folder)
 
@@ -44,3 +45,32 @@ def load_lexical_classifier(folder, vector):
         classifier = LexicalClassifier(net, vector)
 
     return classifier
+
+def load_audio_classifier(folder):
+    print('Loading config folder: ' + folder)
+
+    config_file, caffemodel_file, net_proto = get_filenames(folder)
+
+    sbd.SbdConfig(config_file)
+    temp_proto = make_temp_deploy(folder, net_proto)
+
+    net = caffe.Net(temp_proto, caffemodel_file, caffe.TEST)
+
+    classifier = AudioClassifier(net)
+
+    return classifier
+
+def get_audio_files(folder):
+    ctm_file = None
+    pitch_file = None
+    energy_file = None
+
+    for file_ in listdir(folder):
+        if file_.endswith(".ctm"):
+            ctm_file = file_
+        elif file_.endswith(".pitch"):
+            pitch_file = file_
+        elif file_.endswith(".energy"):
+            energy_file = file_
+
+    return ctm_file, pitch_file, energy_file

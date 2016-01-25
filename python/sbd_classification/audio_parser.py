@@ -1,9 +1,9 @@
 from parsing.get_parser import *
-from sbd_classification.lexical_clasification import InputText
-from sbd_classification.audio_clasification import InputAudio
+from sbd_classification.lexical_classification import InputText
+from sbd_classification.audio_classification import InputAudio
 
 
-class AudioClassifier(object):
+class AudioParser(object):
 
     def __init__(self, ctm_file, pith_file, energy_file):
         self.ctm_file = ctm_file
