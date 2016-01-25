@@ -8,11 +8,11 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
-PROJECT="sentence"
+PROJECT="audio"
 SOLVER="solver.prototxt"
 # Find out net from the solver
 NET=$(grep --only-matching "\w\+\.prototxt" solver.prototxt)
-# DATABASE=$(python $SENTENCE_HOME/python/tools/netconfig.py -p $NET)
+DATABASE=$(python $SENTENCE_HOME/python/tools/netconfig.py -p $NET)
 
 echo "Using solver ${SOLVER} with net ${NET} and database ${DATABASE}"
 
@@ -51,7 +51,7 @@ rm snapshots/* 2> /dev/null
 # Saving setup
 cp net.prototxt $SOLVER training.sh experiments/$FOLDER_NAME
 # Copy database configuration
-# cp $DATABASE/*.ini experiments/$FOLDER_NAME
+cp $DATABASE/*.ini experiments/$FOLDER_NAME
 
 # Setting interrupt trap
 trap 'cleanup "Training interrupted"; exit 1' INT
