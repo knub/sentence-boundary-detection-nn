@@ -1,9 +1,9 @@
-net: "net.prototxt"
+net: "audio.prototxt"
 
 # Test before training?
 test_initialization: true
 # Test every nth iteration
-test_interval: 200
+test_interval: 10000
 # How many iterations per test
 test_iter: 1
 
@@ -20,7 +20,7 @@ weight_decay: 0.0005
 # Display training loss every nth iteration
 display: 200
 # After how many iterations to stop
-max_iter: 125000
+max_iter: 100000
 
 # Snapshot every nth iteration in the specified directory
 snapshot: 100000
