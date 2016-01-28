@@ -3,15 +3,8 @@ import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
-
-
-class InputAudio(object):
-
-    def __init__(self, audio_tokens):
-        self.tokens = audio_tokens
-
-    def get_tokens(self):
-        return self.tokens
+from parsing.audio_parser import AudioParser
+from classification_input import InputAudio
 
 
 class AudioClassifier(object):

@@ -1,7 +1,7 @@
 import common.sbd_config as sbd
 import json, caffe, argparse, os
 from sbd_classification.util import *
-from sbd_classification.audio_parser import AudioParser
+from parsing.audio_parser import AudioParser
 from sbd_classification.fusion import Fusion
 from json_converter import JsonConverter
 from file_io import ResultWriter, InputTextReader

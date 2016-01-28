@@ -1,6 +1,6 @@
 from parsing.get_parser import *
-from sbd_classification.lexical_classification import InputText
-from sbd_classification.audio_classification import InputAudio
+from sbd_classification.classification_input import InputText
+from sbd_classification.classification_input import InputAudio
 
 
 class AudioParser(object):

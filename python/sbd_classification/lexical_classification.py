@@ -3,19 +3,7 @@ import common.sbd_config as sbd
 from preprocessing.nlp_pipeline import NlpPipeline, PosTag
 from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
-
-
-class InputText(object):
-
-    def __init__(self, text):
-        self.text = text
-
-        self.nlp_pipeline = NlpPipeline()
-        self.tokens = self.nlp_pipeline.parse_text(self.text)
-
-    def get_tokens(self):
-        return self.tokens
-
+from classification_input import InputText
 
 class LexicalClassifier(object):
 
