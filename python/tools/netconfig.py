@@ -52,8 +52,15 @@ class NetConfig(object):
         for d in dimensions:
             self.net.input_dim.append(d)
 
-        # use softmax instead of loss layer
-        replace_loss_with_softmax(self.net)
+        uses_infogain = get_layer_by_name(self.net, "loss").type == "InfogainLoss"
+
+        if not uses_infogain:
+            # use softmax instead of loss layer
+            replace_loss_with_softmax(self.net)
+        else:
+            # infogain already depends on softmax, we can just remove the weight and the infogain loss layer
+            self.net.layer.remove(get_layer_by_name(self.net, "infogain_loss_matrix"))
+            self.net.layer.remove(get_layer_by_name(self.net, "loss"))
 
     def transform_data_paths(self, db_pair_dir):
         db_pair_dir = args.train
