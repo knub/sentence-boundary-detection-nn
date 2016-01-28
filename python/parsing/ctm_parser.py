@@ -84,6 +84,12 @@ class CtmParser(AbstractParser):
 
                     sentence.append_token(token)
 
+        if (len(sentence.tokens) > 0):
+            sentence.begin = sentence.tokens[0].begin
+            sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
+            sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
+            audio.add_sentence(sentence)
+
         if len(audio.sentences) > 0:
             audio.talk_id = current_talk_id
             audio.group_name = group_name

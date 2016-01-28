@@ -53,13 +53,17 @@ def classifyLexical():
         inputTextReader = InputTextReader()
         text = inputTextReader.readFile(file_name)
 
+    jsonConverter = JsonConverter()
+
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     (tokens, punctuations_probs) = lexical_classifier.predict_text(text)
-    jsonConverter = JsonConverter()
+    jsonConverter.read_lexical_config()
     data = jsonConverter.convert_lexical(tokens, punctuations_probs)
 
-    resultWriter = ResultWriter()
-    resultWriter.writeToFile(route_folder + "result.txt", tokens, punctuations_probs)
+    if not text_file:
+        file_name = os.path.join(route_folder, TEXT_DATA, text_file + ".result")
+        resultWriter = ResultWriter()
+        resultWriter.writeToFile(file_name, tokens, punctuations_probs)
 
     return json.dumps(data)
 
@@ -75,20 +79,22 @@ def classifyAudioLexical():
     parser.parse()
 
     fusion = Fusion()
-
-    # LEXICAL config active
-    load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     jsonConverter = JsonConverter()
-    fusion.read_lexical_config()
-    (lexical_tokens, lexical_probs) = lexical_classifier.predict_text_with_audio(parser)
 
     # AUDIO config active
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
     fusion.read_audio_config()
-    (audio_tokens, audio_probs) = audio_classifier.predict_audio(parser)
+    jsonConverter.read_audio_config()
+    (tokens, audio_probs) = audio_classifier.predict_audio(parser)
+
+    # LEXICAL config active
+    load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
+    fusion.read_lexical_config()
+    jsonConverter.read_lexical_config()
+    (tokens, lexical_probs) = lexical_classifier.predict_text_with_audio(parser)
 
     # fuse the outputs
-    (tokens, fusion_probs) = fusion.fuse(lexical_tokens, lexical_probs, audio_probs)
+    fusion_probs = fusion.fuse(tokens, lexical_probs, audio_probs)
 
     # convert it into json
     data = jsonConverter.convert_fusion(tokens, fusion_probs, lexical_probs, audio_probs)
@@ -172,7 +178,7 @@ if __name__ == "__main__":
         vector = None
         lexical_classifier = load_lexical_classifier(default_lexical_model, vector)
 
-    #### load lexical model ####
+    #### load audio model ####
 
     audio_models = get_options(route_folder, AUDIO_MODEL_FOLDER)
     default_audio_model = os.path.join(route_folder, AUDIO_MODEL_FOLDER, audio_models[0])

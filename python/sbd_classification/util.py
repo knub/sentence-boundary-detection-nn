@@ -7,11 +7,11 @@ from sbd_classification.audio_classification import AudioClassifier
 from preprocessing.nlp_pipeline import PosTag
 
 def get_index(index, length, punctuation_pos):
-        position = index - punctuation_pos + 1
-        if 0 <= position < length:
-            return position
-        else:
-            return -1
+    position = index - punctuation_pos + 1
+    if 0 <= position < length:
+        return position
+    else:
+        return -1
 
 def get_filenames(folder):
     for file_ in listdir(folder):
