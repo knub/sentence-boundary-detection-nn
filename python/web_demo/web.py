@@ -3,6 +3,7 @@ import json, caffe, argparse, os
 from sbd_classification.util import *
 from parsing.audio_parser import AudioParser
 from sbd_classification.fusion import Fusion
+from sbd_classification.classification_input import InputText, InputAudio
 from json_converter import JsonConverter
 from file_io import ResultWriter, InputTextReader
 from flask import Flask, render_template, request
@@ -19,6 +20,8 @@ AUDIO_EXAMPLE_FOLDER = "audio_examples"
 TEXT_DATA = "text_data"
 
 DEBUG = True
+
+# TODO: add spinner for loading times
 
 def get_options(route_folder, sub_folder):
     dir = os.path.join(route_folder, sub_folder)
@@ -46,16 +49,19 @@ def classifyLexical():
     assert request.method == 'POST'
     text_file = request.form['textfile']
 
+    # TODO: if textfile is selected, it is chosen regardless of what the user wants
+
     if not text_file:
         text = request.form['text']
     else:
+        # TODO: use tokens of input
         file_name = os.path.join(route_folder, TEXT_DATA, text_file)
         inputTextReader = InputTextReader()
         text = inputTextReader.readFile(file_name)
 
     # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
-    (tokens, punctuations_probs) = lexical_classifier.predict_text(text)
+    (tokens, punctuations_probs) = lexical_classifier.predict(InputText(text))
     (window_size, punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
 
     jsonConverter = JsonConverter(punctuation_pos, window_size, None, None, pos_tagging)
@@ -76,15 +82,15 @@ def classifyAudioLexical():
     ctm_file, pitch_file, energy_file = get_audio_files(example_folder)
 
     # parse ctm_file, pitch_file and energy_file
-    parser = AudioParser(ctm_file, pitch_file, energy_file)
-    parser.parse()
+    parser = AudioParser()
+    talks = parser.parse(ctm_file, pitch_file, energy_file)
 
     # predict audio
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
-    (tokens, audio_probs) = audio_classifier.predict_audio(parser)
+    (tokens, audio_probs) = audio_classifier.predict(InputAudio(talks))
     # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
-    (tokens, lexical_probs) = lexical_classifier.predict_text_with_audio(parser)
+    (tokens, lexical_probs) = lexical_classifier.predict(InputText(talks))
 
     # get config parameter
     (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
@@ -131,6 +137,7 @@ def getAudioModels():
 def changeAudioModel():
     global audio_classifier
     assert request.method == 'POST'
+    # load model when classifying instead of every time it is changed ???
     model_file = os.path.join(route_folder, AUDIO_MODEL_FOLDER, str(request.form['folder']))
     audio_classifier = load_audio_classifier(model_file , vector)
     return ('', 200)
@@ -146,6 +153,7 @@ def getLexicalModels():
 def changeLexicalModel():
     global lexical_classifier
     assert request.method == 'POST'
+    # load model when classifying instead of every time it is changed ???
     model_file = os.path.join(route_folder, LEXICAL_MODEL_FOLDER, str(request.form['folder']))
     lexical_classifier = load_lexical_classifier(model_file, vector)
     return ('', 200)

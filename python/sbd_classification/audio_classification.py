@@ -18,21 +18,19 @@ class AudioClassifier(object):
         self.net = net
         self.debug = debug
 
-    def predict_audio(self, audio_parser):
-        input_audio = audio_parser.get_input_audio()
-
+    def predict(self, input_audio):
         sliding_window = SlidingWindow()
         instances = sliding_window.list_windows(input_audio)
 
         # get caffe predictions
         punctuation_probs = []
         for instance in instances:
-            probs = self.predict_caffe(instance)
+            probs = self._predict_caffe(instance)
             punctuation_probs.extend(numpy.copy(probs))
 
         return (input_audio.tokens, punctuation_probs)
 
-    def predict_caffe(self, instance):
+    def _predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         # batchsize = 1

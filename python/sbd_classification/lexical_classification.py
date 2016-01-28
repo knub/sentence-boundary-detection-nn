@@ -18,13 +18,7 @@ class LexicalClassifier(object):
         self.word2vec = word2vec
         self.net = net
 
-    def predict_text_with_audio(self, audio_parser):
-        return self.predict_text(audio_parser.get_text())
-
-
-    def predict_text(self, text):
-        input_text = InputText(text)
-
+    def predict(self, input_text):
         for token in input_text.tokens:
             if not token.is_punctuation():
                 if not self.word2vec:
@@ -38,12 +32,12 @@ class LexicalClassifier(object):
         # get caffe predictions
         punctuation_probs = []
         for instance in instances:
-            probs = self.predict_caffe(instance)
+            probs = self._predict_caffe(instance)
             punctuation_probs.extend(numpy.copy(probs))
 
         return (input_text.tokens, punctuation_probs)
 
-    def predict_caffe(self, instance):
+    def _predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
 
         # batchsize = 1
