@@ -10,6 +10,7 @@ class LexicalClassifier(object):
     def __init__(self, net, word2vec):
 
         self.WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
+        self.PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position')
         self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging')
 
         self.FEATURE_LENGTH = 300 if not self.POS_TAGGING else 300 + len(PosTag)
@@ -19,6 +20,7 @@ class LexicalClassifier(object):
 
     def predict_text_with_audio(self, audio_parser):
         return self.predict_text(audio_parser.get_text())
+
 
     def predict_text(self, text):
         input_text = InputText(text)
@@ -53,7 +55,8 @@ class LexicalClassifier(object):
         out = self.net.forward()
         return out['softmax']
 
-
+    def get_lexical_parameter(self):
+        return (self.WINDOW_SIZE, self.PUNCTUATION_POS, self.POS_TAGGING)
 
 ################
 # Example call #

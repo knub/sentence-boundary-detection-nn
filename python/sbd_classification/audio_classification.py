@@ -43,6 +43,9 @@ class AudioClassifier(object):
         out = self.net.forward()
         return out['softmax']
 
+    def get_audio_parameter(self):
+        return (self.WINDOW_SIZE, self.PUNCTUATION_POS)
+
 ################
 # Example call #
 ################

@@ -4,18 +4,14 @@ from sbd_classification.util import get_index
 
 class JsonConverter(object):
 
-    def __init__(self, punctuation_pos = None, pos_tagging = None):
+    def __init__(self, lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size, pos_tagging):
+        self.LEXICAL_PUNCTUATION_POS = lexical_punctuation_pos
+        self.LEXICAL_WINDOW_SIZE = lexical_window_size
+        self.AUDIO_PUNCTUATION_POS = audio_punctuation_pos
+        self.AUDIO_WINDOW_SIZE = audio_window_size
+        self.POS_TAGGING = pos_tagging
         self.classes_lexical_audio = ["NONE", "COMMA", "PERIOD"]
         self.classes_audio = ["NONE", "PERIOD"]
-
-    def read_lexical_config(self, punctuation_pos = None, pos_tagging = None):
-        self.LEXICAL_PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position') if punctuation_pos == None else punctuation_pos
-        self.LEXICAL_WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
-        self.POS_TAGGING = sbd.config.getboolean('features', 'pos_tagging') if pos_tagging == None else pos_tagging
-
-    def read_audio_config(self, punctuation_pos = None):
-        self.AUDIO_PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position') if punctuation_pos == None else punctuation_pos
-        self.AUDIO_WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')
 
     def convert_fusion(self, tokens, fusion_probs, lexical_probs, audio_probs):
         json_data = []

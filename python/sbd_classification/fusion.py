@@ -20,16 +20,11 @@ def norm(probs_list):
 
 class Fusion(object):
 
-    def __init__(self):
-        pass
-
-    def read_lexical_config(self, punct_pos = None, window_size = None):
-        self.LEXICAL_PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position') if punct_pos == None else punct_pos
-        self.LEXICAL_WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')  if window_size == None else window_size
-
-    def read_audio_config(self, punct_pos = None, window_size = None):
-        self.AUDIO_PUNCTUATION_POS = sbd.config.getint('windowing', 'punctuation_position') if punct_pos == None else punct_pos
-        self.AUDIO_WINDOW_SIZE = sbd.config.getint('windowing', 'window_size')  if window_size == None else window_size
+    def __init__(self, lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size):
+        self.LEXICAL_PUNCTUATION_POS = lexical_punctuation_pos
+        self.LEXICAL_WINDOW_SIZE = lexical_window_size
+        self.AUDIO_PUNCTUATION_POS = audio_punctuation_pos
+        self.AUDIO_WINDOW_SIZE = audio_window_size
 
     def fuse(self, tokens, lexical_probs, audio_probs):
         assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE == len(audio_probs) + self.AUDIO_WINDOW_SIZE)

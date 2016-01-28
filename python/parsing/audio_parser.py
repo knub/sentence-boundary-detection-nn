@@ -1,7 +1,8 @@
 from parsing.get_parser import *
 from sbd_classification.classification_input import InputText
 from sbd_classification.classification_input import InputAudio
-
+from preprocessing.tokens import WordToken
+from preprocessing.nlp_pipeline import NlpPipeline
 
 class AudioParser(object):
 
@@ -9,16 +10,15 @@ class AudioParser(object):
         self.ctm_file = ctm_file
         self.pitch_file = pitch_file
         self.energy_file = energy_file
+        self.talks = None
         self.talk = None
 
     def parse(self):
         parser = get_parser(self.ctm_file)
         talks = parser.parse()
 
+        self.talks = []
         for i, talk in enumerate(talks):
-            if i >= 1:
-                break
-
             talk.build_interval_tree()
 
             # get pitch feature values
@@ -28,7 +28,9 @@ class AudioParser(object):
             # normalize features
             talk.normalize()
 
-            self.talk = talk
+            self.talks.append(talk)
+
+        self.talk = self.talks[0]
 
     def get_text(self):
         text = ""

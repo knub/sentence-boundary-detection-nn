@@ -53,11 +53,12 @@ def classifyLexical():
         inputTextReader = InputTextReader()
         text = inputTextReader.readFile(file_name)
 
-    jsonConverter = JsonConverter()
-
+    # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     (tokens, punctuations_probs) = lexical_classifier.predict_text(text)
-    jsonConverter.read_lexical_config()
+    (window_size, punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
+
+    jsonConverter = JsonConverter(punctuation_pos, window_size, None, None, pos_tagging)
     data = jsonConverter.convert_lexical(tokens, punctuations_probs)
 
     if not text_file:
@@ -78,25 +79,23 @@ def classifyAudioLexical():
     parser = AudioParser(ctm_file, pitch_file, energy_file)
     parser.parse()
 
-    fusion = Fusion()
-    jsonConverter = JsonConverter()
-
-    # AUDIO config active
+    # predict audio
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
-    fusion.read_audio_config()
-    jsonConverter.read_audio_config()
     (tokens, audio_probs) = audio_classifier.predict_audio(parser)
-
-    # LEXICAL config active
+    # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
-    fusion.read_lexical_config()
-    jsonConverter.read_lexical_config()
     (tokens, lexical_probs) = lexical_classifier.predict_text_with_audio(parser)
 
-    # fuse the outputs
+    # get config parameter
+    (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
+    (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
+
+    # fusion
+    fusion = Fusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
     fusion_probs = fusion.fuse(tokens, lexical_probs, audio_probs)
 
     # convert it into json
+    jsonConverter = JsonConverter(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size, pos_tagging)
     data = jsonConverter.convert_fusion(tokens, fusion_probs, lexical_probs, audio_probs)
     return json.dumps(data)
 
