@@ -1,4 +1,5 @@
 
+
 class Evaluation(object):
 
     def __init__(self, talks):
@@ -21,7 +22,7 @@ class Evaluation(object):
         (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
 
         # fusion
-        fusion = Fusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
+        fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
         fusion_probs = fusion.fuse(tokens, lexical_probs, audio_probs)
 
         # evaluate
