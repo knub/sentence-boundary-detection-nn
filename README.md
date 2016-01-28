@@ -40,7 +40,7 @@ We build a python-based demo using caffe.
 3. Clone this repository
 4. Add path to the repository to your python path: 
   ```
-  export PYTHONPATH=/path/to/sentence-boundary-detection-nn:$PYTHONPATH
+  export PYTHONPATH=/path/to/sentence-boundary-detection-nn/python:$PYTHONPATH
   ```
 5. Download Google Word Vector (GoogleNews-vectors-negative300.bin.gz) from [here](https://code.google.com/p/word2vec/)  or use directly this [url](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing)
 6. Create a folder with your demo data including the following directories:
