@@ -24,6 +24,8 @@ def get_train_data_layer(net):
 
 def replace_loss_with_softmax(net):
     losslayer = get_layer_by_name(net, "loss")
+    if losslayer.type == "InfogainLoss":
+        return losslayer
     losslayer.name = "softmax"
     losslayer.type = "Softmax"
     losslayer.bottom.remove("label")
