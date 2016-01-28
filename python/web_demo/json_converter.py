@@ -1,5 +1,6 @@
 import common.sbd_config as sbd
 import numpy
+from sbd_classification.util import get_index
 
 class JsonConverter(object):
 
@@ -41,13 +42,13 @@ class JsonConverter(object):
                 probs_json['audio'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'PERIOD': 0.0}}
 
             # LEXICAL
-            current_prediction_position = i - self.PUNCTUATION_POS + 1
-            if 0 <= current_prediction_position < len(lexical_probs):
+            current_prediction_position = get_index(i, len(lexical_probs), self.PUNCTUATION_POS)
+            if current_prediction_position < 0:
+                probs_json['lexical'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}}
+            else:
                 current_punctuation = self.classes_lexical_audio[numpy.argmax(lexical_probs[current_prediction_position])]
                 class_distribution = self._get_class_distribution(lexical_probs[current_prediction_position], self.classes_lexical_audio)
                 probs_json['lexical'] = {'punctuation': current_punctuation, 'probs': class_distribution}
-            else:
-                probs_json['lexical'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}}
 
             json_data.append(probs_json)
 
