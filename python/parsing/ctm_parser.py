@@ -1,4 +1,5 @@
 import sys, argparse, os
+from os.path import basename
 
 import re
 from common.argparse_util import *
@@ -97,7 +98,7 @@ class CtmParser(AbstractParser):
             yield audio
 
     def _extract_group_name(self):
-        return self.filename.split("_")[0].split("/")[-1]
+        return basename(self.filename).split("_")[0]
 
     def _prepare_audio(self, audio):
         # sort sentences by begin

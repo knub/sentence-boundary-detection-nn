@@ -6,16 +6,23 @@ from preprocessing.nlp_pipeline import NlpPipeline
 
 class AudioParser(object):
 
-    def __init__(self):
-        self.talks = None
-
-    def parse(self, ctm_file, pitch_file, energy_file):
+    def parse(self, ctm_file):
         parser = get_parser(ctm_file)
-        talks = parser.parse()
+        base_dir = os.path.dirname(parser.get_file_name())
+        raw_talks = parser.parse()
 
-        self.talks = []
-        for i, talk in enumerate(talks):
+        talks = []
+        for i, talk in enumerate(raw_talks):
+            # build range map from second intervals to tokens
             talk.build_interval_tree()
+
+            # get pitch feature values
+            pitch_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".pitch"
+            talk.parse_pitch_feature(pitch_file)
+
+            # get energy feature values
+            energy_file = base_dir + "/" + talk.group_name + "_talkid" + str(talk.talk_id) + ".energy"
+            talk.parse_energy_feature(energy_file)
 
             # get pitch feature values
             talk.parse_pitch_feature(pitch_file)
@@ -24,6 +31,7 @@ class AudioParser(object):
             # normalize features
             talk.normalize()
 
-            self.talks.append(talk)
+            talks.append(talk)
 
-        return self.talks
+        return talks
+

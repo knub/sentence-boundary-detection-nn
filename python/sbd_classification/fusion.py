@@ -61,7 +61,9 @@ class Fusion(object):
                 fusion_probs.append([audio_none, 0.0, audio_period])
                 continue
 
-            fusion_probs.append(self.sophisticated_fusion(lexical_probs, audio_probs))
+            fusion_probs.append(self.sophisticated_fusion(lexical_probs[lexical_pos], audio_probs[audio_pos]))
+
+        return fusion_probs
 
     def sophisticated_fusion(self, lexical_probs, audio_probs):
         raise Exception("Abstract base class")
@@ -72,20 +74,18 @@ class ThresholdFusion(Fusion):
         threshold_audio = 0.5
         threshold_lexical = 0.8
 
-        audio_none = audio_probs[audio_pos][self.AUDIO_NONE_IDX]
-        audio_period = audio_probs[audio_pos][self.AUDIO_PERIOD_IDX]
+        audio_none = audio_probs[self.AUDIO_NONE_IDX]
+        audio_period = audio_probs[self.AUDIO_PERIOD_IDX]
 
-        lexical_none = lexical_probs[lexical_pos][self.LEX_NONE_IDX]
-        lexical_comma = lexical_probs[lexical_pos][self.LEX_COMMA_IDX]
-        lexical_period = lexical_probs[lexical_pos][self.LEX_PERIOD_IDX]
+        lexical_none = lexical_probs[self.LEX_NONE_IDX]
+        lexical_comma = lexical_probs[self.LEX_COMMA_IDX]
+        lexical_period = lexical_probs[self.LEX_PERIOD_IDX]
 
         # if audio model predicts a period, and lexical is not very confident, that there is no period, use audio prediction
         if audio_period > threshold_audio and lexical_none < threshold_lexical:
             return norm_single([lexical_none, lexical_comma, lexical_period + audio_period])
         else:
             return [lexical_none, lexical_comma, lexical_period]
-
-        return fusion_probs
 
 
 ################

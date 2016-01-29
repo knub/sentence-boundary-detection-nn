@@ -2,7 +2,7 @@ import common.sbd_config as sbd
 import json, caffe, argparse, os
 from sbd_classification.util import *
 from parsing.audio_parser import AudioParser
-from sbd_classification.fusion import Fusion
+from sbd_classification.fusion import ThresholdFusion
 from sbd_classification.classification_input import InputText, InputAudio
 from json_converter import JsonConverter
 from file_io import ResultWriter, InputTextReader
@@ -84,7 +84,7 @@ def classifyAudioLexical():
 
     # parse ctm_file, pitch_file and energy_file
     parser = AudioParser()
-    talks = parser.parse(ctm_file, pitch_file, energy_file)
+    talks = parser.parse(ctm_file)
 
     # predict audio
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
@@ -99,7 +99,7 @@ def classifyAudioLexical():
     (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
 
     # fusion
-    fusion = Fusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
+    fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
     fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
     # convert it into json
