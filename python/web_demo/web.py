@@ -61,16 +61,17 @@ def classifyLexical():
 
     # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
-    (tokens, punctuations_probs) = lexical_classifier.predict(InputText(text))
+    input_text = InputText(text)
+    punctuations_probs = lexical_classifier.predict(input_text)
     (window_size, punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
 
     jsonConverter = JsonConverter(punctuation_pos, window_size, None, None, pos_tagging)
-    data = jsonConverter.convert_lexical(tokens, punctuations_probs)
+    data = jsonConverter.convert_lexical(input_text.tokens, punctuations_probs)
 
     if not text_file:
         file_name = os.path.join(route_folder, TEXT_DATA, text_file + ".result")
         resultWriter = ResultWriter()
-        resultWriter.writeToFile(file_name, tokens, punctuations_probs)
+        resultWriter.writeToFile(file_name, input_text.tokens, punctuations_probs)
 
     return json.dumps(data)
 
@@ -87,10 +88,11 @@ def classifyAudioLexical():
 
     # predict audio
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
-    (tokens, audio_probs) = audio_classifier.predict(InputAudio(talks))
+    audio_probs = audio_classifier.predict(InputAudio(talks))
     # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
-    (tokens, lexical_probs) = lexical_classifier.predict(InputText(talks))
+    input_text = InputText(talks)
+    lexical_probs = lexical_classifier.predict(input_text)
 
     # get config parameter
     (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
@@ -98,11 +100,11 @@ def classifyAudioLexical():
 
     # fusion
     fusion = Fusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
-    fusion_probs = fusion.fuse(tokens, lexical_probs, audio_probs)
+    fusion_probs = fusion.fuse(input_text.tokens, lexical_probs, audio_probs)
 
     # convert it into json
     jsonConverter = JsonConverter(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size, pos_tagging)
-    data = jsonConverter.convert_fusion(tokens, fusion_probs, lexical_probs, audio_probs)
+    data = jsonConverter.convert_fusion(input_text.tokens, fusion_probs, lexical_probs, audio_probs)
     return json.dumps(data)
 
 @app.route("/files", methods = ['GET'])

@@ -28,7 +28,7 @@ class AudioClassifier(object):
             probs = self._predict_caffe(instance)
             punctuation_probs.extend(numpy.copy(probs))
 
-        return (input_audio.tokens, punctuation_probs)
+        return punctuation_probs
 
     def _predict_caffe(self, instance):
         caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})

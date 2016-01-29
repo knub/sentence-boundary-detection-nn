@@ -11,11 +11,13 @@ class Evaluation(object):
 
         # get audio probabilities
         self._load_config(audio_model_folder)
-        (tokens, audio_probs) = audio_classifier.predict(InputAudio(self.talks))
+        input_audio = InputAudio(self.talks)
+        audio_probs = audio_classifier.predict(input_audio)
 
         # get lexical probabilities
         self._load_config(lexical_model_folder)
-        (tokens, lexical_probs) = lexical_classifier.predict(InputText(self.talks))
+        input_text = InputText(self.talks)
+        lexical_probs = lexical_classifier.predict(input_text)
 
         # get config parameter
         (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
@@ -23,7 +25,7 @@ class Evaluation(object):
 
         # fusion
         fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
-        fusion_probs = fusion.fuse(tokens, lexical_probs, audio_probs)
+        fusion_probs = fusion.fuse(input_text.tokens, lexical_probs, audio_probs)
 
         # evaluate
         # TODO
