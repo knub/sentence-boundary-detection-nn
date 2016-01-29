@@ -33,13 +33,13 @@ class Fusion(object):
         self.LEX_COMMA_IDX = 1
         self.LEX_PERIOD_IDX = 2
 
-    def fuse(self, tokens, lexical_probs, audio_probs):
+    def fuse(self, nr_tokens, lexical_probs, audio_probs):
         assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE == len(audio_probs) + self.AUDIO_WINDOW_SIZE)
-        assert(len(tokens) == len(audio_probs) + self.AUDIO_WINDOW_SIZE - 1)
-        assert(len(tokens) == len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - 1)
+        assert(nr_tokens == len(audio_probs) + self.AUDIO_WINDOW_SIZE - 1)
+        assert(nr_tokens == len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - 1)
 
         fusion_probs = []
-        for i in range(0, len(tokens)):
+        for i in range(nr_tokens):
             lexical_pos = get_index(i, len(lexical_probs), self.LEXICAL_PUNCTUATION_POS)
             audio_pos = get_index(i, len(audio_probs), self.AUDIO_PUNCTUATION_POS)
 
@@ -114,7 +114,7 @@ def main():
     probs_audio = norm(probs_audio)
 
     print tokens, len(probs_lexic), len(probs_audio)
-    print fc.fuse(tokens, probs_lexic, probs_audio)
+    print fc.fuse(len(tokens), probs_lexic, probs_audio)
 
 if __name__ == '__main__':
     main()

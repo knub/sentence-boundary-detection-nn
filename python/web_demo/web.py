@@ -100,7 +100,7 @@ def classifyAudioLexical():
 
     # fusion
     fusion = Fusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
-    fusion_probs = fusion.fuse(input_text.tokens, lexical_probs, audio_probs)
+    fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
     # convert it into json
     jsonConverter = JsonConverter(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size, pos_tagging)
