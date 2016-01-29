@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='evaluates the fusion.')
     parser.add_argument('ctm_file', help="path to ctm_file", default="evaluation_data/data/tst2011_0.ctm", nargs='?')
     parser.add_argument('audio_model_folder', help="path to audio models", default="evaluation_data/audio_models", nargs='?')
-    parser.add_argument('vectorfile', help='the google news word vector', default='demo_data/GoogleNews-vectors-negative300.bin', nargs='?')
+    parser.add_argument('vectorfile', help='the google news word vector', default='evaluation_data/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('lexical_model_folder', help="path to lexical models", default="evaluation_data/lexical_models", nargs='?')
     args = parser.parse_args()
 
@@ -73,5 +73,5 @@ if __name__ == '__main__':
     evaluation = Evaluation(talks)
     for lexical_model in lexical_models:
         for audio_model in audio_models:
-            evaluation.evaluate(lexical_model, audio_model, None)
+            evaluation.evaluate(lexical_model, audio_model, args.vectorfile)
 
