@@ -7,43 +7,22 @@ Created as part of the "Practical Applications of Multimedia Retrieval" seminar 
 We build a python-based demo using caffe.
 
 #####Prerequirements:
-1. Install python 2.7 including the following packages:
-  * Flask==0.10.1
-  * Jinja2==2.8
-  * MarkupSafe==0.23
-  * Pillow==3.0.0
-  * Werkzeug==0.11.3
-  * argparse==1.2.1
-  * cycler==0.9.0
-  * decorator==4.0.4
-  * enum==0.4.6
-  * enum34==1.0.4
-  * intervaltree==2.1.0
-  * itsdangerous==0.24
-  * leveldb==0.193
-  * lmdb==0.87
-  * matplotlib==1.5.0
-  * networkx==1.10
-  * nltk==3.1
-  * numpy==1.10.1
-  * protobuf==2.6.1
-  * pyparsing==2.0.5
-  * python-dateutil==2.4.2
-  * pytz==2015.7
-  * regex==2015.11.22
-  * scikit-image==0.11.3
-  * scipy==0.16.1
-  * six==1.10.0
-  * sortedcontainers==1.4.4
-  * wsgiref==0.1.2
-2. Setup caffe, like described [here](http://caffe.berkeleyvision.org/installation.html)
-3. Clone this repository
-4. Add path to the repository to your python path: 
-  ```
-  export PYTHONPATH=/path/to/sentence-boundary-detection-nn/python:$PYTHONPATH
-  ```
-5. Download Google Word Vector (GoogleNews-vectors-negative300.bin.gz) from [here](https://code.google.com/p/word2vec/)  or use directly this [url](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing)
-6. Create a folder with your demo data including the following directories:
+1. Clone this repository
+2. Install python 2.7 including the following packages from requirements.txt
+
+  `pip install requirements.txt`
+
+3. Use the nltk downloader to download `averaged_perceptron_tagger` and `punkt` models:
+
+  `python -m nltk.downloader`
+
+4. Setup caffe, like described [here](http://caffe.berkeleyvision.org/installation.html)
+5. Add path to the repository to your python path: 
+
+  `export PYTHONPATH=/path/to/sentence-boundary-detection-nn/python:$PYTHONPATH`
+
+6. Download Google Word Vector (GoogleNews-vectors-negative300.bin.gz) from [here](https://code.google.com/p/word2vec/)  or use directly this [url](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit?usp=sharing) and extract the result into the `sentence-boundary-detection-nn/python/demo_data` directory
+7. Paste your trained models into a demo data folder, for example `sentence-boundary-detection-nn/python/demo_data` with the following structure:
   * lexical_models : containing all pretrained models you want to use in a seperate directory. Each models needs a 
     * .ini
     * .caffemodel
@@ -54,11 +33,11 @@ We build a python-based demo using caffe.
 
 #####Start up
 
-Change into the repository directory and execute
+Change into the repository directory and execute, this should work right out of the box, unless you are using a custom `demo_data` folder:
 ```
 python python/web_demo
 ```
-Optionaly you can specify the location of the word vector and the demo data. Ohterwise default values are used.
+Optionally you can specify the location of the word vector and the demo data. Otherwise default values are used.
 For further information execute:
 ```
 python python/web_demo -h
