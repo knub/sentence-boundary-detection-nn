@@ -203,6 +203,6 @@ if __name__ == "__main__":
     #### start app ####
 
     if not args.debug:
-        app.run(debug = True, use_reloader = False)
+        app.run(host = "0.0.0.0", use_reloader = False)
     else:
         app.run(debug = True)

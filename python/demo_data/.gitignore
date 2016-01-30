@@ -2,5 +2,6 @@
 !*.gitignore
 !download_all.sh
 !download_models.sh
+!download_google_vector.sh
 !folders.txt
 !models.txt
