@@ -35,10 +35,10 @@ We build a python-based demo using caffe.
 
 Change into the repository directory and execute, this should work right out of the box, unless you are using a custom `demo_data` folder:
 ```
-python python/web_demo
+python web_demo/web.py
 ```
 Optionally you can specify the location of the word vector and the demo data. Otherwise default values are used.
 For further information execute:
 ```
-python python/web_demo -h
+python web_demo/web.py -h
 ```
