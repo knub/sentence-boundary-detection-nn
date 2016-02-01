@@ -3,7 +3,7 @@ import argparse, os
 from parsing.audio_parser import AudioParser
 from sbd_classification.util import *
 from sbd_classification.classification_input import InputText, InputAudio
-from sbd_classification.fusion import ThresholdFusion
+from sbd_classification.fusion import get_evaluation_fusion_list
 
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -32,14 +32,16 @@ class Evaluation(object):
         (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
         (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
 
-        # fusion
-        fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
-        fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
+        fusions = get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
 
-        tokens = [token for talk in self.talks for token in talk.get_tokens()]
+        for fusion in fusions:
+            print str(fusion)
+            fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
-        exp_actual = self.get_expected_actual(fusion_probs, tokens)
-        self.calculate_evaluation_metrics(exp_actual)
+            tokens = [token for talk in self.talks for token in talk.get_tokens()]
+
+            exp_actual = self.get_expected_actual(fusion_probs, tokens)
+            self.calculate_evaluation_metrics(exp_actual)
 
     def get_expected_actual(self, fusion_probs, tokens):
         expected_actual = []
