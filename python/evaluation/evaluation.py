@@ -5,6 +5,8 @@ from sbd_classification.util import *
 from sbd_classification.classification_input import InputText, InputAudio
 from sbd_classification.fusion import ThresholdFusion
 
+from sklearn.metrics import precision_recall_fscore_support
+
 class Evaluation(object):
 
     def __init__(self, talks):
@@ -34,10 +36,37 @@ class Evaluation(object):
         fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
         fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
-        # evaluate
-        print("Results:")
+        tokens = [token for talk in self.talks for token in talk.get_tokens()]
 
-        print("Done.")
+        exp_actual = self.get_expected_actual(fusion_probs, tokens)
+        self.calculate_evaluation_metrics(exp_actual)
+
+    def get_expected_actual(self, fusion_probs, tokens):
+        expected_actual = []
+        word_tokens = [token for token in tokens if not token.is_punctuation()]
+
+        assert(len(word_tokens) == len(fusion_probs))
+        tokens_idx = 0
+        for i in range(len(fusion_probs)):
+            actual = fusion_probs[i].index(max(fusion_probs[i]))
+            is_punctuation = tokens[tokens_idx].is_punctuation()
+            if is_punctuation:
+                tokens_idx += 1
+            tokens_idx += 1
+            expected = token.punctuation_type.value if is_punctuation else 0
+            expected_actual.append((expected, actual))
+
+        return expected_actual
+
+    def calculate_evaluation_metrics(self, expected_actual):
+        print("Results:")
+        expected = map(lambda x: x[0], expected_actual)
+        actual = map(lambda x: x[1], expected_actual)
+        print expected
+        print actual
+        results = precision_recall_fscore_support(expected, actual)
+        print results
+
 
     def _load_config(self, model_folder):
         config_file, caffemodel_file, net_proto = get_filenames(model_folder)
@@ -47,10 +76,16 @@ class Evaluation(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='evaluates the fusion.')
     parser.add_argument('ctm_file', help="path to ctm_file", default="evaluation_data/data/tst2011_0.ctm", nargs='?')
-    parser.add_argument('audio_model_folder', help="path to audio models", default="evaluation_data/audio_models", nargs='?')
     parser.add_argument('vectorfile', help='the google news word vector', default='evaluation_data/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('lexical_model_folder', help="path to lexical models", default="evaluation_data/lexical_models", nargs='?')
+    parser.add_argument('audio_model_folder', help="path to audio models", default="evaluation_data/audio_models", nargs='?')
+    parser.add_argument('release', help="whether to test in release mode", default=False, nargs='?')
     args = parser.parse_args()
+
+    if args.release:
+        vector = Word2VecFile(args.vectorfile)
+    else:
+        vector = None
 
     # get all talks
     print("Reading all talks ...")
@@ -69,9 +104,10 @@ if __name__ == '__main__':
         for subdirname in dirnames:
             audio_models.append(os.path.join(dirname, subdirname))
 
+
     # evaluate all combination of models
     evaluation = Evaluation(talks)
     for lexical_model in lexical_models:
         for audio_model in audio_models:
-            evaluation.evaluate(lexical_model, audio_model, args.vectorfile)
+            evaluation.evaluate(lexical_model, audio_model, vector)
 
