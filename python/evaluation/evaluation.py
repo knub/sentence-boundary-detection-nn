@@ -12,6 +12,7 @@ class Evaluation(object):
 
     def __init__(self, talks):
         self.talks = talks
+        self.tokens = [token for talk in self.talks for token in talk.get_tokens()]
 
     def evaluate(self, lexical_model_folder, audio_model_folder, vector):
         print("Evaluating %s and %s ..." % (lexical_model_folder, audio_model_folder))
@@ -39,9 +40,7 @@ class Evaluation(object):
             print str(fusion)
             fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
-            tokens = [token for talk in self.talks for token in talk.get_tokens()]
-
-            exp_actual = self.get_expected_actual(fusion_probs, tokens)
+            exp_actual = self.get_expected_actual(fusion_probs, self.tokens)
             self.calculate_evaluation_metrics(exp_actual)
 
     def get_expected_actual(self, fusion_probs, tokens):
@@ -65,8 +64,6 @@ class Evaluation(object):
         print("Results:")
         expected = map(lambda x: x[0], expected_actual)
         actual = map(lambda x: x[1], expected_actual)
-        print expected
-        print actual
         results = precision_recall_fscore_support(expected, actual)
         print results
 
