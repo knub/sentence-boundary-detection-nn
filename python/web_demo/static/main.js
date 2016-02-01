@@ -78,8 +78,11 @@ $(document).ready(function() {
             textfile: $('#selection-text-file').val(),
             lexical_folder: $("#selection-lexical-models").val()
         };
+        $('#loading').show();
+        $('#punctuation').empty();
         $.post("/classify_lexical", text, function(response, textStatus) {
-                displayLexicalResult(response);
+                $('#loading').hide();
+                displayLexicalResult(response); 
             }, "json")
         .fail(function(data) {
             console.error(data);
@@ -92,7 +95,10 @@ $(document).ready(function() {
             lexical_folder: $("#selection-lexical-models").val(),
             audio_folder: $("#selection-audio-models").val()
         };
+        $('#loading').show();
+        $('#punctuation').empty();
         $.post("/classify_audio_lexical", setting, function(response, textStatus) {
+            $('#loading').hide();
             displayLexicalAudioResult(response);
         }, "json")
             .fail(function(data) {
@@ -104,7 +110,6 @@ $(document).ready(function() {
         var setting = {
             folder: $("#selection-lexical-models").val()
         };
-
         $.post("/lexical_models", setting, function(response) {})
         .fail(function(data) {
             console.error(data);
