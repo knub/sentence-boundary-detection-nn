@@ -97,6 +97,9 @@ class ThresholdFusion(Fusion):
         else:
             return [lexical_none, lexical_comma, lexical_period]
 
+    def __str__(self):
+        return "ThresholdFusion[AudioThresh: %.2f, LexicalThresh: %.2f]" % (self.threshold_audio, self.threshold_lexical)
+
 class BalanceFusion(Fusion):
 
     def __init__(self, lexical_audio_balance = 0.5):
@@ -116,15 +119,24 @@ class BalanceFusion(Fusion):
 
         return norm_single([audio_none + lexical_none, lexical_comma + audio_period, lexical_period + audio_period])
 
+    def __str__(self):
+        return "BalanceFusion[BalanceValue: %.2f]" % (self.lexical_audio_balance)
+
 class BaselineLexicalFusion(Fusion):
 
     def sophisticated_fusion(self, lexical_probs, audio_probs):
         return [lexical_probs[self.LEX_NONE_IDX], lexical_probs[self.LEX_COMMA_IDX], lexical_probs[self.LEX_PERIOD_IDX]]
 
+    def __str__(self):
+        return "BaselineLexicalFusion"
+
 class BaselineAudioFusion(Fusion):
 
     def sophisticated_fusion(self, lexical_probs, audio_probs):
         return [audio_probs[self.AUDIO_NONE_IDX], 0.0, audio_probs[self.AUDIO_PERIOD_IDX]]
+
+    def __str__(self):
+        return "BaselineAudioFusion"
 
 ################
 # Example call #
@@ -168,6 +180,7 @@ def main():
     print tokens, len(probs_lexic), len(probs_audio)
 
     for fc in fusions:
+        print fc
         print fc.fuse(len(tokens), probs_lexic, probs_audio)
 
 if __name__ == '__main__':
