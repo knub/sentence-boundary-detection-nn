@@ -38,11 +38,11 @@
     white-space: pre-wrap;
 }
 .token-COMMA {
-    background: #F28A8A;
+    background: #FFC107;
     white-space: pre-line;
 }
 .token-PERIOD {
-    background: #8AB4F2;
+    background: #03A9F4;
     white-space: pre-line;
 }
 
