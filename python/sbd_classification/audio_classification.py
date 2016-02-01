@@ -5,9 +5,10 @@ from preprocessing.sliding_window import SlidingWindow
 from preprocessing.word2vec_file import Word2VecFile
 from parsing.audio_parser import AudioParser
 from classification_input import InputAudio
+from abstract_classification import AbstractClassifier
 
 
-class AudioClassifier(object):
+class AudioClassifier(AbstractClassifier):
 
     def __init__(self, net, debug = False):
         self.classes = ["NONE", "PERIOD"]
@@ -22,24 +23,7 @@ class AudioClassifier(object):
         sliding_window = SlidingWindow()
         instances = sliding_window.list_windows(input_audio)
 
-        # get caffe predictions
-        punctuation_probs = []
-        for instance in instances:
-            probs = self._predict_caffe(instance)
-            punctuation_probs.extend(numpy.copy(probs))
-
-        return punctuation_probs
-
-    def _predict_caffe(self, instance):
-        caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
-
-        # batchsize = 1
-        # self.net.blobs['data'].reshape(batchsize, 1, self.WINDOW_SIZE, self.FEATURE_LENGTH)
-        reshaped_array = numpy.expand_dims(instance.get_array(), axis=0)
-        self.net.blobs['data'].data[...] = reshaped_array
-
-        out = self.net.forward()
-        return out['softmax']
+        return self._predict_caffe(instances)
 
     def get_audio_parameter(self):
         return (self.WINDOW_SIZE, self.PUNCTUATION_POS)
