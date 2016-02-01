@@ -49,7 +49,7 @@ function cleanup() {
 rm snapshots/* 2> /dev/null
 
 # Saving setup
-cp net.prototxt $SOLVER training.sh experiments/$FOLDER_NAME
+cp *.prototxt $SOLVER training.sh experiments/$FOLDER_NAME
 # Copy database configuration
 cp $DATABASE/*.ini experiments/$FOLDER_NAME
 
