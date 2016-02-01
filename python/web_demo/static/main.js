@@ -66,6 +66,12 @@ $(document).ready(function() {
         });
     };
 
+
+    $("#collapse2").on('hidden.bs.collapse', function () {
+        console.log("reached");
+        $('#selection-text-file option:contains(---)').prop({selected: true});
+    });
+
     $("#punctuate-lexical").click(function() {
         var text = {
             text: $('#textarea-input').val(),
