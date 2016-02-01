@@ -38,10 +38,10 @@ class Evaluation(object):
         fusions = get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
 
         assert(len(input_audio.tokens) == len(input_text.tokens))
+        print "fusion,precision[NONE],precision[PERIOD],recall[NONE],recall[PERIOD],f1[NONE],f1[PERIOD],support[NONE],support[PERIOD]"
         for fusion in fusions:
-            print str(fusion)
+            print str(fusion),
             fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
-
 
             exp_actual = self.get_expected_actual(fusion_probs, self.tokens)
             self.calculate_evaluation_metrics(exp_actual)
@@ -69,8 +69,16 @@ class Evaluation(object):
         expected = map(lambda x: x[0], expected_actual)
         actual = map(lambda x: x[1], expected_actual)
         results = precision_recall_fscore_support(expected, actual)
-        print results
-
+        print "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f" % (
+            results[0][0],
+            results[0][1],
+            results[1][0],
+            results[1][1],
+            results[2][0],
+            results[2][1],
+            results[3][0],
+            results[3][1]
+            )
 
     def _load_config(self, model_folder):
         config_file, caffemodel_file, net_proto = get_filenames(model_folder)
