@@ -20,12 +20,7 @@ def norm(probs_list):
 
 class Fusion(object):
 
-    def __init__(self, lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size):
-        self.LEXICAL_PUNCTUATION_POS = lexical_punctuation_pos
-        self.LEXICAL_WINDOW_SIZE = lexical_window_size
-        self.AUDIO_PUNCTUATION_POS = audio_punctuation_pos
-        self.AUDIO_WINDOW_SIZE = audio_window_size
-
+    def __init__(self):
         # constants for index access into the probability vectors
         self.AUDIO_NONE_IDX = 0
         self.AUDIO_PERIOD_IDX = 1
@@ -33,7 +28,20 @@ class Fusion(object):
         self.LEX_COMMA_IDX = 1
         self.LEX_PERIOD_IDX = 2
 
+        self.__initialized = False
+
+    def init_parameters(self, lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size):
+        self.LEXICAL_PUNCTUATION_POS = lexical_punctuation_pos
+        self.LEXICAL_WINDOW_SIZE = lexical_window_size
+        self.AUDIO_PUNCTUATION_POS = audio_punctuation_pos
+        self.AUDIO_WINDOW_SIZE = audio_window_size
+
+        self.__initialized = True
+
+        return self
+
     def fuse(self, nr_tokens, lexical_probs, audio_probs):
+        assert(self.__initialized)
         assert(len(lexical_probs) + self.LEXICAL_WINDOW_SIZE == len(audio_probs) + self.AUDIO_WINDOW_SIZE)
         assert(nr_tokens == len(audio_probs) + self.AUDIO_WINDOW_SIZE - 1)
         assert(nr_tokens == len(lexical_probs) + self.LEXICAL_WINDOW_SIZE - 1)
@@ -70,10 +78,12 @@ class Fusion(object):
 
 class ThresholdFusion(Fusion):
 
-    def sophisticated_fusion(self, lexical_probs, audio_probs):
-        threshold_audio = 0.5
-        threshold_lexical = 0.8
+    def __init__(self, threshold_audio = 0.5, threshold_lexical = 0.8):
+        super(ThresholdFusion, self).__init__()
+        self.threshold_audio = threshold_audio
+        self.threshold_lexical = threshold_lexical
 
+    def sophisticated_fusion(self, lexical_probs, audio_probs):
         audio_none = audio_probs[self.AUDIO_NONE_IDX]
         audio_period = audio_probs[self.AUDIO_PERIOD_IDX]
 
@@ -82,29 +92,71 @@ class ThresholdFusion(Fusion):
         lexical_period = lexical_probs[self.LEX_PERIOD_IDX]
 
         # if audio model predicts a period, and lexical is not very confident, that there is no period, use audio prediction
-        if audio_period > threshold_audio and lexical_none < threshold_lexical:
+        if audio_period > self.threshold_audio and lexical_none < self.threshold_lexical:
             return norm_single([lexical_none, lexical_comma, lexical_period + audio_period])
         else:
             return [lexical_none, lexical_comma, lexical_period]
 
+class BalanceFusion(Fusion):
+
+    def __init__(self, lexical_audio_balance = 0.5):
+        super(BalanceFusion, self).__init__()
+        self.lexical_audio_balance = lexical_audio_balance
+
+    def sophisticated_fusion(self, lexical_probs, audio_probs):
+        audio_factor = (1 - self.lexical_audio_balance)
+        lexical_factor = self.lexical_audio_balance
+
+        audio_none = audio_probs[self.AUDIO_NONE_IDX] * audio_factor
+        audio_period = audio_probs[self.AUDIO_PERIOD_IDX] * audio_factor
+
+        lexical_none = lexical_probs[self.LEX_NONE_IDX] * lexical_factor
+        lexical_comma = lexical_probs[self.LEX_COMMA_IDX] * lexical_factor
+        lexical_period = lexical_probs[self.LEX_PERIOD_IDX] * lexical_factor
+
+        return norm_single([audio_none + lexical_none, lexical_comma + audio_period, lexical_period + audio_period])
+
+class BaselineLexicalFusion(Fusion):
+
+    def sophisticated_fusion(self, lexical_probs, audio_probs):
+        return [lexical_probs[self.LEX_NONE_IDX], lexical_probs[self.LEX_COMMA_IDX], lexical_probs[self.LEX_PERIOD_IDX]]
+
+class BaselineAudioFusion(Fusion):
+
+    def sophisticated_fusion(self, lexical_probs, audio_probs):
+        return [audio_probs[self.AUDIO_NONE_IDX], 0.0, audio_probs[self.AUDIO_PERIOD_IDX]]
 
 ################
 # Example call #
 ################
 
+def get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size):
+    fusions = []
+    fusions.append(BaselineLexicalFusion())
+    fusions.append(BaselineAudioFusion())
+    fusions.append(ThresholdFusion(0.5, 0.8))
+    fusions.append(ThresholdFusion(0.5, 0.9))
+    fusions.append(ThresholdFusion(0.6, 0.8))
+    fusions.append(ThresholdFusion(0.6, 0.9))
+    fusions.append(ThresholdFusion(0.7, 0.8))
+    fusions.append(ThresholdFusion(0.7, 0.9))
+    fusions.append(BalanceFusion(0.4))
+    fusions.append(BalanceFusion(0.5))
+    fusions.append(BalanceFusion(0.6))
+    fusions.append(BalanceFusion(0.7))
+    fusions.append(BalanceFusion(0.8))
+    return [f.init_parameters(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size) for f in fusions]
+
 def main():
     import random
-    fc = Fusion()
-
-    num_words = 12
 
     lexical_punctuation_pos = 4
     lexical_window_size = 8
     audio_punctuation_pos = 2
     audio_window_size = 4
 
-    fc.read_lexical_config(lexical_punctuation_pos, lexical_window_size)
-    fc.read_audio_config(audio_punctuation_pos, audio_window_size)
+    fusions = get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
+    num_words = 9
 
     tokens = ["test" + str(i) for i in range(1, 1 + num_words)]
     probs_lexic = [[random.random(), random.random(), random.random()] for i in range(0, num_words - lexical_window_size + 1)]
@@ -114,7 +166,9 @@ def main():
     probs_audio = norm(probs_audio)
 
     print tokens, len(probs_lexic), len(probs_audio)
-    print fc.fuse(len(tokens), probs_lexic, probs_audio)
+
+    for fc in fusions:
+        print fc.fuse(len(tokens), probs_lexic, probs_audio)
 
 if __name__ == '__main__':
     main()
