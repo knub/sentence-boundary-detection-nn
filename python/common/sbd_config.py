@@ -2,6 +2,12 @@ import ConfigParser, os
 import itertools
 import shutil
 
+### GLOBAL CONFIGURATION
+# set Caffe logging level to WARN
+os.environ['GLOG_minloglevel'] = '2'
+
+### CONFIG FILE
+
 # Set global config variable to be initialized in SbdConfig#init
 config = None
 
