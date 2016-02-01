@@ -1,5 +1,35 @@
 $(document).ready(function() {
 
+    function stringRepresentation(token) {
+        token.string = token.punctuation
+        if (token.punctuation == "NONE")
+        {
+            token.string = " "
+        }
+        if (token.punctuation == "PERIOD")
+        {
+            token.string = "."
+        }
+        if (token.punctuation == "COMMA")
+        {
+            token.string = ","
+        }
+    };
+
+    function buildProbsString(probs) {
+        var probs_str = "";
+        for (var key in probs) {
+            probs_str += key + ": " + (probs[key] * 100 ).toFixed(2) + "% &#013;"
+        };
+        return probs_str
+    };
+
+    function processPunctuationToken(token, resultDiv) {
+        stringRepresentation(token)
+        var probs_str = buildProbsString(token.probs);
+        resultDiv.append("<span title='" + probs_str + "' class='token token-punctuation token-" + token.punctuation + "'>" + token.string + "</span>");
+    };
+
     function displayLexicalAudioResult(tokens) {
         var $resultDivLexicalAudio = $("#punctuation_lexical_audio");
         var $resultDivLexical = $("#punctuation_lexical");
@@ -20,28 +50,9 @@ $(document).ready(function() {
                 $resultDivLexical.append(s);
                 $resultDivAudio.append(s);
             } else if (token.type == "punctuation") {
-                // FUSION
-                var probs_str = "";
-                for (var key in token.fusion.probs) {
-                    probs_str += key + ": " + (token.fusion.probs[key] * 100 ).toFixed(2) + "% &#013;"
-                };
-                $resultDivLexicalAudio.append("<span title='" + probs_str + "' class='token token-"
-                                  + token.fusion.punctuation + "'>" + token.fusion.punctuation + "</span>");
-                // LEXICAL
-                var probs_str = "";
-                for (var key in token.lexical.probs) {
-                    probs_str += key + ": " + (token.lexical.probs[key] * 100 ).toFixed(2) + "% &#013;"
-                };
-                $resultDivLexical.append("<span title='" + probs_str + "' class='token token-"
-                                              + token.lexical.punctuation + "'>" + token.lexical.punctuation + "</span>");
-                // AUDIO
-                var probs_str = "";
-                for (var key in token.audio.probs) {
-                    probs_str += key + ": " + (token.audio.probs[key] * 100 ).toFixed(2) + "% &#013;"
-                };
-                $resultDivAudio.append("<span title='" + probs_str + "' class='token token-"
-                                              + token.audio.punctuation + "'>" + token.audio.punctuation + "</span>");
-
+                processPunctuationToken(token.fusion, $resultDivLexicalAudio);
+                processPunctuationToken(token.lexical, $resultDivLexical);
+                processPunctuationToken(token.audio, $resultDivAudio);
             }
         });
     };
@@ -57,19 +68,14 @@ $(document).ready(function() {
                 };
                 $resultDiv.append("<span title='" + tag_str + "' class='token token-" + token.type + "'>" + token.token + "</span>");
             } else if (token.type == "punctuation") {
-                var probs_str = "";
-                for (var key in token.probs) {
-                    probs_str += key + ": " + (token.probs[key] * 100 ).toFixed(2) + "% &#013;"
-                };
-                $resultDiv.append("<span title='" + probs_str + "' class='token token-" + token.punctuation + "'>" + token.punctuation + "</span>");
+                processPunctuationToken(token, $resultDiv);
             }
         });
     };
 
 
     $("#collapse2").on('hidden.bs.collapse', function () {
-        // $('#selection-text-file').val('');
-        $('#selection-text-file option:contains(Choose a file)').prop({selected: true});
+        $('#selection-text-file').val('');
     });
 
     $("#punctuate-lexical").click(function() {
@@ -82,7 +88,7 @@ $(document).ready(function() {
         $('#punctuation').empty();
         $.post("/classify_lexical", text, function(response, textStatus) {
                 $('#loading').hide();
-                displayLexicalResult(response); 
+                displayLexicalResult(response);
             }, "json")
         .fail(function(data) {
             console.error(data);
