@@ -4,6 +4,7 @@ from parsing.audio_parser import AudioParser
 from sbd_classification.util import *
 from sbd_classification.classification_input import InputText, InputAudio
 from sbd_classification.fusion import get_evaluation_fusion_list
+from preprocessing.word2vec_file import Word2VecFile
 
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -81,7 +82,7 @@ if __name__ == '__main__':
     parser.add_argument('vectorfile', help='the google news word vector', default='evaluation_data/GoogleNews-vectors-negative300.bin', nargs='?')
     parser.add_argument('lexical_model_folder', help="path to lexical models", default="evaluation_data/lexical_models", nargs='?')
     parser.add_argument('audio_model_folder', help="path to audio models", default="evaluation_data/audio_models", nargs='?')
-    parser.add_argument('release', help="whether to test in release mode", default=False, nargs='?')
+    parser.add_argument('--release', help="whether to test in release mode", action='store_true')
     args = parser.parse_args()
 
     if args.release:
@@ -93,6 +94,7 @@ if __name__ == '__main__':
     print("Reading all talks ...")
     audio_parser = AudioParser()
     talks = audio_parser.parse(args.ctm_file)
+
 
     # get all lexical models
     lexical_models = []
