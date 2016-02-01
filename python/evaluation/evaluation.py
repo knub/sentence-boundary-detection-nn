@@ -32,13 +32,15 @@ class Evaluation(object):
 
         # get config parameter
         (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
+
         (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
 
         fusions = get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
 
+        assert(len(input_audio.tokens) == len(input_text.tokens))
         for fusion in fusions:
             print str(fusion)
-            fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
+            fusion_probs = fusion.fuse(len(input_audio.tokens), lexical_probs, audio_probs)
 
             exp_actual = self.get_expected_actual(fusion_probs, self.tokens)
             self.calculate_evaluation_metrics(exp_actual)
@@ -48,20 +50,19 @@ class Evaluation(object):
         word_tokens = [token for token in tokens if not token.is_punctuation()]
 
         assert(len(word_tokens) == len(fusion_probs))
-        tokens_idx = 0
+        tokens_idx = 1
         for i in range(len(fusion_probs)):
             actual = fusion_probs[i].index(max(fusion_probs[i]))
             is_punctuation = tokens[tokens_idx].is_punctuation()
+            expected = tokens[tokens_idx].punctuation_type.value if is_punctuation else 0
             if is_punctuation:
                 tokens_idx += 1
             tokens_idx += 1
-            expected = token.punctuation_type.value if is_punctuation else 0
             expected_actual.append((expected, actual))
 
         return expected_actual
 
     def calculate_evaluation_metrics(self, expected_actual):
-        print("Results:")
         expected = map(lambda x: x[0], expected_actual)
         actual = map(lambda x: x[1], expected_actual)
         results = precision_recall_fscore_support(expected, actual)

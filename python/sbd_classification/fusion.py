@@ -69,7 +69,9 @@ class Fusion(object):
                 fusion_probs.append([audio_none, 0.0, audio_period])
                 continue
 
-            fusion_probs.append(self.sophisticated_fusion(lexical_probs[lexical_pos], audio_probs[audio_pos]))
+            fusion_result = self.sophisticated_fusion(lexical_probs[lexical_pos], audio_probs[audio_pos])
+            assert(len(fusion_result) == 3)
+            fusion_probs.append(fusion_result)
 
         return fusion_probs
 
@@ -152,11 +154,15 @@ def get_evaluation_fusion_list(lexical_punctuation_pos, lexical_window_size, aud
     fusions.append(ThresholdFusion(0.6, 0.9))
     fusions.append(ThresholdFusion(0.7, 0.8))
     fusions.append(ThresholdFusion(0.7, 0.9))
+    fusions.append(BalanceFusion(0.1))
+    fusions.append(BalanceFusion(0.2))
+    fusions.append(BalanceFusion(0.3))
     fusions.append(BalanceFusion(0.4))
     fusions.append(BalanceFusion(0.5))
     fusions.append(BalanceFusion(0.6))
     fusions.append(BalanceFusion(0.7))
     fusions.append(BalanceFusion(0.8))
+    fusions.append(BalanceFusion(0.9))
     return [f.init_parameters(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size) for f in fusions]
 
 def main():
