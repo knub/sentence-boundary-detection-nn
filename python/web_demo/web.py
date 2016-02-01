@@ -99,7 +99,8 @@ def classifyAudioLexical():
     (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
 
     # fusion
-    fusion = ThresholdFusion(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
+    fusion = ThresholdFusion()
+    fusion.init_parameters(lexical_punctuation_pos, lexical_window_size, audio_punctuation_pos, audio_window_size)
     fusion_probs = fusion.fuse(len(input_text.tokens), lexical_probs, audio_probs)
 
     # convert it into json
