@@ -7,7 +7,7 @@ class Word2VecFile(object):
     """reads a binary word vector file, returns vectors for single words"""
     def __init__(self, filename):
         self.ENCODING = 'UTF-8'
-        self.KEY_ERROR_VECTOR = sbd.config.get('word_vector', 'key_error_vector')
+        self.KEY_ERROR_VECTOR = "this"
 
         self.key_mapping = {
             "'s": "is",
