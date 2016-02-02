@@ -36,8 +36,8 @@ class JsonConverter(object):
             if current_prediction_position < 0:
                 probs_json['audio'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'PERIOD': 0.0}}
             else:
-                current_punctuation = self.classes_audio[numpy.argmax(audio_probs[current_prediction_position])]
-                class_distribution = self._get_class_distribution(audio_probs[current_prediction_position], self.classes_audio)
+                current_punctuation = self.classes_audio[numpy.argmax(audio_probs[i])]
+                class_distribution = self._get_class_distribution(audio_probs[i], self.classes_audio)
                 probs_json['audio'] = { 'punctuation': current_punctuation, 'probs': class_distribution}
 
             # LEXICAL
