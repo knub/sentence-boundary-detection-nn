@@ -21,8 +21,6 @@ TEXT_DATA = "text_data"
 
 DEBUG = True
 
-# TODO: add spinner for loading times
-
 def get_options(route_folder, sub_folder):
     dir = os.path.join(route_folder, sub_folder)
     f = []
@@ -49,12 +47,9 @@ def classifyLexical():
     assert request.method == 'POST'
     text_file = request.form['textfile']
 
-    # TODO: if textfile is selected, it is chosen regardless of what the user wants
-
     if not text_file:
         text = request.form['text']
     else:
-        # TODO: use tokens of input
         file_name = os.path.join(route_folder, TEXT_DATA, text_file)
         inputTextReader = InputTextReader()
         text = inputTextReader.readFile(file_name)
