@@ -41,6 +41,8 @@ class InputText(object):
                 # do pos_tagging if needed on sentence level
                 if sbd.config.getboolean('features', 'pos_tagging'):
                     nlp_pipeline.pos_tag(sentence_tokens)
+                for t in sentence_tokens:
+                    t.word = t.word.lower()
                 word_tokens += sentence_tokens
 
         self.tokens = word_tokens

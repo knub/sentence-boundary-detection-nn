@@ -1,4 +1,6 @@
+import nltk, nltk.data
 from intervaltree import IntervalTree
+from preprocessing.tokens import AudioToken, PunctuationToken, Punctuation
 import numpy as np
 
 class Audio(object):
@@ -164,6 +166,57 @@ class AudioSentence(object):
         except:
             # print("Sentence has no energy levels. Setting avg_energy to 0.0.")
             return 0.0
+
+    def prepare(self):
+        for i, token in enumerate(self.tokens):
+            # Capitalize first letter
+            if i == 0:
+                token.word = token.word.title()
+
+            # Capitalize common words
+            if token.word == "i":
+                token.word = "I"
+
+    def tokenize(self):
+        sentence_str = ' '.join(map(lambda t: t.word, self.tokens))
+
+        raw_tokens = nltk.word_tokenize(sentence_str)
+
+        final_tokens = []
+
+        raw_idx = 0
+        for idx in range(len(self.tokens)):
+            if len(self.tokens[idx].word) == len(raw_tokens[raw_idx]):
+                final_tokens.append(self.tokens[idx])
+                raw_idx += 1
+            else:
+                # we need to split up our token
+                current_index = raw_idx + 2
+                while ''.join(raw_tokens[raw_idx:current_index]) != self.tokens[idx].word:
+                    print(raw_tokens[raw_idx:current_index], self.tokens[idx].word)
+                    current_index += 1
+
+                nr_tokens = current_index - raw_idx
+
+                current_begin = self.tokens[idx].begin
+                duration_step = self.tokens[idx].duration / nr_tokens
+
+                for i in range(raw_idx, current_index):
+                    new_token = AudioToken(raw_tokens[i])
+                    new_token.duration = duration_step
+                    new_token.begin = current_begin
+
+                    current_begin += duration_step
+
+                    final_tokens.append(new_token)
+
+                raw_idx += nr_tokens
+
+        assert(idx == len(self.tokens) - 1)
+        assert(raw_idx == len(raw_tokens))
+
+        final_tokens.append(PunctuationToken(".", Punctuation.PERIOD))
+        self.tokens = final_tokens
 
     def append_token(self, token):
         self.tokens.append(token)

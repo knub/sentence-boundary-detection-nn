@@ -50,7 +50,8 @@ class CtmParser(AbstractParser):
                     if token_count > 0:
                         sentence.begin = sentence.tokens[0].begin
                         sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
-                        sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
+                        sentence.tokenize()
+                        sentence.prepare()
                         audio.add_sentence(sentence)
 
                     # end of talk reached
@@ -88,7 +89,8 @@ class CtmParser(AbstractParser):
         if (len(sentence.tokens) > 0):
             sentence.begin = sentence.tokens[0].begin
             sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
-            sentence.append_token(PunctuationToken(".", Punctuation.PERIOD))
+            sentence.tokenize()
+            sentence.prepare()
             audio.add_sentence(sentence)
 
         if len(audio.sentences) > 0:
