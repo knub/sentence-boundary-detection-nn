@@ -80,7 +80,7 @@ class Fusion(object):
 
 class ThresholdFusion(Fusion):
 
-    def __init__(self, threshold_audio = 0.5, threshold_lexical = 0.8):
+    def __init__(self, threshold_audio = 0.5, threshold_lexical = 0.9):
         super(ThresholdFusion, self).__init__()
         self.threshold_audio = threshold_audio
         self.threshold_lexical = threshold_lexical
