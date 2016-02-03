@@ -1,0 +1,36 @@
+fusion,precision[NONE],precision[PERIOD],recall[NONE],recall[PERIOD],f1[NONE],f1[PERIOD],support[NONE],support[PERIOD]
+('BaselineLexicalFusion',)
+0.977,0.645,0.984,0.554,0.981,0.596,11611.000,599.000
+('BaselineAudioFusion',)
+0.981,0.604,0.968,0.722,0.974,0.658,12169.000,832.000
+('ThresholdFusion[AudioThresh: 0.50, LexicalThresh: 0.80]',)
+0.981,0.672,0.979,0.701,0.980,0.686,11647.000,722.000
+('ThresholdFusion[AudioThresh: 0.50, LexicalThresh: 0.90]',)
+0.983,0.678,0.978,0.733,0.981,0.704,11647.000,722.000
+('ThresholdFusion[AudioThresh: 0.60, LexicalThresh: 0.80]',)
+0.981,0.672,0.979,0.695,0.980,0.683,11646.000,721.000
+('ThresholdFusion[AudioThresh: 0.60, LexicalThresh: 0.90]',)
+0.983,0.678,0.979,0.727,0.981,0.701,11646.000,721.000
+('ThresholdFusion[AudioThresh: 0.70, LexicalThresh: 0.80]',)
+0.981,0.676,0.980,0.689,0.980,0.682,11644.000,717.000
+('ThresholdFusion[AudioThresh: 0.70, LexicalThresh: 0.90]',)
+0.983,0.682,0.979,0.721,0.981,0.701,11644.000,717.000
+('BalanceFusion[BalanceValue: 0.10]',)
+0.981,0.788,0.993,0.593,0.987,0.677,11893.000,553.000
+('BalanceFusion[BalanceValue: 0.20]',)
+0.982,0.792,0.993,0.599,0.987,0.682,11916.000,553.000
+('BalanceFusion[BalanceValue: 0.30]',)
+0.982,0.807,0.993,0.608,0.988,0.694,11944.000,551.000
+('BalanceFusion[BalanceValue: 0.40]',)
+0.982,0.820,0.994,0.611,0.988,0.701,11973.000,553.000
+('BalanceFusion[BalanceValue: 0.50]',)
+0.980,0.803,0.993,0.591,0.987,0.681,11916.000,580.000
+('BalanceFusion[BalanceValue: 0.60]',)
+0.979,0.717,0.989,0.569,0.984,0.634,11773.000,587.000
+('BalanceFusion[BalanceValue: 0.70]',)
+0.978,0.675,0.986,0.568,0.982,0.617,11698.000,595.000
+('BalanceFusion[BalanceValue: 0.80]',)
+0.978,0.669,0.986,0.568,0.982,0.614,11664.000,597.000
+('BalanceFusion[BalanceValue: 0.90]',)
+0.978,0.653,0.985,0.564,0.981,0.605,11635.000,598.000
+
