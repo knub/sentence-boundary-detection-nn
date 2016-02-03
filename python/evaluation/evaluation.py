@@ -54,13 +54,13 @@ class Evaluation(object):
         tokens_idx = 1
         for i in range(len(fusion_probs)):
             actual = fusion_probs[i].index(max(fusion_probs[i]))
-            if actual == Punctuation.COMMA.value:
-                continue
             is_punctuation = tokens[tokens_idx].is_punctuation()
             expected = tokens[tokens_idx].punctuation_type.value if is_punctuation else 0
             if is_punctuation:
                 tokens_idx += 1
             tokens_idx += 1
+            if actual == Punctuation.COMMA.value:
+                continue
             expected_actual.append((expected, actual))
 
         return expected_actual

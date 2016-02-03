@@ -56,6 +56,7 @@ class LexicalClassifier(object):
 # Example call #
 ################
 
+
 def main(caffeproto, caffemodel):
     net = caffe.Net(caffeproto, caffemodel, caffe.TEST)
     classifier = LexicalClassifier(net, None, True)
