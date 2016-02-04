@@ -1,0 +1,18 @@
+fusion	precision[NONE]	precision[PERIOD]	recall[NONE]	recall[PERIOD]	f1[NONE]	f1[PERIOD]	support[NONE]	support[PERIOD]
+BaselineLexicalFusion	0.971	0.635	0.986	0.460	0.979	0.534	11225.000	602.000
+BaselineAudioFusion	0.980	0.606	0.967	0.722	0.973	0.659	11797.000	832.000
+ThresholdFusion[AudioThresh: 0.50, LexicalThresh: 0.80]	0.976	0.682	0.981	0.629	0.979	0.655	11254.000	731.000
+ThresholdFusion[AudioThresh: 0.50, LexicalThresh: 0.90]	0.979	0.693	0.981	0.672	0.980	0.682	11254.000	731.000
+ThresholdFusion[AudioThresh: 0.60, LexicalThresh: 0.80]	0.976	0.681	0.981	0.625	0.978	0.652	11254.000	728.000
+ThresholdFusion[AudioThresh: 0.60, LexicalThresh: 0.90]	0.979	0.691	0.981	0.668	0.980	0.679	11254.000	728.000
+ThresholdFusion[AudioThresh: 0.70, LexicalThresh: 0.80]	0.976	0.684	0.982	0.620	0.979	0.650	11252.000	726.000
+ThresholdFusion[AudioThresh: 0.70, LexicalThresh: 0.90]	0.978	0.694	0.981	0.663	0.980	0.678	11252.000	726.000
+BalanceFusion[BalanceValue: 0.10]	0.980	0.784	0.993	0.557	0.987	0.652	11521.000	522.000
+BalanceFusion[BalanceValue: 0.20]	0.981	0.796	0.993	0.570	0.987	0.664	11538.000	519.000
+BalanceFusion[BalanceValue: 0.30]	0.981	0.813	0.994	0.569	0.988	0.670	11568.000	518.000
+BalanceFusion[BalanceValue: 0.40]	0.981	0.826	0.995	0.569	0.988	0.674	11599.000	527.000
+BalanceFusion[BalanceValue: 0.50]	0.977	0.807	0.994	0.523	0.985	0.635	11551.000	566.000
+BalanceFusion[BalanceValue: 0.60]	0.974	0.727	0.991	0.480	0.982	0.578	11394.000	581.000
+BalanceFusion[BalanceValue: 0.70]	0.973	0.671	0.988	0.468	0.980	0.552	11314.000	594.000
+BalanceFusion[BalanceValue: 0.80]	0.972	0.660	0.987	0.465	0.980	0.546	11270.000	598.000
+BalanceFusion[BalanceValue: 0.90]	0.972	0.647	0.986	0.463	0.979	0.539	11247.000	601.000
