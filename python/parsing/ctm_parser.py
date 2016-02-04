@@ -51,7 +51,7 @@ class CtmParser(AbstractParser):
                         sentence.begin = sentence.tokens[0].begin
                         sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
                         sentence.tokenize()
-                        # sentence.prepare()
+                        sentence.prepare()
                         audio.add_sentence(sentence)
 
                     # end of talk reached
@@ -90,7 +90,7 @@ class CtmParser(AbstractParser):
             sentence.begin = sentence.tokens[0].begin
             sentence.end = sentence.tokens[-1].begin + sentence.tokens[-1].duration
             sentence.tokenize()
-            # sentence.prepare()
+            sentence.prepare()
             audio.add_sentence(sentence)
 
         if len(audio.sentences) > 0:

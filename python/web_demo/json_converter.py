@@ -29,12 +29,15 @@ class JsonConverter(object):
             # we have probabilities for all tokens
             current_punctuation = self.classes_lexical_audio[numpy.argmax(fusion_probs[i])]
             class_distribution = self._get_class_distribution(fusion_probs[i], self.classes_lexical_audio)
-            probs_json['fusion'] = {'punctuation': current_punctuation, 'probs': class_distribution}
+            if i == len(tokens) - 1:
+                probs_json['fusion'] = {'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'PERIOD': 1.0}}
+            else:
+                probs_json['fusion'] = {'punctuation': current_punctuation, 'probs': class_distribution}
 
             # AUDIO
             current_prediction_position = get_index(i, len(audio_probs), self.AUDIO_PUNCTUATION_POS)
-            if i == len(tokens) -1:
-                json_data.append({'type': 'punctuation', 'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'PERIOD': 1.0}})
+            if i == len(tokens) - 1:
+                probs_json['audio'] = {'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'PERIOD': 1.0}}
             elif current_prediction_position < 0:
                 probs_json['audio'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'PERIOD': 0.0}}
             else:
@@ -44,8 +47,8 @@ class JsonConverter(object):
 
             # LEXICAL
             current_prediction_position = get_index(i, len(lexical_probs), self.LEXICAL_PUNCTUATION_POS)
-            if i == len(tokens) -1:
-                json_data.append({'type': 'punctuation', 'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'COMMA': 0.0, 'PERIOD': 1.0}})
+            if i == len(tokens) - 1:
+                probs_json['lexical'] = {'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'COMMA': 0.0, 'PERIOD': 1.0}}
             elif current_prediction_position < 0:
                 probs_json['lexical'] = {'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}}
             else:
@@ -69,7 +72,7 @@ class JsonConverter(object):
             # we are at the beginning or at the end of the text and do not have any predictions for punctuations
             current_prediction_position = get_index(i, len(punctuation_probs), self.LEXICAL_PUNCTUATION_POS)
             # last token always period
-            if i == len(tokens) -1:
+            if i == len(tokens) - 1:
                 json_data.append({'type': 'punctuation', 'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'COMMA': 0.0, 'PERIOD': 1.0}})
             elif current_prediction_position < 0:
                 json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
