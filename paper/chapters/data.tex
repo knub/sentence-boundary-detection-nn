@@ -1,1 +1,20 @@
 % how did we prepare our data
+
+Our data set can be separated into to parts:
+The first part is based on TED talks\footnote{\url{ted.com}}, the second part is a subset from Wikipedia\footnote{\url{en.wikipedia.org}}.
+
+\paragraph{TED talks} Our TED talk data set consists of TODO talks. For each talk we have the following data files:
+\begin{itemize}
+	\item .xml-file: This file contains a manually created script of the talk.
+	The text is formatted and serves as training data for the lexical model.
+	\item .ctm-file: This is a time-marked speech input.
+	It contains one word per line with the second the word was said in the talk and its duration.
+	Additionally, each sentence is labeled in the file, so that the data can be used for training of the acoustic model.
+	\item .sph-file: This file contains pulse code modulation (PCM) data.
+	This data can be converted into .wav files.
+\end{itemize}
+
+\paragraph{Wikipedia} We used a small subset of the English Wikipedia to obtain more training data.
+We selected only those articles with more than 10,000 characters.
+Besides, we extracted the plain text of the articles, discarding lists, headlines, tables, etc.
+In total we received around 3.5 million new training instances from the Wikipedia articles.
