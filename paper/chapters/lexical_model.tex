@@ -1,7 +1,6 @@
 In this chapter we describe how we predict the position of periods, commas and question marks in unpunctuated text using lexical features.
 The used data is described in Section \ref{sec:training_data}. 
 
-\subsection{Data Preprocessing}
 The system is based on the deep learning framework \emph{caffe}.
 Therefore the processing pipeline is the following:
 
@@ -12,7 +11,9 @@ Therefore the processing pipeline is the following:
 \item post process the output, to show a valuable result
 \end{itemize}
 
-For processing the data, we find features which caffe can handle. 
+\subsection{Data Preprocessing}
+
+For processing the data, we need to find features which caffe can handle. 
 Since you can not use a whole text as input, we decided to use a sliding window to generate training/testing instances.
 A sliding window is in our case, that we split a sentence like \emph{The sun is shining and we go outside} into the following pieces (under the assumption using a window size of 4):
 \begin{itemize}
@@ -28,42 +29,45 @@ The label of each instance is then if there is a punctuation (and which) at a de
 This position we call punctuation position.
 In the above example every instance would have a label of \emph{None} with a punctuation position of 2, since there is no punctuation.
 
-After we split up the sentence into parts/windows we need to convert the different words into a format caffe can deal with.
-Therefore we used the former described Google word vector to decode the words into a xxx bit long representation. 
+After we split up the sentence into parts/windows we need to convert the different words into a distributed word representation.
+Therefore we used the Google word vector described earlier to decode the words into a xxx bit long representation. 
 Since there is not every word in the google vector included, we used for unknown words the word vector for \emph{this} instead. 
 We think that most of the unknown words are proper names, which can easily be replaced with \emph{this} without changing the meaning/structure of the whole sentence.
 
 We also figured out that the google vector only contains the number 1 instead of all (or the most common) numbers. 
 That is why we replace any number with 1.
 
-The retrieved vectors are XXXXXX. (one line per vector)
+Each vector represents one row in the feature matrix, e.g. for a sliding window size of 4 you get the matrix of 4x300. 
 
-Beside the words as features we also tried Part of Speech (POS) tags. 
+Beside the XXX(vector representation of the words) as features we also considered Part of Speech (POS) tags. 
 We used the nltk POS-Tagger to identify the POS tags with the whole text as input.
 The Tagger distinguishes between 35 different POS tags. 
-These are to exact for our purpose, so we grouped the them into 14 different categories, which consists mainly of categories like verb, noun and determiner. 
+These are too specific for our purpose, so we reduced them into 14 different categories.
+For example we combined CD and LS to a more generic category \emph{numeral}. 
 The nltk tagger predicts more than one tag per word, so that it is also possible after reducing the tag categories, that one word can have multiple tags.
-This new feature need also be converted into a format caffe can work with. 
+This new feature needs to be included in our feature vector.
 We created one flag per category which has the value 0 if the word has not that tag and 1 if the word has this tag.
 
-There are several possibilities to include them:
-\begin{itemize}
-\item in an extra channel as flags
-\item attached to the word vector as flags
-\item one extra number and the the tags decoded as number
-\end{itemize}
+There are two possibilities to include them. On the one hand it is possible to append all flags at the end to word vector representations.
+On the other hand an extra channel with the flags can be used.
 
-For all further testing, where we used the POS-feature, we just added the flags to the vector representation of the words.
-But evaluating the other possibilities would also be worth it. 
+For all further testing, wherever we used the POS-features, we decided to use the appending of the flags to the vector representation of the words.
+But evaluating the other possibility would also be worth it. 
+
 
 Data preparation
 Windowing
 Config.ini File
 
-Describe the net, the features
-Google Vector
-Evaluation
 
+Google Vector
+
+\subsection{Neuronal Network Layout}
+Describe the net, the features
+
+\subsection{Evaluation}
+Formeln für Precision, Recall, Harmonic Mean
+Evaluation, wikipidia usage?, results with wikipedia test set 
 
 Evaluation of results:
 \begin{itemize}
