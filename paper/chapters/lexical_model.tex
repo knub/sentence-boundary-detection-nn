@@ -68,35 +68,62 @@ After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer
 The ratio for all \texttt{dropout} layers is $0.5$.
 Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{innerproduct} layer wih size 3 or 4 depending on the number of punctuation symbols.
 
-\subsection{Evaluation}
-Formeln für Precision, Recall, Harmonic Mean
-Evaluation, wikipidia usage?, results with wikipedia test set
+\subsection{Results and Evaluation}
 
-Evaluation of results:
-\begin{itemize}
-\item F-measure for each class is calculated.
-\item Harmonic mean for all F-measures is total score (higher is better).
-\end{itemize}
+We used the measure of precision \emph{P} and recall \emph{R} as well as the F-Measure. We calculated the F measure per class as shown in Equation \ref{equ:f1n}.
+We also calculated the harmonic mean \emph{F} for all classes (None, Comma, Period) (see Equation \ref{equ:f1}). This means the higher that value is the better is it. This score is used in the following diagrams.
+
+\begin{equation}
+\label{equ:f1n}
+F1_{N} = 2 * \frac{P_{N}* R_{N}}{P_{N}+R_{N}}
+\end{equation}
+
+\begin{equation}
+\label{equ:f1}
+F = \frac{3}{\frac{1}{F1_{None}} + \frac{1}{F1_{Comma}} + \frac{1}{F1_{Period}}}
+\end{equation}
+
+All experiments are executed with the previous described data preprocessing and network layout.
+We used TED talks as testing data. 
+
+In Figure \ref{fig:window_eval} you can see the results. 
+We varied the window and punctuation position. 
+We found out that the best position for the punctuation in the middle of the window is.
+We get the best results for a window size of 8. 
+The more context the better the results.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{img/window_eval.png}
-    \caption{Harmonic mean between all f1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses wikipedia training data.}
-    \label{window_eval}
+    \caption{Harmonic mean between all F1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses wikipedia training data.}
+    \label{fig:window_eval}
 \end{figure}
+
+In Figure \ref{fig:window_wiki_eval} a comparison between using only TED talks and using additionally wikipedia data as training data.
+The described F-score is used, as well as different window sizes and punctuation positions. 
+The result for varying of window size is the same as described in the experiments above. 
+You can see that using wikipedia data as additional training data always performs worse.
+This shows that more data does not help in general, although %\cite{}
+ described that more data performs best.
+This result can be explained with the used testing data. 
+The trained network is evaluated with TED talks.
+This is spoken language and wikipedia articles are written language by its nature. 
+This result shows that written and spoken language is different at predicting punctuations for other language structures.
+We evaluated the network also with wikipedia data (different from trainings data). The results are XXX.
+This shows that just the test data structure yields to the different results.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{img/window_wiki_eval.png}
-    \caption{}
-    \label{window_wiki_eval}
+    \caption{F score with different window and punctuation positions. Compares only TED talks and TED talks with additional wikipedia data as training data.}
+    \label{fig:window_wiki_eval}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{img/window_pos_eval.png}
     \caption{}
-    \label{window_pos_eval}
+    \label{fig:window_pos_eval}
 \end{figure}
 
 Comparison between experiments with and without POS tagging (other than that, they have the same configurations):
@@ -110,3 +137,7 @@ Comparison between experiments with and without wikipedia data (other than that,
 \item Without wikipedia: 0.385
 \item With wikipedia data: 0.252
 \end{itemize}
+
+
+Formeln für Precision, Recall, Harmonic Mean
+Evaluation, wikipidia usage?, results with wikipedia test set
