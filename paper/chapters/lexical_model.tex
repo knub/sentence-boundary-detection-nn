@@ -62,7 +62,11 @@ Therefore the resulting feature matrix for a sliding window size of 5 with POS t
 % Google Vector
 
 \subsection{Neural Network Layout}
-Describe the net, the features
+
+We use a neural network layout with three main \texttt{innerproduct} layers with sizes 2048, 4096, and 2048.
+After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer on top of each \texttt{innerproduct} layer.
+The ratio for all \texttt{dropout} layers is $0.5$.
+Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{innerproduct} layer wih size 3 or 4 depending on the number of punctuation symbols.
 
 \subsection{Evaluation}
 Formeln für Precision, Recall, Harmonic Mean
@@ -77,7 +81,7 @@ Evaluation of results:
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{img/window_eval.png}
-    \caption{Harmonic mean between all f1 scores for all classes. \emph{2/5} means window size of five and punctuation is tested at position two. If \emph{wi} is in the label, it uses wikipedia training data.}
+    \caption{Harmonic mean between all f1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses wikipedia training data.}
     \label{window_eval}
 \end{figure}
 
