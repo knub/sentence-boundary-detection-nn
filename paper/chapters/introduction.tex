@@ -1,11 +1,20 @@
 % introduction
-Automatic Speech Recognition (ASR) is nowadays used in many field, like for Medical Documentation or Journalism. 
-Generating ASR transript can be done automatically and relative easy. 
-But the result is an unformatted, long text without i.e. any punctuation at all. 
-So it is hard to understand the scripts and to use them without manually post processing.
+Automatic Speech Recognition (ASR) has many practical applications nowadays, e.g. in dictation systems for medical documentation and journalism.
+Another application comes from the rapidly increasing amount of videos available online on video platforms for entertainment and learning, such as Youtube, Vimeo, Coursera or OpenHPI.
+All of these benefit from automatically generated transcripts and subtitles.
+But, the result of many ASR systems is an unformatted, long text without punctuation marks, such as periods and commas.
+These texts are hard to read, understand, and use without manually inserting the missing punctuation marks.
 
-In this paper we want to address this problem by automatically create punctuated text from unpunctuated text.
-Deep learning is used to process the unformatted transcript as well as the speech.
-...
+In this paper we want to address this problem by automatically creating punctuated text from unpunctuated text.
+We use the concept of deep neural networks to process the unformatted transcript as well as the speech as input.
+We train both models independently and retrieve their separate predictions.
+Afterwards the results are combined in a fusion step.
+The final output can replace the original output from ASR systems and improve readability and quality of transcripts.
+Additionally, the puctuation marks often represent suitable boundaries for subtitles, enhancing their overall quality.
 
-
+The rest of the paper is structured as follows:
+Related work is summarized in Section~\ref{sec:related_work}.
+Section~\ref{sec:training_data} describeds the datasets we use for training and evaluation.
+The data preprocessing, training, and evaluation of our lexical and our acoustic model can be seen in Section~\ref{sec:lexical_model} and Section~\ref{sec:acoustic_model} respectively.
+Details of the fusion step are explained in Section~\ref{sec:fusion}.
+We show our demo application in Section~\ref{sec:demo} and conclude our work in Section~\ref{sec:future}.

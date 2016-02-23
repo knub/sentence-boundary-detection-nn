@@ -1,1 +1,16 @@
 % future work
+We showed our approach to automatically detect sentence boundaries, and predict the correct punctuation marks.
+Two different models were trained independently, one using lexical input and the other acoustic input.
+The results of both models were merged with a late fusion.
+
+There are many possibilties for improvement on the presented approach.
+Since we did not explore a large variety of different neural network layouts, further exploration in this area could improve the results.
+Especially if combined with more training data a deeper network architecture might improve the quality of the prediction.
+Another approach is the usage of Long Short Term Memory (LSTM) in the neural network.
+
+In the fusion step we decided for a late fusion approach, which only combines the predictions.
+However another way to explore, is an earlier fusion, where both models and the fusion itself are trained together and the features are fused, instead of the predictions.
+As for data preparation, a different representation of features in the lexical model can be examined, such as a second or third data channel or a combination similar to the fusion of the acoustic and lexical model.
+
+The last point for minor improvements could be done with a post processing of the results.
+For example, two punctuation symbols with only one or very few words between them is often not correct.

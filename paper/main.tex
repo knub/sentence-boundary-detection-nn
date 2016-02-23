@@ -89,11 +89,27 @@
 \section{Appendix}
 We appended the following files for reference:
 \begin{itemize}
-	\item solver.prototxt, The configuration of the solver
+    \item lexical-solver.prototxt, the configuration of the solver (lexical model)
+    \item lexical-net.prototxt, our net configuration (lexical model)
+    \item acoustic-solver.prototxt, the configuration of the solver (acoustic model)
+    \item acoustic-net.prototxt, our net configuration (acoustic model)
 \end{itemize}
 
-\subsection{solver.prototxt}
-\lstinputlisting[caption={solver.prototxt}, label={lst:solver.prototxt}]{appendix/solver.txt}
+\subsection{lexical-solver.prototxt}
+\lstinputlisting[caption={lexical-solver.prototxt}, label={lst:lexical-solver.prototxt}]{../net/solver.prototxt}
+\newpage
+
+\subsection{lexical-net.prototxt}
+\lstinputlisting[caption={lexical-net.prototxt}, label={lst:lexical-net.prototxt}]{../net/net.prototxt}
+\newpage
+
+\subsection{acoustic-solver.prototxt}
+\lstinputlisting[caption={acoustic-solver.prototxt}, label={lst:acoustic-solver.prototxt}]{../net-audio/solver.prototxt}
+\newpage
+
+\subsection{acoustic-net.prototxt}
+\lstinputlisting[caption={acoustic-net.prototxt}, label={lst:acoustic-net.prototxt}]{../net-audio/net.prototxt}
+
 %\newpage %for more appended files
 
 \end{document}
