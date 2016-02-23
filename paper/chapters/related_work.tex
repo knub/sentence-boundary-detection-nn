@@ -1,9 +1,29 @@
 
-\subsection{TODO}
+\subsection{Punctuation Prediction}
+There are some researcher that focused on pure lexical based punctuation prediction.
+
+Gravano, Jansche und Bacchiani used a simple language model with n-grams to detect punctiations. 
+They differed the n-grams between 3 and 6 and evaluated the size of the trainings set. 
+They mainly used news articles as data. They found out that about 5-grams and the most data they could get, performed best.
+The result is a precision value for comma of 0.55 and for period of 0.65. 
+The recall value is 0.68 (comma) and 0.62 (period). 
+\todo{cite} %RESTORING PUNCTUATION AND CAPITALIZATION IN TRANSCRIBED SPEECH Agustin Gravano, Martin Jansche, Michiel Bacchiani:}
+
+Another more advanced method is dynamic conditional random fields. 
+Lu and Tou Ng used adoption of this method to predict punctuations in transcripts of dialogs in Chinese and English, which means many short sentences and more than usual questions. 
+They were able to outperform hidden event language model.
+\todo{cite} %Better Punctuation Prediction with Dynamic Conditional Random Fields Wei Lu and Hwee Tou Ng}
+XXX also used dynamic conditional fields. They evaluated this method with different features like language model scores, parse trees, dynamic sentence length and token n-grams. 
+They discovered that the usefullness of the features differs to the used texts. If the text is more structured then the parse tree features are useful, for TED-Talks for example they did not help much.
+\todo{cite} %Improved Models for Automatic Punctuation Prediction for Spoken and Written Text Nicola Ueffing, Maximilian Bisani 1 , Paul Vozila}
+ 
+ 
 Ein Abschnitt für lexical, eines für acoustic.
 Welche Features?
 Welchen Grundalgorithmus? (SVM, Decision Tree?)
 Deren Ergebnisse.
+
+
 
 \subsection{Distributed Representations}
 word2vec
