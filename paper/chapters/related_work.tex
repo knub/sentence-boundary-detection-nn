@@ -8,13 +8,16 @@ They mainly used news articles as data. They found out that about 5-grams and th
 The result is a precision value for comma of 0.55 and for period of 0.65. 
 The recall value is 0.68 (comma) and 0.62 (period) \cite{gravano09}. 
 
-
 Another more advanced method is dynamic conditional random fields. 
 Lu and Tou Ng used adoption of this method to predict punctuations in transcripts of dialogs in Chinese and English, which means many short sentences and more than usual questions. 
 They were able to outperform hidden event language model \cite{Lu_betterpunctuation}.
 
 \cite{DBLP:conf/interspeech/UeffingBV13} also used dynamic conditional fields. They evaluated this method with different features like language model scores, parse trees, dynamic sentence length and token n-grams. 
 They discovered that the usefullness of the features differs to the used texts. If the text is more structured then the parse tree features are useful, for TED-Talks for example they did not help much.
+
+Other approaches focus on using only prosodic features. For this the audio files are used.
+Pausch uses a decision tree with features like initial/final intonation, pitch gradient and downdrift to extract sentence boundaries. They detected the features are extracted only out of the audio file with a whole pipeline \cite{Pausch2011}.
+\cite{conf/iscslp/XieXW12} used also decision trees to find sentence boundaries in Chinese broadcast news. They extracted features like
 
 
 Ein Abschnitt für lexical, eines für acoustic.
