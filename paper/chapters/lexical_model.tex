@@ -1,6 +1,13 @@
 In this chapter we describe how we predict the position of periods, commas and question marks in unpunctuated text using lexical features.
 The used data is described in Section \ref{sec:training_data}.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{img/overview_lexical.pdf}
+    \caption{}
+    \label{fig:overview_lexical}
+\end{figure}
+
 The system is based on the deep learning framework \emph{caffe}.
 Therefore the processing pipeline is the following:
 
@@ -84,7 +91,7 @@ F = \frac{3}{\frac{1}{F1_{None}} + \frac{1}{F1_{Comma}} + \frac{1}{F1_{Period}}}
 \end{equation}
 
 All experiments are executed with the previous described data preprocessing and network layout.
-As training data we used TED talks, which are not included in the training stets. 
+As training data we used TED talks, which are not included in the training stets.
 
 \begin{figure}[ht]
     \centering
@@ -95,9 +102,9 @@ As training data we used TED talks, which are not included in the training stets
 
 We did experiments do get relations between several parameters.
 On the one hand we varied the window size and punctuation position.
-In Figure \ref{fig:window_eval} you can see the results. 
+In Figure \ref{fig:window_eval} you can see the results.
 We found out that the best position for the punctuation is in the middle of the window.
-We get the best results for a window size of 8. 
+We get the best results for a window size of 8.
 This means that more context the better the results, until a certain point.
 
 \begin{figure}[ht]
@@ -109,15 +116,15 @@ This means that more context the better the results, until a certain point.
 
 As described in Section \ref{sec:training_data}, we wanted to use more data for lexical prediction.
 In Figure \ref{fig:window_wiki_eval} a comparison between using only TED talks and using additionally wikipedia data as training data is shown.
-The described F-score is used, as well as different window sizes and punctuation positions. 
-The result for varying the window size is the same as described in the experiments above. 
+The described F-score is used, as well as different window sizes and punctuation positions.
+The result for varying the window size is the same as described in the experiments above.
 You can see that using wikipedia data as additional training data always performs worse.
-An experiment without wikipedia data has a F-score of 0.385, whereas the same experiment with wikipedia has only a F-score of 0.252. 
+An experiment without wikipedia data has a F-score of 0.385, whereas the same experiment with wikipedia has only a F-score of 0.252.
 This shows that more data does not help in general, although we think that the more data the network learned from the better the results should be.
-This result can be explained with the used testing data. 
+This result can be explained with the used testing data.
 The trained network is evaluated with TED talks.
-This is spoken language and wikipedia articles are written language by its nature. 
-We evaluated the network also with wikipedia data (different from trainings data), which yields to a F-score of 0.60. 
+This is spoken language and wikipedia articles are written language by its nature.
+We evaluated the network also with wikipedia data (different from trainings data), which yields to a F-score of 0.60.
 This shows that written and spoken language is different, so that predicting punctuations for other language structures does not work that good as for data with the same structure.
 
 \begin{figure}[ht]
@@ -128,7 +135,7 @@ This shows that written and spoken language is different, so that predicting pun
 \end{figure}
 
 We also evaluated if using POS-Tags improves the results. Figure \ref{fig:window_pos_eval} shows the F-score depending on the different window sizes and punctuation positions. The red bars are the results with using the POS-Feature and the blue bars are the result without (the normals one, shown in the other graphs too).
-You can see that using the additional POS Feature performs always better. 
+You can see that using the additional POS Feature performs always better.
 Compare to experiments with and without POS tagging (other than that, they have the same configurations) with POS tagging has a F-score of 0.305 whereas without POS tagging has only a F-score of 0.275.
 
 Since the punctuation types in the data sets are not equally distributed, we thought about reducing the dataset to a set were the types are balanced. Therefore we created training sets, were nearly equally distributed punctuations types are included. Experiments show that this performs worse as the normal sets. This is likely since the data set is much smaller.
