@@ -1,16 +1,20 @@
-% introduction
-Automatic Speech Recognition (ASR) has many practical applications nowadays, e.g. in dictation systems for medical documentation and journalism.
+Automatic Speech Recognition (ASR) has many practical applications nowadays, e.g., in dictation systems for medical documentation and journalism.
 Another application comes from the rapidly increasing amount of videos available online on video platforms for entertainment and learning, such as Youtube, Vimeo, Coursera or OpenHPI.
 All of these benefit from automatically generated transcripts and subtitles.
 But, the result of many ASR systems is an unformatted, long text without punctuation marks, such as periods and commas.
 These texts are hard to read, understand, and use without manually inserting the missing punctuation marks.
+Therefore, formatting the ASR output and inserting punctuation marks is mandatory for many further use cases.
+For example, most machine translation outputs are trained on proper formatted text.
+So, having a ASR output without punctuation marks decreases the performance of the machine translating system.
+Also other natural language processing task work on sentence units.
+Thus, the ASR output needs to be formatted before it can be further processed.
 
 In this paper we want to address this problem by automatically creating punctuated text from unpunctuated text.
-We use the concept of deep neural networks to process the unformatted transcript as well as the speech as input.
+We use the concept of deep neural networks to process the unformatted transcript as well as the speech, which results in two individual models: a lexical model and a acoustics model.
 We train both models independently and retrieve their separate predictions.
 Afterwards the results are combined in a fusion step.
 The final output can replace the original output from ASR systems and improve readability and quality of transcripts.
-Additionally, the puctuation marks often represent suitable boundaries for subtitles, enhancing their overall quality.
+Additionally, the punctuation marks often represent suitable boundaries for subtitles, enhancing their overall quality.
 
 The rest of the paper is structured as follows:
 Related work is summarized in Section~\ref{sec:related_work}.
