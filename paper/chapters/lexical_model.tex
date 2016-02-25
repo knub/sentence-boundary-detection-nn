@@ -1,12 +1,13 @@
 In this chapter we describe how we predict the position of periods, commas and question marks in unpunctuated text using lexical features.
 The used data is described in Section \ref{sec:training_data}.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{img/overview_lexical.pdf}
-    \caption{}
-    \label{fig:overview_lexical}
-\end{figure}
+% TODO: use
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{img/overview_lexical.pdf}
+%    \caption{}
+%    \label{fig:overview_lexical}
+%\end{figure}
 
 The system is based on the deep learning framework \emph{caffe}.
 Therefore the processing pipeline is the following:
@@ -30,12 +31,13 @@ A sliding window is in our case, that we split a sentence like \emph{The sun is 
 \item shining and we go outside
 \end{itemize}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{img/sliding_window.pdf}
-    \caption{}
-    \label{fig:sliding_window}
-\end{figure}
+% TODO: use
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{img/sliding_window.pdf}
+%    \caption{}
+%    \label{fig:sliding_window}
+%\end{figure}
 
 We call these pieces instances and the window size directly defines how many words are in each instance.
 The label of each instance is then whether there is a punctuation (and which one) at a defined position.
@@ -102,7 +104,7 @@ As training data we used TED talks, which are not included in the training stets
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{img/window_eval.png}
+    \includegraphics[width=0.9\textwidth]{img/window_eval.png}
     \caption{Harmonic mean between all F1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses wikipedia training data.}
     \label{fig:window_eval}
 \end{figure}
@@ -116,7 +118,7 @@ This means that more context the better the results, until a certain point.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{img/window_wiki_eval.png}
+    \includegraphics[width=0.75\textwidth]{img/window_wiki_eval.png}
     \caption{F score with different window and punctuation positions. Compares only TED talks and TED talks with additional wikipedia data as training data.}
     \label{fig:window_wiki_eval}
 \end{figure}
@@ -136,7 +138,7 @@ This shows that written and spoken language is different, so that predicting pun
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{img/window_pos_eval.png}
+    \includegraphics[width=0.75\textwidth]{img/window_pos_eval.png}
     \caption{}
     \label{fig:window_pos_eval}
 \end{figure}

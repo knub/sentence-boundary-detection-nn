@@ -1,17 +1,17 @@
-Due to the fact that punctuation prediction is a mandatory preprocessing step for further working with automated speech recognition output, a lot of research have been done in this field.
+Due to the fact that punctuation prediction is a mandatory preprocessing step for further working with automated speech recognition output, a lot of research has been done in this field.
 
 Some approaches focus only on the lexical part~\cite{Gravano2009, Lu2010, Ueffing2013, Cho2012, Zhang2013}.
 Gravano et al.~\cite{Gravano2009} used a text-based n-gram language model to detect punctuation (comma, period, question mark).
 Dynamic conditional random fields are used by Lu and Ng~\cite{Lu2010} and Ueffing et al.~\cite{Ueffing2013}.
 Ueffing et al. evaluate their method with different features, like language model scores, parse trees, dynamic sentence length and token n-grams.
 The usefulness of the individual features highly depends on the nature of the text, which is processed.
-E.g. if a text is well structured, the parse tree features improve the result.
+If a text is well structured for example, the parse tree features improve the result.
 Similar to our approach, Cho et al.~\cite{Cho2012} use a sliding window over the input data to predict different punctuations.
 Zhang et al.~\cite{Zhang2013} predict punctuations of an input stream.
 For each processed word in the input stream, syntactic features are used to predict the punctuation symbol after that word.
 The used features include, e.g., part-of-speech tags, tree-based features (the parse tree is build step by step) or bag of words.
 
-Most of the researchers combine prosodic features, such as pitch, pauses, duration, and lexical features, like words, n-grams, part-of-speech tags~\cite{Mark1999, Christensen2001, Liu2005, Matusov2007, Wang2012}.
+Most of the researchers combine prosodic features, such as pitch, pauses, duration, and lexical features, such as words, n-grams, part-of-speech tags~\cite{Mark1999, Christensen2001, Liu2005, Matusov2007, Wang2012}.
 Mark and Mark~\cite{Mark1999} predict punctuation on the basis of prosodic features in a first step using a Hidden Markov Model.
 In a second step they use a language model to adapt the predicted punctuation from the first step.
 Christensen et al.~\cite{Christensen2001} focus on multi-layer perceptron methods to combine prosodic and lexical features, whereas Liu et al.~\cite{Liu2005} use conditional random fields.

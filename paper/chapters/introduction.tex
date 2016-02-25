@@ -10,7 +10,7 @@ Also other natural language processing task work on sentence units.
 Thus, the ASR output needs to be formatted before it can be further processed.
 
 In this paper we want to address this problem by automatically creating punctuated text from unpunctuated text.
-We use the concept of deep neural networks to process the unformatted transcript as well as the speech, which results in two individual models: a lexical model and a acoustics model.
+We use the concept of deep neural networks to process the unformatted transcript as well as the speech, which results in two individual models: a lexical model and an acoustics model.
 We train both models independently and retrieve their separate predictions.
 Afterwards the results are combined in a fusion step.
 The final output can replace the original output from ASR systems and improve readability and quality of transcripts.
@@ -18,7 +18,7 @@ Additionally, the punctuation marks often represent suitable boundaries for subt
 
 The rest of the paper is structured as follows:
 Related work is summarized in Section~\ref{sec:related_work}.
-Section~\ref{sec:training_data} describeds the datasets we use for training and evaluation.
+Section~\ref{sec:training_data} describes the datasets we use for training and evaluation.
 The data preprocessing, training, and evaluation of our lexical and our acoustic model can be seen in Section~\ref{sec:lexical_model} and Section~\ref{sec:acoustic_model} respectively.
 Details of the fusion step are explained in Section~\ref{sec:fusion}.
 We show our demo application in Section~\ref{sec:demo} and conclude our work in Section~\ref{sec:future}.
