@@ -84,6 +84,13 @@ After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer
 The ratio for all \texttt{dropout} layers is $0.5$.
 Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{innerproduct} layer wih size 3 or 4 depending on the number of punctuation symbols.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/net_lexical.pdf}
+    \caption{Network architecture consisting of four fully connected layers.}
+    \label{fig:net_lexical}
+\end{figure}
+
 \subsection{Results and Evaluation}
 
 We used the measure of precision \emph{P} and recall \emph{R} as well as the F-Measure. We calculated the F measure per class as shown in Equation \ref{equ:f1n}.
