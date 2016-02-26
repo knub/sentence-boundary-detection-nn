@@ -35,3 +35,31 @@ In the end, the class with the overall highest probability is chosen again.
 So in the example, this would be the class \textsc{None}.
 
 \subsection{Evaluation}
+We evaluate the both fusion approaches to determine which of them leads to the better results.
+The evaluation was done on the TED talk data set, because the acoustic model needs the information about the energy and pitch levels and therefore audio files.
+So, the \texttt{.ctm} files with the corresponding \texttt{.sph} files were used.
+This leads to the fact, that we only have a gold standard for the class \textsc{Period}.
+The evaluation was consequently only done for this class.
+
+To evaluate the fusion approaches, we remove all sentence boundaries from the data and pass the data on to the lexical and acoustic model.
+We chose the best lexical and acoustic model from the previous sections to predict the punctuations.
+The predictions from the lexical and acoustic model are then fused.
+Therefore, we tested the threshold fusion with different threshold values and the balanced fusion with multiple weights.
+Also, we add a baseline fusion for the lexical and acoustic model, which pass on the predictions from the corresponding model.
+The predictions returned by the different fusion approaches are then evaluated using the gold standard.
+The F-score was used as evaluation metric.
+Figure~\ref{fig:eval_fusion} shows the results.
+
+% TODO: Remove baseline lexical? Rename audio to acoustic
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/fusion_eval.pdf}
+    \caption{Evaluation results for different fusion approaches. The best result is obtained by the threshold fusion with an acoustic threshold of 0.5 and a lexical threshold of 0.9.}
+    \label{fig:eval_fusion}
+\end{figure}
+
+Because we only have a gold standard for the class \textsc{Period}, the baseline is the F-score from the acoustic model.
+Six fusion approaches outperform the F-score of the baseline.
+The best one is the threshold fusion with an acoustic threshold of 0.5 and a lexical threshold of 0.9.
+It obtained an F-score of 80.43\%, whereas the baseline has an F-score of 78.49\%.
+So, fusing the results increases the overall performance.
