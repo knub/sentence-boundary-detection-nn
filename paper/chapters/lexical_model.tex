@@ -1,54 +1,51 @@
-In this chapter we describe how we predict the position of periods, commas and question marks in unpunctuated text using lexical features.
-The used data is described in Section \ref{sec:training_data}.
+To predict punctuations in unformatted text, we use two different models: a lexical model, which is based on lexical features, and an acoustic model, which is based on prosodic features.
+For our approach we used a deep learning approach using the deep learning framework \emph{Caffe}\footnote{http://caffe.berkeleyvision.org/}. 
+In this chapter we describe how we predict the position of periods and commas in unpunctuated text using lexical features.
 
-% TODO: use
-%\begin{figure}[ht]
-%    \centering
-%    \includegraphics[width=\textwidth]{img/overview_lexical.pdf}
-%    \caption{}
-%    \label{fig:overview_lexical}
-%\end{figure}
+\subsection{Training instance generation}
+For training our lexical model we took the \texttt{.xml} files of the TED talks and the Wikipeida files.
+To generate the training instance, which are then used to train our neural network with \emph{Caffe}, we have to preprocess the data.
+An overview of the individual steps from obtaining the training instances out of the input files, is shown in Figure~\ref{fig:overview_lexical}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/overview_lexical.pdf}
+    \caption{TODO}
+    \label{fig:overview_lexical}
+\end{figure}
 
-The system is based on the deep learning framework \emph{caffe}.
-Therefore the processing pipeline is the following:
+In a first step the plain text from the input files is extracted.
+The input text is formatted, i.e., it contains all kinds of punctuation marks.
+Therefore, we can create a gold standard out of it.
+We use the following two classes: \textsc{Period} and \textsc{Comma}.
+The class \textsc{Period} is mapped to the following characters: ``;'', ``.'', ``!'' and ``?''.
+The characters ``,'', ``:'' and ``-'' are mapped to the class \textsc{Comma}.
 
-\begin{itemize}
-\item preprocess the data, so that it can be used as input for caffe
-\item train the network with the preprocessed data
-\item retrieve predictions for new data
-\item transform the output into a valuable result
-\end{itemize}
+Having the input text, the first step is to tokenize it.
+Afterwards, a sliding window is used to split the input text into smaller parts and to create our training instances.
+An example, which shows how the sliding window works, is shown in Figure~\ref{fig:sliding_window}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/sliding_window.pdf}
+    \caption{Sliding window of window size 5. The class of the created window, is determined by the punctuation after the third word. TODO}
+    \label{fig:sliding_window}
+\end{figure}
+The size of the window is determined by a \texttt{config} file.
+The \texttt{config} file stores different parameter, which are used during the process of generating the training instances.
+Having those \texttt{config} files makes it easy to generate different kind of training instances and therefore to evaluate different kid of configurations.
+The window size directly defines the size of the training instance.
+The label of a training instance is determined by whether there is a punctuation at a certain position or not.
+This position is also defined in the \texttt{config} file and is called punctuation position.
+In the example in Figure~\ref{fig:sliding_window} we have a punctuation position of 3.
+If there is no punctuation at this position the label of the training instance would be 0 (stands for class \textsc{None}), if there is one character of the class \textsc{Comma}, it would be 1, and if it is a character of the class \texttt{Period}, the label would be 2.
 
-\subsection{Data Preprocessing}
-
-For processing the data, we need to extract features which caffe can handle.
-Since you can not use a whole text as input, we decided to use a sliding window to generate training and testing instances.
-A sliding window is in our case, that we split a sentence like \emph{The sun is shining and we go outside} into the following pieces (assuming a window size of 5):
-\begin{itemize}
-\item the sun is shining and
-\item sun is shining and we
-\item is shining and we go
-\item shining and we go outside
-\end{itemize}
-
-% TODO: use
-%\begin{figure}[ht]
-%    \centering
-%    \includegraphics[width=\textwidth]{img/sliding_window.pdf}
-%    \caption{}
-%    \label{fig:sliding_window}
-%\end{figure}
-
-We call these pieces instances and the window size directly defines how many words are in each instance.
-The label of each instance is then whether there is a punctuation (and which one) at a defined position.
-We call this position punctuation position.
-In the above example every instance would have a label of \emph{None} with a punctuation position of 2, since there is no punctuation.
-
-After we split up the sentences into instances we convert each word into a distributed word representation.
-We use the distributed word representation described earlier: \emph{word2vec}. \todo{Insert word2vec link. Describe Word2Vec in related work?}
-The final model we used for our distributed word representation was trained on google news entries \todo{Link and/or paper}.
-Since not every word exists in the trained model, we use the word vector representing \emph{this} for unknown words.
-We think that most of the unknown words are proper names, which can easily be replaced with \emph{this} without changing the meaning and structure of the whole sentence.
+After we divide the sentences into training instances, we convert each word into a distributed word representation.
+Thus, we obtain a representation of our training instances, which \emph{Caffe} can handle.
+We use the distributed word representation \emph{word2vec}\footnote{\url{https://code.google.com/archive/p/word2vec/}}.
+\emph{word2vec} is TODO~\cite{Mikolov1, Mikolov2, Mikolov3}.
+The final model we used for our distributed word representation was trained on a Google news dataset.
+The model contains 300-dimensional word vectors for 3 million different words and phrases.
+Since not every word exists in the trained model, we use the word vector representing \texttt{this} for unknown words.
+We think that most of the unknown words are proper names, which can be replaced with \texttt{this} without changing the meaning and structure of the whole sentence.
 
 We also figured out that the trained model only contains the number \emph{1} and a few more of the most common numbers instead of all numbers. \todo{Check whether only 1 is in the word vector or whether numbers like 12 and 5 are also contained}
 That is why we replace any number with \emph{1}.

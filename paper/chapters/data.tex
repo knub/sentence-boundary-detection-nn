@@ -5,12 +5,12 @@ The first part is based on TED talks\footnote{\url{ted.com}}, the second part is
 
 \paragraph{TED talks} Our TED talk data set consists of TODO talks. For each talk we have the following data files:
 \begin{itemize}
-	\item .xml-file: This file contains a manually created script of the talk.
+	\item \texttt{.xml} file: This file contains a manually created script of the talk.
 	The text is formatted and serves as training data for the lexical model.
-	\item .ctm-file: This is a time-marked speech input.
+	\item \texttt{.ctm} file: This is a time-marked speech input.
 	It contains one word per line with the second the word was said in the talk and its duration.
 	Additionally, each sentence is labeled in the file, so that the data can be used for training of the acoustic model.
-	\item .sph-file: This file contains pulse code modulation (PCM) data.
+	\item \texttt{.sph} file: This file contains pulse code modulation (PCM) data.
 	This data can be converted into .wav files.
 \end{itemize}
 
