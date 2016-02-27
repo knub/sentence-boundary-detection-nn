@@ -8,7 +8,7 @@ plot:
 	cd plots && build
 
 when-changed:
-	@clear && when-changed $(FILE).tex -c 'printf "\033c" && echo "Building" && make -s build && echo "Succeeded"'
+	@clear && when-changed chapters/ -c 'printf "\033c" && echo "Building" && make -s build && echo "Succeeded"'
 
 convert:
 	cd plots && make convert
