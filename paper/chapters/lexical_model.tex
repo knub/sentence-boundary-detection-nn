@@ -2,10 +2,11 @@ To predict punctuations in unformatted text, we use two different models: a lexi
 For our approach we used a deep learning approach using the deep learning framework \emph{Caffe}\footnote{http://caffe.berkeleyvision.org/}.
 In this chapter we describe how we predict the position of periods and commas in unpunctuated text using lexical features.
 
-\subsection{Training instance generation}
+\subsection{Training Instance Generation}
 For training our lexical model we took the \texttt{.xml} files of the TED talks and the Wikipedia files.
 Before we can train the neural network with \emph{Caffe}, we have to preprocess the data to generate the training instances.
 An overview of the individual steps from creating the training instances from the input files is shown in Figure~\ref{fig:overview_lexical}.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\textwidth]{img/overview_lexical.pdf}
