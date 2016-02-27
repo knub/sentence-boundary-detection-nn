@@ -38,7 +38,7 @@ infogain_loss_matrix/*.h5
 # LaTeX
 .output/
 main.pdf
-*.svg
+#*.svg
 *.txss
 
 # Lock files
