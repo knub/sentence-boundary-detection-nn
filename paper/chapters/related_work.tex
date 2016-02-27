@@ -1,11 +1,10 @@
-Due to the fact that punctuation prediction is a mandatory preprocessing step for further working with automated speech recognition output, a lot of research has been done in this field.
-
+As punctuation prediction is a mandatory preprocessing step for further working with automated speech recognition output, a lot of research has been done in this field.
 Some approaches focus only on the lexical part~\cite{Gravano2009, Lu2010, Ueffing2013, Cho2012, Zhang2013}.
 Gravano et al.~\cite{Gravano2009} used a text-based n-gram language model to detect punctuation (comma, period, question mark).
 Dynamic conditional random fields are used by Lu and Ng~\cite{Lu2010} and Ueffing et al.~\cite{Ueffing2013}.
 Ueffing et al. evaluate their method with different features, like language model scores, parse trees, dynamic sentence length and token n-grams.
 The usefulness of the individual features highly depends on the nature of the text, which is processed.
-If a text is well structured for example, the parse tree features improve the result.
+For example, if the text is well structured, the parse tree features improve the result.
 Similar to our approach, Cho et al.~\cite{Cho2012} use a sliding window over the input data to predict different punctuations.
 Zhang et al.~\cite{Zhang2013} predict punctuations of an input stream.
 For each processed word in the input stream, syntactic features are used to predict the punctuation symbol after that word.
@@ -21,7 +20,7 @@ A comparison of different machine learning models to combine prosodic and lexica
 The dynamic conditional random fields achieve the best result on a broadcast news copora (F1-Measure of 42.8\%).
 
 In this paper we present a new approach: predicting punctuations using deep learning.
-As far as we know, such an approach was never examined before.
+To the best of our knowledge, such an approach was never tried before.
 We learn two individual models, one based on lexical features and the other one based on prosodic features.
 In the end, the predictions of both models are fused.
 
