@@ -1,16 +1,23 @@
-Automatic Speech Recognition (ASR) has many practical applications nowadays, e.g., in dictation systems for medical documentation and journalism.
+Automatic Speech Recognition systems (ASR) have many practical applications nowadays, e.g. in dictation systems for medical documentation and journalism.
 Another application comes from the rapidly increasing amount of videos available online on video platforms for entertainment and learning, such as Youtube\footnote{\url{youtube.com}}, Vimeo\footnote{\url{vimeo.com}}, Coursera\footnote{\url{coursera.org}} or OpenHPI\footnote{\url{open.hpi.com}}.
 All of these benefit from automatically generated transcripts and subtitles.
-But, the result of many ASR systems is an unformatted, long text without punctuation marks, such as periods and commas.
-These texts are hard to read, understand, and use without manually inserting the missing punctuation marks.
-Therefore, formatting the ASR output and inserting punctuation marks is mandatory for many further use cases.
-For example, most machine translation outputs are trained on proper formatted text.
-So, having a ASR output without punctuation marks decreases the performance of the machine translating system.
-Also other natural language processing task work on sentence units.
+However, the result of many ASR systems is an unformatted text without any punctuation marks, such as periods and commas.
+These texts are hard to read and understand without manually inserting the missing punctuation marks.
+However, this is a mundane, complicated task.
+Therefore, an automatic solution for formatting the ASR output and inserting punctuation marks is necessary.
+We call this \emph{sentence boundary detection} (SBD).
+
+SBD is a mandatory preprocessing step for many further use cases.
+For example, most machine translation outputs are trained on properly formatted text.
+Having a ASR output without punctuation marks decreases the performance of machine translating systems.
+Also, other natural language processing tasks like part-of-speech tagging or tokenization work on sentence units.
 Thus, the ASR output needs to be formatted before it can be further processed.
 
 In this paper we want to address this problem by automatically creating punctuated text from unpunctuated text.
-We use the concept of deep neural networks to process the unformatted transcript as well as the speech, which results in two individual models: a lexical model and an acoustics model.
+We use neural networks to process the unformatted transcripts.
+The use of neural networks has led to large improvements in areas like image and video classification recently.
+
+Our SBD system contains two models: one from the ASR text transcript (lexical model), and one from the raw audio data (acoustic model).
 We train both models independently and retrieve their separate predictions.
 Afterwards the results are combined in a fusion step.
 The final output can replace the original output from ASR systems and improve readability and quality of transcripts.
