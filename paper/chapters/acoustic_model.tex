@@ -10,7 +10,7 @@ To obtain those values from the \texttt{.sph} files in our data set, we first ha
 For that, we used a sound processing program called \emph{SoX}.
 Having the \texttt{.wav} files, we can extract the pitch and energy level from them using different libraries.
 For generating the pitch level the library \emph{aubio}\footnote{\url{http://aubio.org/}} is used.
-The output is a file containing two columns: The first columns is the time in seconds in the talk and the second column is the pitch level of that second.
+The output is a file containing two columns: The first column is the time in seconds in the talk and the second column is the pitch level of that second.
 The library \emph{Yaafe}\footnote{\url{yaafe.sourceforge.net/}} is used for extracting the energy levels from the \texttt{.wav} files.
 The output from \emph{Yaafe} contains one column with energy values.
 One line in the output file represents the energy level in \texttt{1 / sample rate} intervals.
