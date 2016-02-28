@@ -1,4 +1,3 @@
-% future work
 We presented an approach to automatically detect sentence boundaries, and predict the correct punctuation marks in unpunctuated ASR output.
 Two different models were trained independently, one using lexical input and the other using acoustic input.
 The results of both models were merged with a late fusion.
@@ -6,16 +5,16 @@ Evaluation has shown, that one has to be careful with the training data, which s
 Just adding more written text data did not improve the performance.
 On the other hand, part of speech tags as additional features consistently increase the performance of the sentence boundary detection.
 
-There are many possibilties for improvement on the presented approach.
+There are many possibilities for improvement on the presented approach.
 Since we did not explore the large variety of different neural network layouts, further exploration in this area is likely to improve on the results.
 Especially in the case of more training data, a deeper network architecture can provide better results.
 Also, using Long Short Term Memory (LSTM) neural networks appears promising, as they can process a stream of data while keeping time information.
 This maps easily to the stream of word tokens in a text.
 
-In the fusion step we decided for a late fusion approach, which only combines the predictions.
-However another way to explore, is an earlier fusion, where both models and the fusion itself are trained together.
+In the fusion step we decided for a late fusion approach, which combines only the predictions.
+However, another way to explore, is an earlier fusion, where both models and the fusion itself are trained together.
 Instead of fusing the predictions, the actual features can be fused.
 As for data preparation, a different representation of features in the lexical model can be examined, such as a second or third data channel or a combination similar to the fusion of the acoustic and lexical model.
 
-Another improvment could be achieved with a better post processing of the results.
+Another improvement could be achieved with a better post processing of the results.
 For example, one punctuation symbol right after another is unlikely to be correct.

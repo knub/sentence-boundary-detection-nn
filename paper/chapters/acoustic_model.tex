@@ -22,13 +22,13 @@ The process of generating the training instances is shown in Figure~\ref{fig:ove
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{img/overview_accoustic.pdf}
-    \caption{Creation of the training instance for the acoustic model: The pause feature is extracted from the \texttt{.ctm} files, the pitch level feature from the \texttt{.pitch} files and the energy level feature from the \texttt{.energy} file. All features are normalized to a mean 0 and a variance of 1. Like in the lexical model, a sliding window is used to create the final training instances.}
+    \caption{Creation of the training instance for the acoustic model: The pause feature is extracted from the \texttt{.ctm} files, the pitch level feature from the \texttt{.pitch} files and the energy level feature from the \texttt{.energy} file. All features are normalized to a mean 0 and a variance of 1. As in the lexical model, a sliding window is used to create the final training instances.}
     \label{fig:overview_acoustic}
 \end{figure}
 
 The \texttt{.ctm} files hold the information of sentence boundaries.
 Unfortunately, we do not have any information about other punctuation marks besides periods in those files.
-Therefore, the acoustic model will be only able to predict periods.
+Therefore, the acoustic model is only able to predict periods.
 
 Having the \texttt{.ctm} files the first step in the training instance generation is to extract the words with their corresponding start time and duration.
 Additionally, the sentence boundaries are stored to obtain the gold standard.
@@ -60,9 +60,9 @@ The training instances are then written to a LevelDB in a last step.
 \subsection{Neural Network Layout}
 
 We used the same model as for the lexical model, except in the input and the output layer (see Figure~\ref{fig:net_acoustic}).
-For the input layer, we only have four features per word, compared to 314 features in the lexical layer.
+For the input layer, we have only four features per word, compared to 314 features in the lexical layer.
 So, for example, a window size of eight leads to 32 features.
-In the last layer, we only use two dimensions instead of three, because we only have two classes: \textsc{None} and \textsc{Period}.
+In the last layer, we use only two dimensions instead of three, because we have only two classes: \textsc{None} and \textsc{Period}.
 
 \begin{figure}[ht]
     \centering
@@ -74,7 +74,7 @@ In the last layer, we only use two dimensions instead of three, because we only 
 
 \subsection{Results and Evaluation}
 
-As mentioned before, we can only evaluate the model on \textsc{Period}s, as we do not have ground truth data for the commas.
+As mentioned before, we can evaluate the model only on \textsc{Period}s, as we do not have ground truth data for the commas.
 Again, we evaluated different window sizes and punctuation positions.
 Figure~\ref{audio_eval} shows the F-measure for all experiments.
 \begin{figure}[ht]

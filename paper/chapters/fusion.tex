@@ -16,7 +16,7 @@ The idea of the threshold fusion is shown in the Figure~\ref{fig:fusion_1}.
 \end{figure}
 If the condition does not hold, we just take the prediction probabilities of the lexical model as the final predictions.
 Thus, the threshold fusion trusts the lexical model more than the acoustic model.
-The acoustic model is only taken into account, if the acoustic model is quite certain, that there should be a period, and the lexical model is not certain enough, that there should be no punctuation at all.
+The acoustic model is taken only into account, if the acoustic model is quite certain, that there should be a period, and the lexical model is not certain enough, that there should be no punctuation at all.
 In the end, the class with the highest probability is chosen.
 For the example in Figure~\ref{fig:fusion_1}, we would predict a comma.
 
@@ -35,11 +35,11 @@ In the end, the class with the overall highest probability is chosen again.
 So in the example, this would be the class \textsc{None}.
 
 \subsection{Results and Evaluation}
-We evaluate both fusion approaches to determine which of them leads to better results.
+We evaluate both fusion approaches to determine, which of them leads to better results.
 The evaluation was done on the TED talk data set, because the acoustic model needs the information about the energy and pitch levels and therefore audio files.
 We used the \texttt{.ctm} files along with their corresponding \texttt{.sph} file.
-Thus, we only have a gold standard for the class \textsc{Period}.
-Consequently, the evaluation was only done for this class.
+Thus, we have only a gold standard for the class \textsc{Period}.
+Consequently, the evaluation was done only for this class.
 
 To evaluate the fusion approaches, we remove all sentence boundaries from the data and pass the data on to the lexical and acoustic model.
 We chose the best lexical and acoustic model from the previous sections to predict the punctuations.
@@ -56,7 +56,7 @@ We added a baseline fusion for the lexical and acoustic model, which pass on the
 The predictions returned by the different fusion approaches are then evaluated using the gold standard.
 The F-score was used as evaluation metric.
 
-Because we only have a gold standard for the class \textsc{Period}, the baseline is the F-score from the acoustic model.
+Because we have only a gold standard for the class \textsc{Period}, the baseline is the F-score from the acoustic model.
 Six fusion approaches outperform the F-score of the baseline.
 The best one is the threshold fusion with an acoustic threshold of 0.5 and a lexical threshold of 0.9.
 It obtained an F-score of 80.43\%, whereas the baseline has an F-score of 78.49\%.

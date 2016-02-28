@@ -12,7 +12,7 @@ Our TED talk data set consists of 57 talks. For each talk we have the following 
 	The text is formatted and serves as training data for the lexical model (ground truth).
 	\item \texttt{.ctm} file: This is a time-marked speech input.
 	It contains one word per line with the second the word was said in the talk and its duration.
-    This is a typical output from a ASR system.
+    This is a typical output from an ASR system.
 	Additionally, each sentence is labeled in the file, so that the data can be used for training of the acoustic model.
 	\item \texttt{.sph} file: This file contains raw pulse code modulation (PCM) data.
 	This data can be converted into .wav files.
@@ -21,5 +21,5 @@ Our TED talk data set consists of 57 talks. For each talk we have the following 
 \paragraph{Wikipedia}
 We extracted the plain text from English Wikipedia articles.
 We selected only those articles with more than 10,000 characters, assuming that these articles have gained lots of attention, and therefore provide a good textual quality.
-When extracting the plain text, we discarded lists, headlines, tables etc., only focusing on paragraphs, so we can make sure, that only proper sentences are used for training.
+When extracting the plain text, we discarded lists, headlines, tables etc., focusing only on paragraphs, so we can make sure, that only proper sentences are used for training.
 In total we received around 3.5 million new training instances from the Wikipedia articles.

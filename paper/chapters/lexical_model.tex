@@ -46,10 +46,10 @@ Concretely, we used a pretrained vector file\footnote{\url{https://code.google.c
 The model contains 300-dimensional word vectors for three million different words and phrases.
 
 Since not every word exists in the trained model, we use the word vector representing \texttt{this} for unknown words.
-We think that most of the unknown words are proper names, which can be replaced with \texttt{this} without changing the meaning and structure of the whole sentence.
-Besides, the trained model only contains a few numbers.
+We think that most of the unknown words are proper names, which can be replaced with \texttt{this} without changing the meaning and structure of the entire sentence.
+Besides, the trained model contains only a few numbers.
 As the concrete number occurring in a text is not relevant for the sentence boundary detection, we replace all numbers in the text, including floating-point numbers, with the number 1.
-The representation for each word in a training instance is inserted into one row of the feature matrix, e.g. for a sliding window size of five a matrix of size 5x300 for each training instance is generated.
+The representation for each word in a training instance is inserted into one row of the feature matrix, e.g., for a sliding window size of five a matrix of size 5x300 for each training instance is generated.
 
 Besides the distributed word representation, we also examined Part of Speech (POS) tags as features.
 Therefore, we used the \emph{nltk}\footnote{\url{http://www.nltk.org/}} POS tagger.
@@ -78,16 +78,16 @@ The layout of our neural network is shown in Figure~\ref{fig:net_lexical}.
 \end{figure}
 We use a neural network layout with three main \texttt{inner product} layers with sizes 2048, 4096, and 2048.
 After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer on top of each \texttt{inner product} layer.
-The ratio for all \texttt{dropout} layers is $0.5$.
+The ratio for all \texttt{dropout} layers is 0.5.
 Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{inner product} layer with size 3.
 
 
 \subsection{Results and Evaluation}
 
-We evaluated F-measure, which is based on precision \emph{P} and recall \emph{R} as seen in \ref{equ:f1n}.
+We evaluated F-measure, which is based on precision \emph{P} and recall \emph{R} as seen in~\ref{equ:f1n}.
 The F-measure can be calculated for each class.
 To calculate one number for the performance in all three classes, we use the generalized form of the F-measure, the harmonic mean.
-The equation is shown in \ref{equ:f1}.
+The equation is shown in~\ref{equ:f1}.
 The higher the value, the better.
 We use this value in the following diagrams.
 
@@ -104,49 +104,46 @@ F = \frac{3}{\frac{1}{F1_{None}} + \frac{1}{F1_{Comma}} + \frac{1}{F1_{Period}}}
 All experiments are executed with the previously described data preprocessing and network layout.
 As test data we used TED talks from 2011, which we did not include in the training set.
 
+In the experiments, we varied the window size and the punctuation position to find the best configuration.
+In Figure \ref{fig:window_eval} you can see the results.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.9\textwidth]{img/window_eval.png}
     \caption{Harmonic mean between all F1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses Wikipedia training data.}
     \label{fig:window_eval}
 \end{figure}
-
-In the experiments, we varied the window size and the punctuation position to find the best configuration.
-In Figure \ref{fig:window_eval} you can see the results.
 We consistently found out, that the best position for the punctuation is in the middle of the window.
-We get the best results for a window size of 8.
+We receive the best results for a window size of 8.
 This means that more context the better the results, until a certain point.
 
+As described in Section~\ref{sec:training_data}, we wanted to use more data for lexical prediction.
+In Figure~\ref{fig:window_wiki_eval} we show a comparison between using only TED talks and using additionally Wikipedia data as training data.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{img/window_wiki_eval.png}
     \caption{F score with different window and punctuation positions. Compares only TED talks and TED talks with additional Wikipedia data as training data.}
     \label{fig:window_wiki_eval}
 \end{figure}
-
-As described in Section \ref{sec:training_data}, we wanted to use more data for lexical prediction.
-In Figure \ref{fig:window_wiki_eval} we show a comparison between using only TED talks and using additionally Wikipedia data as training data.
 The described F-score is used, as well as different window sizes and punctuation positions.
 The result for varying the window size is the same as described in the experiments above.
 You can see that using Wikipedia data as additional training data always performs worse.
 
 It seems that adding more training data in form of Wikipedia articles does not help to increase the precision when evaluating on TED talks.
 Our hypothesis is, that the speech from TED talks is fundamentally different from the formal, written Wikipedia articles.
-We can confirmed this by not evaluating on TED talks, but rather on different Wikipedia articles.
+We can confirm this hypothesis by not evaluating on TED talks, but rather on different Wikipedia articles.
 In that case, adding Wikipedia articles to the training set increased the F-measure by 6\%, overall yielding a F-score of 0.60.
 For segmenting ASR output, we therefore do not use additional Wikipedia data for prediction.
 
+We also evaluated whether POS tags improve the results.
+Figure~\ref{fig:window_pos_eval} shows the F-score depending on the different window sizes and punctuation positions.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{img/window_pos_eval.png}
     \caption{Evaluating POS tags: POS tags consistently improve the F-measure.}
     \label{fig:window_pos_eval}
 \end{figure}
-
-We also evaluated whether POS tags improve the results.
-Figure~\ref{fig:window_pos_eval} shows the F-score depending on the different window sizes and punctuation positions.
 The red bars show the results with using POS features and the blue bars show the result without.
-Again, we see a consistent behaviour: POS tags always help increase the performance.
+Again, we see a consistent behavior: POS tags always help increase the performance.
 
 Since the punctuation types in the data sets are not equally distributed, we thought about reducing the dataset to a set where all three classes are balanced.
 Therefore we created training sets with equally distributed punctuations types.
