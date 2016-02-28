@@ -46,9 +46,9 @@ Thus, we decided to filter all pitch levels, which are above 300 Hz.
 
 In the end, we have the following four features for our acoustic model:
 \begin{itemize}
-	\item the duration of the pause before a word
-	\item the duration of the pause after a word
-	\item the average energy level of a word
+	\item the duration of the pause before a word,
+	\item the duration of the pause after a word,
+	\item the average energy level of a word, and
 	\item the average pitch level of a word.
 \end{itemize}
 In the next step the features are normalized to a mean of zero and a variance of one.
@@ -60,8 +60,7 @@ The training instances are then written to a LevelDB in a last step.
 
 \subsection{Neural Network}
 
-%TODO: Hinge loss
-We used the same model as for the lexical model, except in the input and the output layer.
+We used the same model as for the lexical model, except in the input and the output layer (see Figure~\ref{fig:net_acoustic}).
 For the input layer, we only have four features per word, compared to 314 features in the lexical layer.
 So, for example, a window size of eight leads to 32 features.
 In the last layer, we only use two dimensions instead of three, because we only have two classes: \textsc{None} and \textsc{Period}.
@@ -69,7 +68,7 @@ In the last layer, we only use two dimensions instead of three, because we only 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{img/net_acoustic.pdf}
-    \caption{Network architecture consisting of four fully connected layers of the acoustic model.}
+    \caption{Network architecture of the acoustic model consisting of four \texttt{inner product} layers.}
     \label{fig:net_acoustic}
 \end{figure}
 
