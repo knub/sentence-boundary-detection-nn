@@ -84,68 +84,67 @@ Accuracy and loss of the network are computed after the final predictions of our
 
 \subsection{Results and Evaluation}
 
-We evaluated F-measure, which is based on precision \emph{P} and recall \emph{R} as seen in~\ref{equ:f1n}.
-The F-measure can be calculated for each class.
-To calculate one number for the performance in all three classes, we use the generalized form of the F-measure, the harmonic mean.
-The equation is shown in~\ref{equ:f1}.
+As one evaluation metric we use F-measure, which is based on precision \emph{P} and recall \emph{R} as seen in Equation~\ref{equ:f1n}.
+The F-measure can be calculated for each class (\textsc{None}, \textsc{Period}, \textsc{Comma}).
+To obtain a single metric for the performance in all three classes, we use the generalized form of the F-measure, the harmonic mean (see Equation~\ref{equ:f1}).
 The higher the value, the better.
-We use this value in the following diagrams.
-
+The F-score is used as evaluation metric for all our experiments.
 \begin{equation}
 \label{equ:f1n}
-F1_{N} = 2 * \frac{P_{N}* R_{N}}{P_{N}+R_{N}}
+F1_{None} = 2 * \frac{P_{None}* R_{None}}{P_{None}+R_{None}}
 \end{equation}
-
 \begin{equation}
 \label{equ:f1}
-F = \frac{3}{\frac{1}{F1_{None}} + \frac{1}{F1_{Comma}} + \frac{1}{F1_{Period}}}
+F-score = \frac{3}{\frac{1}{F1_{None}} + \frac{1}{F1_{Comma}} + \frac{1}{F1_{Period}}}
 \end{equation}
 
 All experiments are executed with the previously described data preprocessing and network layout.
 As test data we used TED talks from 2011, which we did not include in the training set.
 
-In the experiments, we varied the window size and the punctuation position to find the best configuration.
-In Figure \ref{fig:window_eval} you can see the results.
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\textwidth]{img/window_eval.png}
-    \caption{Harmonic mean between all F1 scores for all classes. \emph{2/5} means window size of five and punctuation position two. If \emph{wi} is in the label, it uses Wikipedia training data.}
-    \label{fig:window_eval}
-\end{figure}
-We consistently found out, that the best position for the punctuation is in the middle of the window.
-We receive the best results for a window size of 8.
-This means that more context the better the results, until a certain point.
-
-As described in Section~\ref{sec:training_data}, we wanted to use more data for lexical prediction.
+In a first experiment, we examined if training on TED talk data together with the Wikipedia data improves the performance. 
 In Figure~\ref{fig:window_wiki_eval} we show a comparison between using only TED talks and using additionally Wikipedia data as training data.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{img/window_wiki_eval.png}
-    \caption{F score with different window and punctuation positions. Compares only TED talks and TED talks with additional Wikipedia data as training data.}
+    \includegraphics[width=0.7\textwidth]{img/window_wiki_eval.png}
+    \caption{Results for different training data: The blue bars stands for a training set consisting only of TED talks, the red bars represents a training set based on TED talks and Wikipedia articles. The F-score is plotted against different window sizes and punctuation positions. The results show, that using Wikipedia as training data decreases the performance.}
     \label{fig:window_wiki_eval}
 \end{figure}
-The described F-score is used, as well as different window sizes and punctuation positions.
-The result for varying the window size is the same as described in the experiments above.
-You can see that using Wikipedia data as additional training data always performs worse.
+The F-score on the y-axis is plotted against different window sizes and punctuation positions on the x-axis.
+\texttt{5-3} on the x-axis means, that we have a window size of five and a punctuation position of three.
+The blue bars display the result for training without Wikipedia, the red bars are the results, where Wikipedia was included in the training data set.
+The results show, that using Wikipedia data as additional training data always performs worse.
 
-It seems that adding more training data in form of Wikipedia articles does not help to increase the precision when evaluating on TED talks.
+It seems that adding more training data in form of Wikipedia articles does not help to increase the performance when evaluating on TED talks.
 Our hypothesis is, that the speech from TED talks is fundamentally different from the formal, written Wikipedia articles.
 We can confirm this hypothesis by not evaluating on TED talks, but rather on different Wikipedia articles.
-In that case, adding Wikipedia articles to the training set increased the F-measure by 6\%, overall yielding a F-score of 0.60.
+In that case, adding Wikipedia articles to the training data set increased the F-score by 6\%, overall yielding an F-score of 60\%.
 For segmenting ASR output, we therefore do not use additional Wikipedia data for prediction.
 
 We also evaluated whether POS tags improve the results.
 Figure~\ref{fig:window_pos_eval} shows the F-score depending on the different window sizes and punctuation positions.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{img/window_pos_eval.png}
-    \caption{Evaluating POS tags: POS tags consistently improve the F-measure.}
+    \includegraphics[width=0.7\textwidth]{img/window_pos_eval.png}
+    \caption{Results for using POS tags as features (red bars) or not (blue bars). The F-score is plotted against different window sizes and punctuation positions. It is shown, that POS tags consistently improve the F-score.}
     \label{fig:window_pos_eval}
 \end{figure}
-The red bars show the results with using POS features and the blue bars show the result without.
+The red bars show the results of using POS features and the blue bars show the result without POS tags as features.
 Again, we see a consistent behavior: POS tags always help increase the performance.
 
-Since the punctuation types in the data sets are not equally distributed, we thought about reducing the dataset to a set where all three classes are balanced.
-Therefore we created training sets with equally distributed punctuations types.
-Experiments showed that this performs worse in all configurations.
+In Figure~\ref{fig:window_eval} you can see the combined results of the two experiments above.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/window_eval.png}
+    \caption{Results for using POS tags as features (red bars) or not (blue bars). The F-score is plotted against different window sizes and punctuation positions. Additionally, the \texttt{w} on the x-axis denotes whether Wikipedia is used in the training data set. The results show, that the best overall result can be achieved by using a window size of eight, a punctuation position of four, adding POS tags to the feature set, and not using Wikipedia in the training data set.}
+    \label{fig:window_eval}
+\end{figure}
+Having a \texttt{w} behind the window size and punctuation position tuple means, that Wikipedia data was used in the training data set.
+The different colors of the bars indicate again, if POS tag features were used.
+The results show, that the best position for the punctuation is in the middle of the window.
+We received the best overall result with a window size of eight and a punctuation position of four.
+Also, Wikipedia data should not be used in the training data set and POS tags should be used as features.
+Having this configuration, we obtain an F-score of 55.25\% for the lexical model.
+
+In a last experiment we tried to reduce the dataset to a set, where all three classes are balanced, since the punctuation types in the data sets are not equally distributed.
+Our experiments showed, that training on a balanced data set performs worse.
 The main reason is probably, that the data set size is much smaller.

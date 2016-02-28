@@ -32,7 +32,7 @@ Figure~\ref{fig:fusion_2} shows an example.
 Using weights we can regulate, which model we trust more.
 In the example shown in Figure~\ref{fig:fusion_2}, the lexical model is more important than the acoustic model.
 In the end, the class with the overall highest probability is chosen again.
-So in the example, this would be the class \textsc{None}.
+So in the example, the predicted class would be the class \textsc{None}.
 
 \subsection{Results and Evaluation}
 We evaluate both fusion approaches to determine, which of them leads to better results.
@@ -45,6 +45,9 @@ To evaluate the fusion approaches, we remove all sentence boundaries from the da
 We chose the best lexical and acoustic model from the previous sections to predict the punctuations.
 The predictions from the lexical and acoustic model are then fused.
 Therefore, we tested the threshold fusion with different threshold values and the balanced fusion with multiple weights.
+We added a baseline fusion for the lexical and acoustic model, which pass on the predictions from the corresponding model.
+The predictions returned by the different fusion approaches are then evaluated using the gold standard.
+The F-score was used as evaluation metric.
 Figure~\ref{fig:eval_fusion} shows the results.
 \begin{figure}[ht]
     \centering
@@ -52,9 +55,6 @@ Figure~\ref{fig:eval_fusion} shows the results.
     \caption{Evaluation results for different fusion approaches: The best result is obtained by the threshold fusion with an acoustic threshold of 0.5 and a lexical threshold of 0.9.}
     \label{fig:eval_fusion}
 \end{figure}
-We added a baseline fusion for the lexical and acoustic model, which pass on the predictions from the corresponding model.
-The predictions returned by the different fusion approaches are then evaluated using the gold standard.
-The F-score was used as evaluation metric.
 
 Because we have only a gold standard for the class \textsc{Period}, the baseline is the F-score from the acoustic model.
 Six fusion approaches outperform the F-score of the baseline.
