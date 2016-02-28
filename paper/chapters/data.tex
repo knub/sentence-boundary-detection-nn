@@ -9,7 +9,7 @@ Our TED talk data set consists of 57 talks. For each talk we have the following 
 	\item \texttt{.xml} file: This file contains a manually created script of the talk.
 	The text is formatted and serves as training data for the lexical model (ground truth).
 	\item \texttt{.ctm} file: This is a time-marked speech input.
-	It contains line per word with the word which was said in the talk and its duration.
+	It contains one word per line with the time in second the word was said in the talk and its duration.
     This is a typical output from an ASR system.
 	Additionally, each sentence is labeled in the file, so that the data can be used for training of the acoustic model.
 	\item \texttt{.sph} file: This file contains raw pulse code modulation (PCM) data.
