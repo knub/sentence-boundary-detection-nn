@@ -34,7 +34,7 @@ In the example shown in Figure~\ref{fig:fusion_2}, the lexical model is more imp
 In the end, the class with the overall highest probability is chosen again.
 So in the example, this would be the class \textsc{None}.
 
-\subsection{Evaluation}
+\subsection{Results and Evaluation}
 We evaluate both fusion approaches to determine which of them leads to better results.
 The evaluation was done on the TED talk data set, because the acoustic model needs the information about the energy and pitch levels and therefore audio files.
 We used the \texttt{.ctm} files along with their corresponding \texttt{.sph} file.
@@ -45,18 +45,16 @@ To evaluate the fusion approaches, we remove all sentence boundaries from the da
 We chose the best lexical and acoustic model from the previous sections to predict the punctuations.
 The predictions from the lexical and acoustic model are then fused.
 Therefore, we tested the threshold fusion with different threshold values and the balanced fusion with multiple weights.
-Also, we added a baseline fusion for the lexical and acoustic model, which pass on the predictions from the corresponding model.
-The predictions returned by the different fusion approaches are then evaluated using the gold standard.
-The F-score was used as evaluation metric.
 Figure~\ref{fig:eval_fusion} shows the results.
-
-% Remove baseline lexical? No. Rename audio to acoustic? Done.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\textwidth]{img/fusion_eval.pdf}
     \caption{Evaluation results for different fusion approaches: The best result is obtained by the threshold fusion with an acoustic threshold of 0.5 and a lexical threshold of 0.9.}
     \label{fig:eval_fusion}
 \end{figure}
+We added a baseline fusion for the lexical and acoustic model, which pass on the predictions from the corresponding model.
+The predictions returned by the different fusion approaches are then evaluated using the gold standard.
+The F-score was used as evaluation metric.
 
 Because we only have a gold standard for the class \textsc{Period}, the baseline is the F-score from the acoustic model.
 Six fusion approaches outperform the F-score of the baseline.

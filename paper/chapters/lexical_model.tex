@@ -5,12 +5,12 @@ In this chapter we describe how we predict the position of periods and commas in
 \subsection{Training Instance Generation}
 For training our lexical model we took the \texttt{.xml} files of the TED talks and the Wikipedia files.
 Before we can train the neural network with \emph{Caffe}, we have to preprocess the data to generate the training instances.
-An overview of the individual steps from creating the training instances from the input files is shown in Figure~\ref{fig:overview_lexical}.
+An overview of the individual steps for creating the training instances from the input files is shown in Figure~\ref{fig:overview_lexical}.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\textwidth]{img/overview_lexical.pdf}
-    \caption{Lexical model: Creation of the training instances from the data set.}
+    \caption{Creation of the training instances for the lexical model: The input text is tokenized, the POS tags are determined, and numbers are replaced. Then, a sliding window is used to create the training instance. Each word is thereby replaced with a distributed word representation.}
     \label{fig:overview_lexical}
 \end{figure}
 
@@ -22,13 +22,13 @@ The class \textsc{Period} is mapped to the following characters: ``;'', ``.'', `
 The characters ``,'', ``:'' and ``-'' are mapped to the class \textsc{Comma}.
 If there is no punctuation, we use the class \textsc{None}.
 
-Once we have the input text, the first step is the tokenization.
+Once we have the input text, the next step is the tokenization.
 Afterwards, we run a sliding window over the input text to create the training instances.
 The sliding window procedure is illustrated in Figure~\ref{fig:sliding_window}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{img/sliding_window.pdf}
-    \caption{Training instances from sliding window: Each window constitutes one training instances. The length of the window and the position, which determines the label, is a parameter. In the example we use a window size of 5 and the punctuation position 3.}
+    \caption{Training instances from sliding window: Each window constitutes one training instances. The length of the window and the position, which determines the label, is a parameter. In the example we use a window size of five and the punctuation position three.}
     \label{fig:sliding_window}
 \end{figure}
 The size of the window is determined by a \texttt{config} file.
@@ -41,15 +41,15 @@ If there is no punctuation at this position, the label of the training instance 
 
 After we divide the sentences into training instances, we convert each word into a distributed word representation.
 This step is necessary to obtain a representation of the words, which the neural network can learn from.
-As implementation of the distributed representation, we use \emph{word2vec}\cite{Mikolov1, Mikolov2, Mikolov3}.
+As implementation of the distributed representation, we use \emph{word2vec}~\cite{Mikolov1, Mikolov2, Mikolov3}.
 Concretely, we used a pretrained vector file\footnote{\url{https://code.google.com/archive/p/word2vec/}}, which was trained on a Google News data set.
-The model contains 300-dimensional word vectors for 3 million different words and phrases.
+The model contains 300-dimensional word vectors for three million different words and phrases.
 
 Since not every word exists in the trained model, we use the word vector representing \texttt{this} for unknown words.
 We think that most of the unknown words are proper names, which can be replaced with \texttt{this} without changing the meaning and structure of the whole sentence.
 Besides, the trained model only contains a few numbers.
 As the concrete number occurring in a text is not relevant for the sentence boundary detection, we replace all numbers in the text, including floating-point numbers, with the number 1.
-The representation for each word in a training instance is inserted into one row of the feature matrix, e.g. for a sliding window size of 5 a matrix of size 5x300 for each training instance is generated.
+The representation for each word in a training instance is inserted into one row of the feature matrix, e.g. for a sliding window size of five a matrix of size 5x300 for each training instance is generated.
 
 Besides the distributed word representation, we also examined Part of Speech (POS) tags as features.
 Therefore, we used the \emph{nltk}\footnote{\url{http://www.nltk.org/}} POS tagger.
@@ -58,26 +58,29 @@ These are too specific for our purpose, so we grouped them into 14 different cat
 For example, there exist four different tags, which identify a noun.
 The \emph{nltk} tagger predicts more than one tag per word, so one word can have multiple tags (even after reducing the tag categories).
 To allow the existence of multiple tags in our feature matrix, we used the following representation:
-We create one flag per POS category which has the value 1 if the word belongs to this category and 0 otherwise.
+We create one flag per POS category, which has the value 1 if the word belongs to this category and 0 otherwise.
 
 One can think of several strategies to include the POS features in the training instances.
-We decided for the most straightforward: appending the features after the word vector representation, thus resulting in a feature matrix of 5x314 for a sliding window size of 5 with POS tags.
+We decided for the most straightforward: appending the features after the word vector representation, thus resulting in a feature matrix of 5x314 for a sliding window size of five with POS tags.
+
+The created training instances are written to a LevelDB in a last step.
+Using the LevelDB, we can now train our neural network.
 
 
 \subsection{Neural Network Layout}
 
-We use a neural network layout with three main \texttt{inner product} layers with sizes 2048, 4096, and 2048.
-After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer on top of each \texttt{inner product} layer.
-The ratio for all \texttt{dropout} layers is $0.5$.
-Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{inner product} layer with size 3.
-The whole architecture is shown in Figure~\ref{fig:net_lexical}.
-
+The layout of our neural network is shown in Figure~\ref{fig:net_lexical}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{img/net_lexical.pdf}
     \caption{Network architecture consisting of four \texttt{inner product} layers.}
     \label{fig:net_lexical}
 \end{figure}
+We use a neural network layout with three main \texttt{inner product} layers with sizes 2048, 4096, and 2048.
+After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer on top of each \texttt{inner product} layer.
+The ratio for all \texttt{dropout} layers is $0.5$.
+Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{inner product} layer with size 3.
+
 
 \subsection{Results and Evaluation}
 
