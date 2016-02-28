@@ -66,7 +66,6 @@ We decided for the most straightforward: appending the features after the word v
 The created training instances are written to a LevelDB in a last step.
 Using the LevelDB, we can now train our neural network.
 
-
 \subsection{Neural Network Layout}
 
 The layout of our neural network is shown in Figure~\ref{fig:net_lexical}.
@@ -80,7 +79,6 @@ We use a neural network layout with three main \texttt{inner product} layers wit
 After each of these layers we added a \texttt{ReLU} and a \texttt{dropout} layer on top of each \texttt{inner product} layer.
 The ratio for all \texttt{dropout} layers is 0.5.
 Accuracy and loss of the network are computed after the final predictions of our fourth \texttt{inner product} layer with size 3.
-
 
 \subsection{Results and Evaluation}
 

@@ -5,7 +5,6 @@ In the following the training and evaluation of the acoustic model is shown in d
 \subsection{Training Instance Generation}
 
 Many researches are using pauses, pitch levels, and energy levels for prediction punctuation.
-%Thus, we decided to also use this kind of features.
 The pitch level encodes the volume of the speaker, whereas the energy level describes the amount of power the speaker is using in his voice.
 To obtain those values from the \texttt{.sph} files in our data set, we first have to convert those files into \texttt{.wav} files.
 For that, we used a sound processing program called \emph{SoX}.
@@ -18,7 +17,6 @@ One line in the output file represents the energy level in \texttt{1 / sample ra
 
 Together with the \texttt{.ctm} files, we can now create the training instances.
 The process of generating the training instances is shown in Figure~\ref{fig:overview_acoustic}.
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{img/overview_accoustic.pdf}
@@ -71,7 +69,6 @@ In the last layer, we use only two dimensions instead of three, because we have 
     \label{fig:net_acoustic}
 \end{figure}
 
-
 \subsection{Results and Evaluation}
 
 As mentioned before, we can evaluate the model only on \textsc{Period}s, as we do not have ground truth data for the commas.
@@ -86,6 +83,3 @@ Figure~\ref{audio_eval} shows the F-measure for all experiments.
 Note that the y-axis has been capped to better show differences.
 Interestingly, the combination of window size eight and punctuation position four is again the best combination.
 It leads to an F-score of 78.36\%.
-
-
-
