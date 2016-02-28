@@ -41,8 +41,8 @@ If there is no punctuation at this position, the label of the training instance 
 
 After we divide the sentences into training instances, we convert each word into a distributed word representation.
 This step is necessary to obtain a representation of the words, which the neural network can learn from.
-As implementation of the distributed representation, we use \emph{word2vec}~\cite{Mikolov1, Mikolov2, Mikolov3}.
-Concretely, we used a pretrained vector file\footnote{\url{https://code.google.com/archive/p/word2vec/}}, which was trained on a Google News data set.
+The implementation of the distributed representation we use is \emph{word2vec}~\cite{Mikolov1, Mikolov2, Mikolov3}.
+More precisely, we use a pretrained vector file\footnote{\url{https://code.google.com/archive/p/word2vec/}}, which was trained on a Google News data set.
 The model contains 300-dimensional word vectors for three million different words and phrases.
 
 Since not every word exists in the trained model, we use the word vector representing \texttt{this} for unknown words.
@@ -51,7 +51,7 @@ Besides, the trained model contains only a few numbers.
 As the concrete number occurring in a text is not relevant for the sentence boundary detection, we replace all numbers in the text, including floating-point numbers, with the number 1.
 The representation for each word in a training instance is inserted into one row of the feature matrix, e.g., for a sliding window size of five a matrix of size 5x300 for each training instance is generated.
 
-Besides the distributed word representation, we also examined Part of Speech (POS) tags as features.
+In addition to the distributed word representation, we also examined Part of Speech (POS) tags as features.
 Therefore, we used the \emph{nltk}\footnote{\url{http://www.nltk.org/}} POS tagger.
 The tagger distinguishes between 35 different POS tags.
 These are too specific for our purpose, so we grouped them into 14 different categories.
@@ -100,7 +100,7 @@ All experiments are executed with the previously described data preprocessing an
 As test data we used TED talks from 2011, which we did not include in the training set.
 
 In a first experiment, we examined if training on TED talk data together with the Wikipedia data improves the performance. 
-In Figure~\ref{fig:window_wiki_eval} we show a comparison between using only TED talks and using additionally Wikipedia data as training data.
+In Figure~\ref{fig:window_wiki_eval} we show a comparison between using only TED talks and using additional Wikipedia data as training data.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\textwidth]{img/window_wiki_eval.png}
