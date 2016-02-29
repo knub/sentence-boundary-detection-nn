@@ -6,7 +6,7 @@ Also, make sure that the directory `/home/ms2015t3/sentence-boundary-detection-n
 export PYTHONPATH="${PYTHONPATH}:/home/ms2015t3/sentence-boundary-detection-nn/python"
 ```
 
-Also, you have to set the environment variable `SENTENCE_HOME`, because many scripts relay on it:
+Also, you have to set the environment variable `SENTENCE_HOME`, because many scripts rely on it:
 
 ```
 export SENTENCE_HOME="/home/ms2015t3/sentence-boundary-detection-nn"
