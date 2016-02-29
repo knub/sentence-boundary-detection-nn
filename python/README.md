@@ -6,13 +6,13 @@ Also, make sure that the directory `/home/ms2015t3/sentence-boundary-detection-n
 export PYTHONPATH="${PYTHONPATH}:/home/ms2015t3/sentence-boundary-detection-nn/python"
 ```
 
-Many scripts rely on the `SENTENCE_HOME` variable:
+Also, you have to set the environment variable `SENTENCE_HOME`, because many scripts relay on it:
 
 ```
 export SENTENCE_HOME="/home/ms2015t3/sentence-boundary-detection-nn"
 ```
 
-To execute all python scripts in this folder, please use this folder as the working directory.
+To execute all python scripts in this folder, please use **this folder as the working directory**.
 
 ## Creating LevelDB for lexical model
 
@@ -46,13 +46,3 @@ The `<data-set>` parameter is extracted from the `.ctm` files.
 To create the `.pitch` and `.energy` files, you can use the `pitch_and_energy.sh` script under `/mnt/naruto/sentence/data/audio`.
 
 The created level db can be found under `/mnt/naruto/sentence/leveldbs`.
-
-## Train and test a network
-
-To train a network you first create a leveldb as described above. In directory `/home/ms2015t3/sentence-boundary-detection-nn/net/` execute `. training.sh [experimentName]`
-This script automatically takes `solver.prototxt` and `net.prototxt` from the .
-
-The results can be found in `/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/[experimentName]`.
-
-The 
-
