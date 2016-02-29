@@ -8,6 +8,7 @@ For training the acoustic neural network, you have to execute the following step
 4. Execute `training.sh <experiment_name>`.
 
 The `training.sh` script does several things:
+
 * Creates a folder in the `experiment` folder with the name you gave your experiment
 * The following files are copied to that folder:
  * `config.ini`, which is located in your database folder

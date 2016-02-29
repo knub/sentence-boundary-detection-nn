@@ -6,6 +6,12 @@ Also, make sure that the directory `/home/ms2015t3/sentence-boundary-detection-n
 export PYTHONPATH="${PYTHONPATH}:/home/ms2015t3/sentence-boundary-detection-nn/python"
 ```
 
+Many scripts rely on the `SENTENCE_HOME` variable:
+
+```
+export SENTENCE_HOME="/home/ms2015t3/sentence-boundary-detection-nn"
+```
+
 To execute all python scripts in this folder, please use this folder as the working directory.
 
 ## Creating LevelDB for lexical model
@@ -41,29 +47,12 @@ To create the `.pitch` and `.energy` files, you can use the `pitch_and_energy.sh
 
 The created level db can be found under `/mnt/naruto/sentence/leveldbs`.
 
-## Demo
+## Train and test a network
 
-For a one-time live interactive command line demo please run `python console_demo/demo.py` and use the correct parameters (use `python console_demo/demo.py -h` for help).
+To train a network you first create a leveldb as described above. In directory `/home/ms2015t3/sentence-boundary-detection-nn/net/` execute `. training.sh [experimentName]`
+This script automatically takes `solver.prototxt` and `net.prototxt` from the .
 
-To avoid long loading times, you can preload the word vector and the model. Open a python shell with `python` and import the word vector and model manually with the following code (adapt your paths to GoogleNewsVector.bin, net.prototxt and model.caffemodel):
+The results can be found in `/home/ms2015t3/sentence-boundary-detection-nn/net/experiments/[experimentName]`.
 
-```
->>> import caffe
->>> import demo.demo as d
->>> from preprocessing.word2vec_file import Word2VecFile
->>> vector = Word2VecFile('GoogleNewsVector.bin')
->>> net = caffe.Net('net.prototxt', 'model.caffemodel', caffe.TEST)
-```
-If you get an error on importing caffe, try using your virtual environment, or add the neccesary paths to your `PYTHONPATH`.
+The 
 
-This code is also bundled in the `demo_preparation.py` file, so on the server you can alternative simply call:
-```
->>> from demo.demo_preparation import *
-```
-
-Now you can classify multiple files or run the interactive demo:
-```
->>> d.main_no_loading(net, vector, "file1.txt")
->>> d.main_no_loading(net, vector, "file2.txt")
->>> d.main_no_loading(net, vector)
-```
