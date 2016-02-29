@@ -14,7 +14,7 @@ To build a level db for the lexical model, please execute:
 ```
 python sbd_leveldb/training_instance_generator.py config.ini
 ```
-The `config.ini` file contains all parameters, which are needed druing the creation of the training instances. 
+The `config.ini` file contains all parameters, which are needed during the creation of the training instances. 
 It also contains the training files and test files, which should be used. 
 The data root directory is set to `/mnt/naruto/sentence/data`. 
 All training and test files should be located in this folder.
@@ -28,7 +28,7 @@ To build a level db for the acoustic model, please execute:
 ```
 python sbd_leveldb/audio_training_instance_generator.py config.ini
 ```
-The `config.ini` file contains all parameters, which are needed druing the creation of the training instances. 
+The `config.ini` file contains all parameters, which are needed during the creation of the training instances. 
 The parameter `lexical` needs to be set to `false`.
 
 It also contains the training files and test files, which should be used. 
