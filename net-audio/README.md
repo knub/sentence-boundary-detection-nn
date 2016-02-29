@@ -15,6 +15,6 @@ The `training.sh` script does several things:
  * `net.prototxt`
  * `solver.prototxt`
  * log files from the training
-* Starts the training of the nerual network
+* Starts the training of the neural network
 * The latest `.solverstate` and `.caffemodel` are copied to the `experiment` folder after the training is finished
 * After training, different graphs are created and put into the `experiment` folder.
