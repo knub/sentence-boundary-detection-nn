@@ -19,6 +19,7 @@ It also contains the training files and test files, which should be used.
 The data root directory is set to `/mnt/naruto/sentence/data`. 
 All training and test files should be located in this folder.
 The `config.ini.default` file contains an example of a valid `config.ini` file.
+
 The created level db can be found under `/mnt/naruto/sentence/leveldbs`.
 
 ## Creating LevelDB for acoustic model
