@@ -1,6 +1,7 @@
 # Run Demo
 
-As described in the [general Python README](../README.md), before executing any scripts on the server, please execute `. ./use_python p2` in `/home/ms2015t3/sentence-boundary-detection-nn`.
+As described in the [general Python README](../README.md), before executing any scripts on the server, please execute the following command in `/home/ms2015t3/sentence-boundary-detection-nn`.
+
 
 Then use the following command on the server to run the demo:
 
