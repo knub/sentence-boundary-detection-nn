@@ -1,4 +1,9 @@
-Before executing any scripts on the server, please execute `. ./use_python p2` in `/home/ms2015t3/sentence-boundary-detection-nn`.
+Before executing any scripts on the server, please execute `. ./use_python p2` in `/home/ms2015t3/sentence-boundary-detection-nn`:
+
+```
+cd /home/ms2015t3/sentence-boundary-detection-nn
+. ./use_python p2
+```
 
 Also, make sure that the directory `/home/ms2015t3/sentence-boundary-detection-nn/python` is added to the python path environment variable:
 
