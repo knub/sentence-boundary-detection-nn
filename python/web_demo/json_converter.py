@@ -63,23 +63,15 @@ class JsonConverter(object):
     def convert_lexical(self, tokens, punctuation_probs):
         json_data = []
         # build json
-        for i, token in enumerate(tokens):
+        for index, token in enumerate(tokens):
             token_json = {'type': 'word', 'token': token.word}
             if self.POS_TAGGING:
                 token_json['pos'] = [str(tag).replace("PosTag.", "") for tag in token.pos_tags]
             json_data.append(token_json)
 
-            # we are at the beginning or at the end of the text and do not have any predictions for punctuations
-            current_prediction_position = get_index(i, len(punctuation_probs), self.LEXICAL_PUNCTUATION_POS)
-            # last token always period
-            if i == len(tokens) - 1:
-                json_data.append({'type': 'punctuation', 'punctuation': 'PERIOD', 'probs': {'NONE': 0.0, 'COMMA': 0.0, 'PERIOD': 1.0}})
-            elif current_prediction_position < 0:
-                json_data.append({'type': 'punctuation', 'punctuation': 'NONE', 'probs': {'NONE': 1.0, 'COMMA': 0.0, 'PERIOD': 0.0}})
-            else:
-                current_punctuation = self.classes_lexical_audio[numpy.argmax(punctuation_probs[current_prediction_position])]
-                class_distribution = self._get_class_distribution(punctuation_probs[current_prediction_position], self.classes_lexical_audio)
-                json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
+            current_punctuation = self.classes_lexical_audio[numpy.argmax(punctuation_probs[index])]
+            class_distribution = self._get_class_distribution(punctuation_probs[index], self.classes_lexical_audio)
+            json_data.append({'type': 'punctuation', 'punctuation': current_punctuation, 'probs': class_distribution})
 
         return json_data
 

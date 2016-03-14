@@ -34,6 +34,9 @@ def load_config(model_folder, model):
     config_file, caffemodel_file, net_proto = get_filenames(default_model)
     sbd.SbdConfig(config_file)
 
+def get_lexical_classes(use_question_mark):
+    return ["NONE", "COMMA", "PERIOD", "QUESTION"] if use_question_mark else ["NONE", "COMMA", "PERIOD"]
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -59,14 +62,19 @@ def classifyLexical():
     input_text = InputText(text)
     punctuations_probs = lexical_classifier.predict(input_text)
     (window_size, punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
+    question_mark = sbd.config.getboolean('features', 'use_question_mark')
+    classes = get_lexical_classes(question_mark)
+
+    all_probs = convert_probabilities(len(input_text.tokens), punctuation_pos, punctuations_probs, classes)
 
     jsonConverter = JsonConverter(punctuation_pos, window_size, None, None, pos_tagging)
-    data = jsonConverter.convert_lexical(input_text.tokens, punctuations_probs)
+    data = jsonConverter.convert_lexical(input_text.tokens, all_probs)
 
     if not text_file:
-        file_name = os.path.join(route_folder, TEXT_DATA, text_file + ".result")
-        resultWriter = ResultWriter()
-        resultWriter.writeToFile(file_name, input_text.tokens, punctuations_probs)
+        text_file = "custom_input"
+    file_name = os.path.join(route_folder, TEXT_DATA, text_file + ".result")
+    resultWriter = ResultWriter(classes)
+    resultWriter.writeToFile(file_name, input_text.tokens, all_probs)
 
     return json.dumps(data)
 
@@ -84,6 +92,7 @@ def classifyAudioLexical():
     # predict audio
     load_config(AUDIO_MODEL_FOLDER, request.form['audio_folder'])
     audio_probs = audio_classifier.predict(InputAudio(talks))
+
     # predict lexical
     load_config(LEXICAL_MODEL_FOLDER, request.form['lexical_folder'])
     input_text = InputText(talks)
@@ -92,6 +101,13 @@ def classifyAudioLexical():
     # get config parameter
     (lexical_window_size, lexical_punctuation_pos, pos_tagging) = lexical_classifier.get_lexical_parameter()
     (audio_window_size, audio_punctuation_pos) = audio_classifier.get_audio_parameter()
+
+    # write audio results
+    audio_classes = ["NONE", "PERIOD"]
+    all_audio_probs = convert_probabilities(len(input_text.tokens), audio_punctuation_pos, audio_probs, audio_classes)
+    file_name = os.path.join(route_folder, AUDIO_EXAMPLE_FOLDER, request.form['example'] + ".result")
+    resultWriter = ResultWriter(audio_classes)
+    resultWriter.writeToFile(file_name, input_text.tokens, all_audio_probs)
 
     # fusion
     fusion = ThresholdFusion()

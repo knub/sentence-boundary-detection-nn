@@ -13,6 +13,19 @@ def get_index(index, length, punctuation_pos):
     else:
         return -1
 
+def convert_probabilities(token_length, punctuation_pos, probabilities, classes = ["NONE", "COMMA", "PERIOD"]):
+    new_probablities = []
+    for i in range(0, token_length):
+        current_prediction_position = get_index(i, len(probabilities), punctuation_pos)
+        if i == token_length - 1:
+            new_probablities.append([(1.0 if current == "PERIOD" else 0.0) for current in classes])
+        elif current_prediction_position < 0:
+            new_probablities.append([(1.0 if current == "NONE" else 0.0) for current in classes])
+        else:
+            new_probablities.append(probabilities[current_prediction_position].tolist())
+    print probabilities, new_probablities
+    return new_probablities
+
 def get_filenames(folder):
     for file_ in listdir(folder):
         if file_.endswith(".ini"):
