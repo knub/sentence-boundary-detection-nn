@@ -10,7 +10,7 @@ We build a python-based demo using caffe.
 1. Clone this repository
 2. Install python 2.7 including the following packages from requirements.txt
 
-  `pip install requirements.txt`
+  `pip install -r requirements.txt`
 
 3. Use the nltk downloader to download `averaged_perceptron_tagger` and `punkt` models:
 
